@@ -1,0 +1,26 @@
+import 'dart:math';
+
+import '../core/application_tokens.dart';
+import '../core/exception_handler.dart';
+import '../core/linker/component_loader.dart';
+import '../di/injector.dart';
+
+/// Returns a simple application [Injector] that is hand-authored.
+///
+/// Some of the services provided below ([ExceptionHandler], [appId]) may be
+/// overriden by the user-supplied injector - the returned [Injector] is
+/// used as the "base" application injector.
+Injector minimalApp() {
+  return Injector.map({
+    appId: _createRandomAppId(),
+    ExceptionHandler: const ExceptionHandler(),
+    ComponentLoader: const ComponentLoader(),
+  });
+}
+
+/// Creates a random [appId] for use in CSS encapsulation.
+String _createRandomAppId() {
+  final random = Random();
+  String char() => String.fromCharCode(97 + random.nextInt(26));
+  return '${char()}${char()}${char()}';
+}

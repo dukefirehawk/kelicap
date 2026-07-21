@@ -1,0 +1,10 @@
+sdk:
+  - 3.12.0
+  - pubspec
+
+stages:
+  - analyze:
+      - format
+      - analyze: --fatal-infos
+  - unit_test:
+      - command: dart test -P ci

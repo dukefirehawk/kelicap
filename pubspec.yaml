@@ -1,0 +1,23 @@
+name: kelicap
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+
+workspace:
+  - ast
+  - compiler
+  - web
+  #- ngtest
+  #- ngforms
+  #- ngrouter
+  #- goldens
+  #- examples/hello_world
+  #- _tests
+
+dev_dependencies:
+  melos: ^8.0.0
+  lints: ^6.0.0
+
+melos:
+  # All the content of your previous melos.yaml file goes here
+  # (e.g., scripts, command configs, etc.)

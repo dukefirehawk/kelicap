@@ -1,0 +1,14 @@
+name: kelicap
+repository: https://github.com/dukefirehawk/kelicap
+
+packages:
+   - ast
+
+ignore:
+#   - compiler
+#   - web
+#   - tests
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
