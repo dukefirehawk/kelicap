@@ -1,4 +1,4 @@
-import 'package:kelicap_web/src/meta.dart';
+import 'package:kelicap/src/meta.dart';
 
 import '../compile_metadata.dart'
     show
@@ -39,7 +39,7 @@ class CompileElement extends CompileNode implements ProviderResolverHost {
   // If true, we know for sure it is html and not svg or other type
   // so we can create code for more exact type HtmlElement.
   final bool isHtmlElement;
-  // CompileElement either is an html element or is an angular component.
+  // CompileElement either is an html element or is an Kelicap component.
   // This member is populated when element is host of a component.
   final CompileDirectiveMetadata? component;
   final List<CompileDirectiveMetadata> _directives;

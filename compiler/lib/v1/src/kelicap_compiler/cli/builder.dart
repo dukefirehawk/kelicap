@@ -5,7 +5,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'flags.dart';
 
-/// Compiles `.dart` files and `.html`, `.css` files for AngularDart.
+/// Compiles `.dart` files and `.html`, `.css` files for Kelicap.
 ///
 /// To use as a [Builder], see [Compiler.asBuilder].
 class Compiler implements Generator {
@@ -18,8 +18,8 @@ class Compiler implements Generator {
   );
 
   // Ideally this would be part of this generator, and not delegated to an
-  // external function, but today much of the AngularDart compiler still lives
-  // inside package:kelicap_web, and is non-trivial to
+  // external function, but today much of the Kelicap compiler still lives
+  // inside package:kelicap, and is non-trivial to
   // move over atomically.
   //
   // Once we're able to remove this parameter, we should.
@@ -58,7 +58,7 @@ class Compiler implements Generator {
 
   /// Identify ourselves in debug logs and generated files.
   @override
-  String toString() => 'AngularDart Compiler';
+  String toString() => 'Kelicap Compiler';
 }
 
 /// Generates an empty file to indicate `.template.dart` will exist.
@@ -71,7 +71,6 @@ class Compiler implements Generator {
 /// in order to indicate "a .template.dart of the same will exist by the time
 /// it is necessary to compile".
 ///
-/// See: https://github.com/angulardart/angular/issues/864.
 class Placeholder implements Builder {
   const Placeholder();
 

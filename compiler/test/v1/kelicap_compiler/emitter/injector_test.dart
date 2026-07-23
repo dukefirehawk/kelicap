@@ -249,7 +249,7 @@ void main() {
         classUrl: TypeLink(
           'MultiToken',
           ''
-              'package:kelicap_web'
+              'package:kelicap'
               '/src/core/di/opaque_token.dart',
         ),
       );

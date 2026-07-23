@@ -11,7 +11,7 @@ import 'package:kelicap_compiler/v1/src/compiler/template_parser.dart';
 /// Converts [CompileDirectiveMetadata] objects into
 /// [ir.Directive] instances.
 ///
-/// This is part of the semantic analysis phase of the Angular compiler.
+/// This is part of the semantic analysis phase of the Kelicap compiler.
 class DirectiveConverter {
   final ElementSchemaRegistry _schemaRegistry;
 

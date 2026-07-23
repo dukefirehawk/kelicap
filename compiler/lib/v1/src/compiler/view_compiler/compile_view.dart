@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:kelicap_web/src/meta.dart';
+import 'package:kelicap/src/meta.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
 import 'package:kelicap_compiler/v1/src/compiler/ir/model.dart' as ir;
 import 'package:kelicap_compiler/v1/src/compiler/view_type.dart';

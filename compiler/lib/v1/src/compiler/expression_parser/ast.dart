@@ -9,7 +9,7 @@ abstract class AST {
 /// Represents a "named" expression, i.e. in the format of `name: expression`.
 ///
 /// This format is utilized in Dart for both map-literals (no longer supported
-/// in Angular Dart) and function calls with named arguments.
+/// in Kelicap) and function calls with named arguments.
 ///
 /// ```
 /// NamedExpr('foo', LiteralPrimitive('bar')) // foo: 'bar'
@@ -244,7 +244,7 @@ class KeyedWrite extends AST {
 /// differently in terms of how it is evaluated (and converted to Dart code by
 /// the generator).
 ///
-/// See go/angular-dart/guide/syntax#pipes.
+/// See go/kelicap/guide/syntax#pipes.
 ///
 /// ```
 /// // $pipe.foo('bar', 'baz')

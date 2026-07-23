@@ -10,7 +10,7 @@ import '../types.dart';
 
 /// Support for reading and parsing a "token" for dependency injection.
 ///
-/// In AngularDart this is either an `OpaqueToken` or a `Type`.
+/// In Kelicap this is either an `OpaqueToken` or a `Type`.
 class TokenReader {
   const TokenReader();
 
@@ -40,7 +40,7 @@ class TokenReader {
     final typeStr = object.type!.getDisplayString(withNullability: false);
     final error =
         'Not a valid token for injection: $object. In previous versions of '
-        'AngularDart it was valid to try and inject by other token types '
+        'Kelicap it was valid to try and inject by other token types '
         'expressable in Dart. However, compile-time injection now only '
         'supports either "Type", "OpaqueToken", "MultiToken" or a class '
         'extending "OpaqueToken" or "MultiToken".\n\n'
@@ -81,7 +81,7 @@ class TokenReader {
   /// Returns [type] as a [TypeLink] to the corresponding class definition.
   ///
   /// Runs a number of validations to ensure that the class is defined properly
-  /// and in a way that the AngularDart compilers are able to use for code
+  /// and in a way that the Kelicap compilers are able to use for code
   /// generation.
   TypeLink linkToOpaqueToken(DartType type) {
     if (!$OpaqueToken.isAssignableFromType(type)) {
@@ -120,8 +120,7 @@ class TokenReader {
         '  class ${clazz.name} extends $supertypeName {\n'
         '    const ${clazz.name}();\n'
         '  }\n\n'
-        'We may loosten these restrictions in the future. See: '
-        'https://github.com/angulardart/angular/issues/899',
+        'We may loosten these restrictions in the future. See: ',
       );
     }
     if (!$OpaqueToken.isExactlyType(clazz.supertype!) &&
@@ -132,8 +131,7 @@ class TokenReader {
         'A sub-type of OpaqueToken must directly extend OpaqueToken or '
         'MultiToken, and cannot extend another class that in turn extends '
         'OpaqueToken or MultiToken.\n\n'
-        'We may loosten these restrictions in the future. See: '
-        'https://github.com/angulardart/angular/issues/899',
+        'We may loosten these restrictions in the future. See: ',
       );
     }
     return linkTypeOf(type);

@@ -5,7 +5,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor2.dart';
 import 'package:analyzer/src/dart/element/element.dart';
 
-import 'package:kelicap_web/src/meta.dart';
+import 'package:kelicap/src/meta.dart';
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/src/compiler/analyzed_class.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
@@ -35,13 +35,13 @@ import 'pipe_visitor.dart';
 const String _visibilityProperty = 'visibility';
 
 /// Given the target [library], returns relevant metadata.
-AngularArtifacts findComponentsAndDirectives(
+KelicapArtifacts findComponentsAndDirectives(
   LibraryReader library,
   ComponentVisitorExceptionHandler exceptionHandler,
 ) {
   final visitor = _NormalizedComponentVisitor(library, exceptionHandler);
   library.element.accept(visitor);
-  return AngularArtifacts(
+  return KelicapArtifacts(
     components: visitor.components,
     directives: visitor.directives,
   );
@@ -143,7 +143,7 @@ class _NormalizedComponentVisitor extends RecursiveElementVisitor2<void> {
     )!;
     if (annotationInfo.hasErrors) {
       _exceptionHandler.handle(
-        AngularAnalysisError(
+        KelicapAnalysisError(
           annotationInfo.constantEvaluationErrors,
           annotationInfo,
         ),
@@ -260,7 +260,7 @@ class _ComponentVisitor
       final constantValue = annotationInfo.constantValue;
       if (constantValue == null) {
         _exceptionHandler.handleWarning(
-          AngularAnalysisError(
+          KelicapAnalysisError(
             annotationInfo.constantEvaluationErrors,
             annotationInfo,
           ),
@@ -460,7 +460,7 @@ class _ComponentVisitor
         BuildError.forElement(
           field,
           'Inputs cannot be "late final".\n\n'
-          'See go/angular-dart-null-safety-faq#inputs.',
+          'See go/kelicap-null-safety-faq#inputs.',
         ),
       );
     }
@@ -472,7 +472,7 @@ class _ComponentVisitor
         BuildError.forElement(
           member,
           'ViewChild and ContentChild queries must be nullable.\n\n'
-          'See go/angular-dart-null-safety-faq#viewchild-contentchild.',
+          'See go/kelicap-null-safety-faq#viewchild-contentchild.',
         ),
       );
     }
@@ -484,7 +484,7 @@ class _ComponentVisitor
         BuildError.forElement(
           field,
           'View and content queries cannot be "late".\n\n'
-          'See go/angular-dart-null-safety-faq.',
+          'See go/kelicap-null-safety-faq.',
         ),
       );
     }
@@ -612,7 +612,6 @@ class _ComponentVisitor
         element is FieldElement && element.isStatic) {
       if (element.enclosingElement != _directiveClassElement) {
         // We do not want to inherit static members.
-        // https://github.com/angulardart/angular/issues/1272
         return;
       }
       var classId = CompileIdentifierMetadata(
@@ -719,7 +718,7 @@ class _ComponentVisitor
 
     if (directiveInfo.hasErrors) {
       _exceptionHandler.handle(
-        AngularAnalysisError(
+        KelicapAnalysisError(
           directiveInfo.constantEvaluationErrors,
           directiveInfo,
         ),

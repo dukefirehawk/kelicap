@@ -5,13 +5,13 @@ import 'package:path/path.dart' as p;
 import 'analyzer.dart';
 import 'outliner/collect_type_parameters.dart';
 
-const _angularImports = '''
+const _kelicapImports = '''
 import 'package:web/web.dart' as _html;
-import 'package:kelicap_web/angular.dart' as _ng;
-import 'package:kelicap_web/src/core/change_detection/directive_change_detector.dart' as _ng;
-import 'package:kelicap_web/src/core/linker/views/component_view.dart' as _ng;
-import 'package:kelicap_web/src/core/linker/views/render_view.dart' as _ng;
-import 'package:kelicap_web/src/core/linker/views/view.dart' as _ng;
+import 'package:kelicap/kelicap.dart' as _ng;
+import 'package:kelicap/src/core/change_detection/directive_change_detector.dart' as _ng;
+import 'package:kelicap/src/core/linker/views/component_view.dart' as _ng;
+import 'package:kelicap/src/core/linker/views/render_view.dart' as _ng;
+import 'package:kelicap/src/core/linker/views/view.dart' as _ng;
 ''';
 
 const _analyzerIgnores =
@@ -100,7 +100,7 @@ class TemplateOutliner implements Builder {
         injectors.isNotEmpty) {
       output
         ..writeln('// Required for referencing runtime code.')
-        ..writeln(_angularImports);
+        ..writeln(_kelicapImports);
       final userLandCode = p.basename(buildStep.inputId.path);
       output
         ..writeln('// Required for specifically referencing user code.')

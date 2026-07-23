@@ -14,8 +14,8 @@ import 'package:build/experiments.dart';
 import 'package:build_test/build_test.dart';
 import 'package:package_config/package_config.dart';
 
-const _angularPkgPath = 'package:';
-const _angularLibPath = '${_angularPkgPath}ngdart/angular.dart';
+const _kelicapPkgPath = 'package:';
+const _kelicapLibPath = '${_kelicapPkgPath}kelicap/kelicap.dart';
 const _defaultLibrary = 'test_lib';
 final _defaultAssetId = AssetId(_defaultLibrary, 'lib/$_defaultLibrary.dart');
 final _cachedPackageConfig = _loadPackageConfig();
@@ -63,18 +63,18 @@ String _assetToPath(AssetId asset) => '${asset.package}|${asset.path}';
 ///   )
 ///   ```
 ///
-/// * [includeAngularDeps]: Set `false` to not include `import 'ngdart.dart'`.
+/// * [includeKelicapDeps]: Set `false` to not include `import 'kelicap.dart'`.
 ///   This may be used to simulate scenarios where the user has forgotten to add
-///   an import to Angular, or where you would want the import specified as an
+///   an import to Kelicap, or where you would want the import specified as an
 ///   alternative entry-point.
 Future<LibraryElement> resolve(
   String dartSource, {
   Map<AssetId, String> additionalFiles = const {},
-  bool includeAngularDeps = true,
+  bool includeKelicapDeps = true,
 }) async {
   // Add library and import directives to the top.
   dartSource = [
-    if (includeAngularDeps) "import '$_angularLibPath';",
+    if (includeKelicapDeps) "import '$_kelicapLibPath';",
     '',
     dartSource,
   ].join('\n');
@@ -92,20 +92,20 @@ Future<LibraryElement> resolve(
       sources,
       (resolver) => resolver.libraryFor(_defaultAssetId),
       nonInputsToReadFromFilesystem: {
-        AssetId('ngdart', 'lib/angular.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_modules.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_arguments.dart'),
-        AssetId('ngdart', 'lib/src/meta/change_detection_constants.dart'),
-        AssetId('ngdart', 'lib/src/meta/change_detection_link.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_generate_injector.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_modules.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_providers.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_tokens.dart'),
-        AssetId('ngdart', 'lib/src/meta/directives.dart'),
-        AssetId('ngdart', 'lib/src/meta/lifecycle_hooks.dart'),
-        AssetId('ngdart', 'lib/src/meta/typed.dart'),
-        AssetId('ngdart', 'lib/src/meta/view.dart'),
-        AssetId('ngdart', 'lib/src/meta/visibility.dart'),
+        AssetId('kelicap', 'lib/kelicap.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_modules.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_arguments.dart'),
+        AssetId('kelicap', 'lib/src/meta/change_detection_constants.dart'),
+        AssetId('kelicap', 'lib/src/meta/change_detection_link.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_generate_injector.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_modules.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_providers.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_tokens.dart'),
+        AssetId('kelicap', 'lib/src/meta/directives.dart'),
+        AssetId('kelicap', 'lib/src/meta/lifecycle_hooks.dart'),
+        AssetId('kelicap', 'lib/src/meta/typed.dart'),
+        AssetId('kelicap', 'lib/src/meta/view.dart'),
+        AssetId('kelicap', 'lib/src/meta/visibility.dart'),
       },
       packageConfig: config,
     ),

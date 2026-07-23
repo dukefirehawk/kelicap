@@ -82,7 +82,6 @@ class ProviderReader {
     // Base case: const Provider(Foo) with no fields set.
     if (token is TypeTokenElement) {
       // Ensure this isn't a FactoryProvider with a null function:
-      // https://github.com/angulardart/angular/issues/1500
       if (!$Provider.isExactlyType(o.type!)) {
         throw NullFactoryException(o);
       }

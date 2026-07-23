@@ -1,4 +1,4 @@
-/// Represents a section of parsed text from an Angular micro expression.
+/// Represents a section of parsed text from an Kelicap micro expression.
 ///
 /// Clients should not extend, implement, or mix-in this class.
 class NgMicroToken {

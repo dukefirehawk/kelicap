@@ -1,4 +1,4 @@
-import 'package:kelicap_web/src/meta.dart';
+import 'package:kelicap/src/meta.dart';
 import 'package:kelicap_ast/ast.dart' as ast;
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/cli.dart';

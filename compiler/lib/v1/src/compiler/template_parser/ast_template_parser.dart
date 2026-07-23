@@ -32,7 +32,7 @@ const _scriptElement = 'script';
 const _templateElement = 'template';
 final _textCssSelector = CssSelector.parse('*')[0];
 
-/// A [TemplateParser] which uses the `ngast` package to parse angular
+/// A [TemplateParser] which uses the `ngast` package to parse kelicap
 /// templates.
 class AstTemplateParser {
   final CompilerFlags _flags;
@@ -238,7 +238,7 @@ class AstTemplateParser {
 
 /// A visitor which binds directives to element nodes.
 ///
-/// This visitor also converts from the pkg:ngast types to the angular
+/// This visitor also converts from the pkg:ngast types to the kelicap
 /// compiler types, which includes transformation of internationalized nodes.
 class _BindDirectivesVisitor
     implements ast.TemplateAstVisitor<ng.TemplateAst?, _ParseContext> {
@@ -1322,10 +1322,9 @@ String _getPropertyName(ast.PropertyAst astNode) {
 String _getEventName(ast.EventAst event) =>
     ([event.name, ...event.reductions]).join('.');
 
-/// Visitor which filters elements that are not supported in angular templates.
+/// Visitor which filters elements that are not supported in Kelicap templates.
 class _ElementFilter extends ast.RecursiveTemplateAstVisitor<void> {
-  static const _securityUrl =
-      'https://webdev.dartlang.org/angular/guide/security';
+  static const _securityUrl = 'https://angular.dev/best-practices/security';
 
   @override
   ast.ElementAst? visitElement(ast.ElementAst astNode, [_]) {
@@ -1335,7 +1334,7 @@ class _ElementFilter extends ast.RecursiveTemplateAstVisitor<void> {
         ''
         'Ignoring <${astNode.name}>, as this element is unsafe to bind in '
         'a template without proper sanitization. This may become an error '
-        'in future versions of AngularDart. See $_securityUrl for details.',
+        'in future versions of Kelicap. See $_securityUrl for details.',
       );
       logWarning(warning);
       return null;

@@ -178,9 +178,9 @@ class NgMicroScanner {
     throw _unexpected();
   }
 
-  AngularParserException _unexpected() {
+  KelicapParserException _unexpected() {
     _state = _NgMicroScannerState.hasError;
-    return AngularParserException(
+    return KelicapParserException(
       ParserErrorCode.invalidMicroExpression,
       _expressionOffset,
       _expressionLength,

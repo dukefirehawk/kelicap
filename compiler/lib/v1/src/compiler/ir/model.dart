@@ -277,7 +277,7 @@ class Binding implements IRNode {
   final BindingSource source;
   final BindingTarget target;
 
-  /// For most bindings, Angular will generate a checkBinding() call before
+  /// For most bindings, Kelicap will generate a checkBinding() call before
   /// assigning the source expression to the target.
   ///
   /// For a direct binding, we can skip this check. This assumes that either the

@@ -4,7 +4,7 @@ import '../parser/reader.dart';
 import '../scanner.dart';
 import '../token/tokens.dart';
 
-part 'angular_analyzer_protocol.dart';
+part 'kelicap_analyzer_protocol.dart';
 
 abstract class RecoveryProtocol {
   RecoverySolution recover(

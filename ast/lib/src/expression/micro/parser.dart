@@ -144,9 +144,9 @@ class _RecursiveMicroAstParser {
     }
   }
 
-  AngularParserException _unexpected([NgMicroToken? token]) {
+  KelicapParserException _unexpected([NgMicroToken? token]) {
     token ??= _tokens.current;
-    return AngularParserException(
+    return KelicapParserException(
       ParserErrorCode.invalidMicroExpression,
       _expressionOffset,
       _expressionLength,

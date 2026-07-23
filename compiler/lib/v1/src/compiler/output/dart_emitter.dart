@@ -71,29 +71,29 @@ class _DartEmitterVisitor extends AbstractEmitterVisitor
     implements o.TypeVisitor<void, EmitterVisitorContext> {
   // List of packages that are public api and can be imported without prefix.
   static const _allowListedImports = [
-    'package:kelicap_web/angular.dart',
+    'package:kelicap/kelicap.dart',
     'dart:core',
     // ElementRef.
-    // 'asset:ngdart/lib/src/core/linker/element_ref.dart',
-    // 'package:kelicap_web/src/core/linker/element_ref.dart',
+    // 'asset:kelicap/lib/src/core/linker/element_ref.dart',
+    // 'package:kelicap/src/core/linker/element_ref.dart',
     // ViewContainer.
-    'asset:ngdart/lib/src/core/linker/view_container.dart',
-    'package:kelicap_web/src/core/linker/view_container.dart',
+    'asset:kelicap/lib/src/core/linker/view_container.dart',
+    'package:kelicap/src/core/linker/view_container.dart',
     // TemplateRef.
-    'asset:ngdart/lib/src/core/linker/template_ref.dart',
-    'package:kelicap_web/src/core/linker/template_ref.dart',
+    'asset:kelicap/lib/src/core/linker/template_ref.dart',
+    'package:kelicap/src/core/linker/template_ref.dart',
     // ChangeDetectionStrategy, Differs*
-    'asset:ngdart/lib/src/core/change_detection/change_detection.dart',
-    'package:kelicap_web/src/core/change_detection/change_detection.dart',
+    'asset:kelicap/lib/src/core/change_detection/change_detection.dart',
+    'package:kelicap/src/core/change_detection/change_detection.dart',
     // NgIf.
-    'asset:ngdart/lib/src/common/directives/ng_if.dart',
-    'package:kelicap_web/src/common/directives/ng_if.dart',
+    'asset:kelicap/lib/src/common/directives/ng_if.dart',
+    'package:kelicap/src/common/directives/ng_if.dart',
     // AppView.
-    'asset:ngdart/lib/src/core/linker/app_view.dart',
-    'package:kelicap_web/src/core/linker/app_view.dart',
+    'asset:kelicap/lib/src/core/linker/app_view.dart',
+    'package:kelicap/src/core/linker/app_view.dart',
     // RenderComponentType.
-    'asset:ngdart/lib/src/core/render/api.dart',
-    'package:kelicap_web/src/core/render/api.dart',
+    'asset:kelicap/lib/src/core/render/api.dart',
+    'package:kelicap/src/core/render/api.dart',
   ];
 
   final String _moduleUrl;

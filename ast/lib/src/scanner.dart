@@ -22,7 +22,7 @@ class NgScanner {
   NgSimpleToken? _lastErrorToken;
 
   // Storing last notable offsets to better generate exception offsets.
-  // Due to the linear parsing nature of Angular, these values are recyclable.
+  // Due to the linear parsing nature of Kelicap, these values are recyclable.
   late int _lastElementStartOffset;
   NgSimpleToken? _lastDecoratorPrefix;
   int? _lastOpenMustacheOffset;
@@ -1185,9 +1185,9 @@ class NgScanner {
     }
   }
 
-  /// Generates an [AngularParserException] using the provided
+  /// Generates an [KelicapParserException] using the provided
   /// [ParserErrorCode] and positional information.
-  AngularParserException? _generateException(
+  KelicapParserException? _generateException(
     ParserErrorCode errorCode,
     int offset,
     int length,
@@ -1197,7 +1197,7 @@ class NgScanner {
       return null;
     }
     _lastErrorToken = _current;
-    return AngularParserException(errorCode, offset, length);
+    return KelicapParserException(errorCode, offset, length);
   }
 }
 

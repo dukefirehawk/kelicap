@@ -29,7 +29,6 @@ abstract class NgAssetReader {
     assetToPackageUrl(Uri.parse(url))
         .toString()
         // Normalization for Windows URLs.
-        // See https://github.com/angulardart/angular/issues/723.
         .replaceAll('..%5C', '')
         // Other normalization.
         .replaceAll('%7C', r'/'),

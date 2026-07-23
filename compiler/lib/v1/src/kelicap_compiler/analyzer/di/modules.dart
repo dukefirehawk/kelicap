@@ -21,7 +21,7 @@ class ModuleReader {
 
   /// Returns whether an object is abstractly a "module" of providers.
   ///
-  /// In AngularDart, this is currently represented as a `List<Object>` where
+  /// In Kelicap, this is currently represented as a `List<Object>` where
   /// the elements of the list can be other `List<Object>`, a `Provider`, or a
   /// `Type`.
   ///

@@ -1,7 +1,7 @@
 import 'package:build/build.dart' hide AssetReader;
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
-import 'package:kelicap_compiler/v1/src/compiler/angular_compiler.dart';
+import 'package:kelicap_compiler/v1/src/compiler/kelicap_compiler.dart';
 import 'package:kelicap_compiler/v1/src/compiler/ast_directive_normalizer.dart';
 import 'package:kelicap_compiler/v1/src/compiler/expression_parser/parser.dart'
     as ng;
@@ -16,7 +16,7 @@ import 'package:kelicap_compiler/v1/src/compiler/view_compiler/view_compiler.dar
 import 'package:kelicap_compiler/v2/context.dart';
 
 /// Creates the elements necessary to parse HTML templates and compile them.
-AngularCompiler createTemplateCompiler(
+KelicapCompiler createTemplateCompiler(
   BuildStep buildStep,
   CompilerFlags flags,
 ) {
@@ -25,7 +25,7 @@ AngularCompiler createTemplateCompiler(
   // are during specific unit tests.
   final schemaRegistry = DomElementSchemaRegistry();
   final parser = ng.ExpressionParser();
-  return AngularCompiler(
+  return KelicapCompiler(
     TemplateCompiler(
       DirectiveCompiler(),
       StyleCompiler(flags),

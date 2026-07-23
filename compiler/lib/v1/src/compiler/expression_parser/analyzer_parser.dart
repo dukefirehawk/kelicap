@@ -128,7 +128,7 @@ class AnalyzerExpressionParser extends ExpressionParser {
   }) {
     try {
       return ast.accept(
-        _AngularSubsetVisitor(
+        _KelicapSubsetVisitor._kelicapSubsetVisitor(
           allowAssignments: allowAssignments,
           allowPipes: allowPipes,
           exports: exports,
@@ -154,7 +154,7 @@ class AnalyzerExpressionParser extends ExpressionParser {
 ///   // Allow.
 /// }
 /// ```
-class _AngularSubsetVisitor extends GeneralizingAstVisitor<ast.AST> {
+class _KelicapSubsetVisitor extends GeneralizingAstVisitor<ast.AST> {
   /// Whether to allow limited use of the assignment (`=`) operator.
   ///
   /// While otherwise a valid expression, only "actions" (event bindings) allow:
@@ -209,7 +209,7 @@ class _AngularSubsetVisitor extends GeneralizingAstVisitor<ast.AST> {
     return result;
   }
 
-  _AngularSubsetVisitor({
+  _KelicapSubsetVisitor._kelicapSubsetVisitor({
     bool? allowAssignments,
     bool? allowPipes,
     List<CompileIdentifierMetadata>? exports,

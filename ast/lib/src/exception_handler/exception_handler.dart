@@ -1,16 +1,16 @@
 import 'package:meta/meta.dart';
 
-part 'angular_parser_exception.dart';
+part 'kelicap_parser_exception.dart';
 part 'exceptions.dart';
 
 abstract class ExceptionHandler {
-  void handle(AngularParserException? e);
+  void handle(KelicapParserException? e);
 }
 
 @sealed
 class ThrowingExceptionHandler implements ExceptionHandler {
   @override
-  void handle(AngularParserException? e) {
+  void handle(KelicapParserException? e) {
     if (e != null) {
       throw e;
     }
@@ -21,10 +21,10 @@ class ThrowingExceptionHandler implements ExceptionHandler {
 }
 
 class RecoveringExceptionHandler implements ExceptionHandler {
-  final exceptions = <AngularParserException>[];
+  final exceptions = <KelicapParserException>[];
 
   @override
-  void handle(AngularParserException? e) {
+  void handle(KelicapParserException? e) {
     if (e != null) {
       exceptions.add(e);
     }

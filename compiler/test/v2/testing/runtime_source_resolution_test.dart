@@ -31,7 +31,7 @@ void main() {
         template: 'Hello World',
       )
       class Example {}
-      ''', includeAngularDeps: false);
+      ''', includeKelicapDeps: false);
     expect(
       library
           .getClass('Example')!
@@ -40,7 +40,7 @@ void main() {
           .first
           .computeConstantValue(),
       isNull,
-      reason: 'Angular was not loaded',
+      reason: 'Kelicap was not loaded',
     );
   });
 

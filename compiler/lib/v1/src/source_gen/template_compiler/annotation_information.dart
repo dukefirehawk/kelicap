@@ -48,7 +48,7 @@ class AnnotationInformation<T extends Element> extends IndexedAnnotation<T> {
         // See https://github.com/dart-lang/sdk/issues/33932
         final IndexedAnnotation annotation = this;
         _exceptionHandler.handleWarning(
-          AngularAnalysisError(constantEvaluationErrors, annotation),
+          KelicapAnalysisError(constantEvaluationErrors, annotation),
         );
         sentWarning = true;
       }
@@ -81,7 +81,7 @@ AnnotationInformation<T>? annotationWhere<T extends Element>(
 
     if (annotationInfo.constantValue == null) {
       exceptionHandler.handleWarning(
-        AngularAnalysisError(
+        KelicapAnalysisError(
           annotationInfo.constantEvaluationErrors,
           annotationInfo,
         ),

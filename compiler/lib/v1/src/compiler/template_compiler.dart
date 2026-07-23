@@ -10,14 +10,14 @@ import 'view_compiler/directive_compiler.dart';
 import 'view_compiler/view_compiler.dart' show ViewCompiler;
 
 /// A collection of all components and directives in a given input module.
-class AngularArtifacts {
+class KelicapArtifacts {
   /// Processed `@Component`-annotated classes.
   final List<NormalizedComponentWithViewDirectives> components;
 
   /// Processed `@Directive`-annotated classes.
   final List<CompileDirectiveMetadata> directives;
 
-  const AngularArtifacts({required this.components, required this.directives});
+  const KelicapArtifacts({required this.components, required this.directives});
 
   /// Whether the input has no component and directives.
   bool get isEmpty => components.isEmpty && directives.isEmpty;

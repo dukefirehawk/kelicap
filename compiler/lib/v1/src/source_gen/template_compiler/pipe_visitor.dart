@@ -26,7 +26,7 @@ class PipeVisitor extends RecursiveElementVisitor2<CompilePipeMetadata> {
     if (annotationInfo == null) return null;
     if (annotationInfo.hasErrors) {
       _exceptionHandler.handle(
-        AngularAnalysisError(
+        KelicapAnalysisError(
           annotationInfo.constantEvaluationErrors,
           annotationInfo,
         ),

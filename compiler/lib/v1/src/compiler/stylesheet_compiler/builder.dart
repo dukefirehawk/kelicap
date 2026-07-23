@@ -7,7 +7,7 @@ const _cssExtension = '.css';
 const _shimmedStylesheetExtension = '.css.shim.dart';
 const _nonShimmedStylesheetExtension = '.css.dart';
 
-/// Pre-compiles CSS stylesheet files to Dart code for Angular 2.
+/// Pre-compiles CSS stylesheet files to Dart code for Kelicap.
 class StylesheetCompiler implements Builder {
   final CompilerFlags _flags;
 

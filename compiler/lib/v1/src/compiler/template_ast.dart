@@ -14,7 +14,7 @@ import 'i18n/message.dart';
 import 'output/output_ast.dart' show OutputType;
 import 'security.dart';
 
-/// An Abstract Syntax Tree node representing part of a parsed Angular template.
+/// An Abstract Syntax Tree node representing part of a parsed Kelicap template.
 abstract class TemplateAst {
   /// The source span from which this node was parsed.
   SourceSpan get sourceSpan;
@@ -274,7 +274,7 @@ class NgContainerAst implements TemplateAst {
       visitor.visitNgContainer(this, context);
 }
 
-/// A <template> element included in an Angular template.
+/// A <template> element included in an Kelicap template.
 class EmbeddedTemplateAst implements TemplateAst {
   final List<AttrAst> attrs;
   final List<ReferenceAst> references;

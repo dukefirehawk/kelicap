@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:build/build.dart';
 import 'package:kelicap_compiler/v1/src/kelicap_compiler/cli/messages.dart';
 import 'package:kelicap_compiler/v2/asset.dart';
-import 'package:kelicap_web/src/utilities.dart';
+import 'package:kelicap/src/utilities.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -65,7 +65,7 @@ Future<T> runWithContext<T>(CompileContext instance, Future<T> Function() run) {
           buildCompletedOrFailed.completeError(e, s);
         }
       } else {
-        var errorMsg = 'Unhandled exception in the AngularDart compiler!';
+        var errorMsg = 'Unhandled exception in the Kelicap compiler!';
         log.severe(
           '$errorMsg\n\n'
           'Please report a bug: ${messages.urlFileBugs}',

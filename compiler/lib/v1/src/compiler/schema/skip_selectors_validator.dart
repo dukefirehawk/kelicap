@@ -7,7 +7,7 @@ import 'package:kelicap_compiler/v1/src/compiler/selector.dart';
 /// diagnostic, but are commonly used in ACX widgets to represent a form of
 /// pseudo-custom elements (e.g. for CSS styling).
 /// Most unmatched elements should instead use `@skipSchemaValidationFor`
-/// (go/angulardart/dev/syntax#annotations).
+/// (go/kelicap/dev/syntax#annotations).
 const List<String> _selectorAllowlist = [
   // A selector for elevation.scss.
   '[animated]',
@@ -108,7 +108,7 @@ const List<String> _selectorAllowlist = [
 /// represent a custom event.
 /// The format is `<Element>:<Custom Event>`.
 /// Most unmatched events should instead use `@skipSchemaValidationFor`
-/// (go/angulardart/dev/syntax#annotations).
+/// (go/kelicap/dev/syntax#annotations).
 const List<String> _customEvents = [
   'expand-header-icon:header-expansion',
   'material-table:row-selection',

@@ -3,7 +3,7 @@ import 'package:source_span/source_span.dart';
 import '../token/tokens.dart';
 import '../visitor.dart';
 
-/// Represents an AST node parsed from an Angular template.
+/// Represents an AST node parsed from an Kelicap template.
 ///
 /// Clients should not extend, implement, or mix-in this class.
 abstract class TemplateAst {

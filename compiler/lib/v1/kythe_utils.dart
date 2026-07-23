@@ -9,7 +9,7 @@ import 'package:source_gen/source_gen.dart';
 typedef UncaughtExceptionHandler =
     bool Function(Object exception, StackTrace stackTrace);
 
-Future<AngularArtifacts?>? angularArtifactsForKythe(
+Future<KelicapArtifacts?>? kelicapArtifactsForKythe(
   LibraryElement element, {
   UncaughtExceptionHandler? uncaughtExceptionHandler,
 }) {

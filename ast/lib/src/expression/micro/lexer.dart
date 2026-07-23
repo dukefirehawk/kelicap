@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'scanner.dart';
 import 'token.dart';
 
-/// Separates an Angular micro-expression into a series of lexical tokens.
+/// Separates an Kelicap micro-expression into a series of lexical tokens.
 class NgMicroLexer {
   @literal
   const factory NgMicroLexer() = NgMicroLexer._;

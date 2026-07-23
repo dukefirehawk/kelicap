@@ -265,7 +265,7 @@ class NgSimpleQuoteToken extends _LexemeNgSimpleToken {
   String toString() => '#$NgSimpleQuoteToken($type) {$offset:$lexeme}';
 }
 
-/// Represents a Angular text/token entities.
+/// Represents a Kelicap text/token entities.
 ///
 /// Clients should not extend, implement, or mix-in this class.
 class NgToken implements NgBaseToken<NgTokenType> {

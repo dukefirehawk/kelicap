@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:kelicap_compiler/v1/src/compiler/template_ast.dart';
-import 'package:kelicap_web/src/meta.dart';
+import 'package:kelicap/src/meta.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
 import 'package:kelicap_compiler/v2/context.dart';
 
@@ -688,7 +688,7 @@ class CompilePipeMetadata implements CompileMetadataWithType {
 }
 
 /// Lifecycle hooks are guaranteed to be called in the following order:
-/// - `afterChanges` (if any bindings have been changed by the Angular framework),
+/// - `afterChanges` (if any bindings have been changed by the Kelicap framework),
 /// - `onInit` (after the first check only),
 /// - `doCheck`,
 /// - `afterContentInit`,

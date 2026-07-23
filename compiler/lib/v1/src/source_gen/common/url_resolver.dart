@@ -40,7 +40,7 @@ String fileName(AssetId id) {
   return uri.pathSegments.last;
 }
 
-/// Converts `absoluteUri` to use the 'asset' scheme used in the Angular 2
+/// Converts `absoluteUri` to use the 'asset' scheme used in the Kelicap
 /// template compiler.
 ///
 /// The `scheme` of `absoluteUri` is expected to be either 'package' or

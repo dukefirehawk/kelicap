@@ -2,7 +2,7 @@ import 'package:args/args.dart';
 import 'package:meta/meta.dart';
 
 // Force enables the data-debug-source attribute on DOM elements created by
-// AngularDart templates.
+// Kelicap templates.
 //
 // This is intended to be manually changed for accessibility TGPs. It should
 // remain false otherwise.
@@ -42,7 +42,7 @@ class CompilerFlags {
       defaultsTo: false,
       help:
           'Adds the `data-debug-source` attribute to dom elements '
-          'created from AngularDart templates.',
+          'created from Kelicap templates.',
     )
     ..addFlag(_argEnableDevTools, defaultsTo: false, hide: true)
     ..addFlag(_argForceMinifyWhitespace, defaultsTo: null, hide: true)
@@ -67,7 +67,7 @@ class CompilerFlags {
   final bool useLegacyStyleEncapsulation;
 
   /// Whether to add the `data-debug-source` attribute to dom elements created
-  /// from AngularDart templates.
+  /// from Kelicap templates.
   final bool enableDataDebugSource;
 
   /// Whether to operate as if `preserveWhitespace: false` is always set.

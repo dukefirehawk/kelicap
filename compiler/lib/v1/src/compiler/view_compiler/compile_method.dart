@@ -24,7 +24,6 @@ class CompileMethod {
     // This is not the cleanest solution (i.e. it pollutes this class), but
     // otherwise you would need similar code in 10+ places.
     //
-    // https://github.com/angulardart/angular/issues/712#issuecomment-403189258
     final lastStmt = _bodyStatements.isNotEmpty ? _bodyStatements.last : null;
     if (lastStmt is o.IfStmt && _isFirstCheckIfBlock[lastStmt] == true) {
       lastStmt.trueCase.addAll(stmts);

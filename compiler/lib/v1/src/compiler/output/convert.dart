@@ -56,7 +56,6 @@ o.OutputType? fromDartType(DartType? dartType, {bool resolveBounds = true}) {
       if (typeArgument is TypeParameterType && resolveBounds) {
         // Temporary hack to avoid a stack overflow for <T extends List<T>>.
         //
-        // See https://github.com/angulardart/angular/issues/1397.
         typeArguments.add(o.dynamicType);
       } else {
         typeArguments.add(fromDartType(typeArgument, resolveBounds: false)!);

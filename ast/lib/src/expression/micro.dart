@@ -6,7 +6,7 @@ export 'micro/ast.dart' show NgMicroAst;
 
 final _isBind = RegExp(r'\S+[:;]');
 
-/// Returns whether [expression] is a special Angular *-star expression.
+/// Returns whether [expression] is a special Kelicap *-star expression.
 ///
 /// This means it won't parse correctly with the standard expression parser, and
 /// [parseMicroExpression] is needed to de-sugar the expression into its

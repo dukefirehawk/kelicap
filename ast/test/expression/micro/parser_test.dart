@@ -89,7 +89,7 @@ void main() {
   test('should throw a parser error on trailing semi-colon', () {
     expect(
       () => parse('ngFor', 'let item of items;', 0),
-      throwsA(TypeMatcher<AngularParserException>()),
+      throwsA(TypeMatcher<KelicapParserException>()),
     );
   });
 }

@@ -1,22 +1,22 @@
 import 'compile_metadata.dart'
     show CompileIdentifierMetadata, CompileTokenMetadata;
 
-const _angularRootUrl = 'package:kelicap_web/angular.dart';
-const _angularLib = 'asset:ngdart/lib';
+const _kelicapRootUrl = 'package:kelicap/kelicap.dart';
+const _kelicapLib = 'asset:kelicap/lib';
 
 const _appViewUtilsModuleUrl =
-    '$_angularLib/src/core/linker/app_view_utils.dart';
-const _proxiesModuleUrl = '$_angularLib/src/runtime/proxies.dart';
+    '$_kelicapLib/src/core/linker/app_view_utils.dart';
+const _proxiesModuleUrl = '$_kelicapLib/src/runtime/proxies.dart';
 const _cdModuleUrl =
-    '$_angularLib/src/core/change_detection/change_detection.dart';
-const _ngIfUrl = '$_angularLib/src/common/directives/ng_if.dart';
-const _ngForUrl = '$_angularLib/src/common/directives/ng_for.dart';
-const _profileRuntimeModuleUrl = '$_angularLib/src/debug/profile_runtime.dart';
-const _debugInjectorModuleUrl = '$_angularLib/src/di/errors.dart';
+    '$_kelicapLib/src/core/change_detection/change_detection.dart';
+const _ngIfUrl = '$_kelicapLib/src/common/directives/ng_if.dart';
+const _ngForUrl = '$_kelicapLib/src/common/directives/ng_for.dart';
+const _profileRuntimeModuleUrl = '$_kelicapLib/src/debug/profile_runtime.dart';
+const _debugInjectorModuleUrl = '$_kelicapLib/src/di/errors.dart';
 
 /// Identifiers for generating code that supports developer tooling.
 class DevTools {
-  static const _moduleUrl = '$_angularLib/src/devtools.dart';
+  static const _moduleUrl = '$_kelicapLib/src/devtools.dart';
 
   static final inspector = CompileIdentifierMetadata(
     name: 'Inspector.instance',
@@ -36,7 +36,7 @@ class DomHelpers {
   static CompileIdentifierMetadata _of(String name) {
     return CompileIdentifierMetadata(
       name: name,
-      moduleUrl: '$_angularLib/src/runtime/dom_helpers.dart',
+      moduleUrl: '$_kelicapLib/src/runtime/dom_helpers.dart',
     );
   }
 
@@ -63,7 +63,7 @@ class StyleEncapsulation {
   static CompileIdentifierMetadata _of(String name) {
     return CompileIdentifierMetadata(
       name: name,
-      moduleUrl: '$_angularLib/src/core/linker/style_encapsulation.dart',
+      moduleUrl: '$_kelicapLib/src/core/linker/style_encapsulation.dart',
     );
   }
 
@@ -78,7 +78,7 @@ class Views {
   static CompileIdentifierMetadata _of(String name, String file) {
     return CompileIdentifierMetadata(
       name: name,
-      moduleUrl: '$_angularLib/src/core/linker/views/$file',
+      moduleUrl: '$_kelicapLib/src/core/linker/views/$file',
     );
   }
 
@@ -90,7 +90,7 @@ class Views {
 }
 
 class Interpolation {
-  static const _moduleUrl = '$_angularLib/src/runtime/interpolate.dart';
+  static const _moduleUrl = '$_kelicapLib/src/runtime/interpolate.dart';
 
   const Interpolation._();
 
@@ -125,13 +125,13 @@ class Interpolation {
 
   static final textBinding = CompileIdentifierMetadata(
     name: 'TextBinding',
-    moduleUrl: '$_angularLib/src/runtime/text_binding.dart',
+    moduleUrl: '$_kelicapLib/src/runtime/text_binding.dart',
   );
 }
 
 class Runtime {
-  static const _runtimeUrl = '$_angularLib/src/utilities.dart';
-  static const _checkBindingUrl = '$_angularLib/src/runtime/check_binding.dart';
+  static const _runtimeUrl = '$_kelicapLib/src/utilities.dart';
+  static const _checkBindingUrl = '$_kelicapLib/src/runtime/check_binding.dart';
 
   const Runtime._();
 
@@ -157,7 +157,7 @@ class Runtime {
 }
 
 class Queries {
-  static const _moduleUrl = '$_angularLib/src/runtime/queries.dart';
+  static const _moduleUrl = '$_kelicapLib/src/runtime/queries.dart';
 
   const Queries._();
 
@@ -168,7 +168,7 @@ class Queries {
 }
 
 class SafeHtmlAdapters {
-  static const _moduleUrl = '$_angularLib/src/security/safe_html_adapter.dart';
+  static const _moduleUrl = '$_kelicapLib/src/security/safe_html_adapter.dart';
   static final sanitizeHtml = CompileIdentifierMetadata(
     name: 'sanitizeHtml',
     moduleUrl: _moduleUrl,
@@ -194,30 +194,30 @@ class Identifiers {
   );
   static final viewContainer = CompileIdentifierMetadata(
     name: 'ViewContainer',
-    moduleUrl: '$_angularLib/src/core/linker/view_container.dart',
+    moduleUrl: '$_kelicapLib/src/core/linker/view_container.dart',
   );
   static final viewContainerToken = identifierToken(viewContainer);
   // static final elementRef = CompileIdentifierMetadata(
   //   name: 'ElementRef',
-  //   moduleUrl: '$_angularLib/src/core/linker/element_ref.dart',
+  //   moduleUrl: '$_kelicapLib/src/core/linker/element_ref.dart',
   // );
   // static final elementRefToken = identifierToken(elementRef);
   static final viewContainerRef = CompileIdentifierMetadata(
     name: 'ViewContainerRef',
-    moduleUrl: 'asset:ngdart/lib/src/core/linker/view_container_ref.dart',
+    moduleUrl: 'asset:kelicap/lib/src/core/linker/view_container_ref.dart',
   );
   static final viewContainerRefToken = identifierToken(
     Identifiers.viewContainerRef,
   );
   static final componentLoader = CompileIdentifierMetadata(
     name: 'ComponentLoader',
-    moduleUrl: 'asset:ngdart/lib/src/core/linker/component_loader.dart',
+    moduleUrl: 'asset:kelicap/lib/src/core/linker/component_loader.dart',
   );
   static final componentLoaderToken = identifierToken(componentLoader);
   static final changeDetectorRef = CompileIdentifierMetadata(
     name: 'ChangeDetectorRef',
     moduleUrl:
-        'asset:ngdart/lib/src/core/change_detection/'
+        'asset:kelicap/lib/src/core/change_detection/'
         'change_detector_ref.dart',
   );
   static final changeDetectorRefToken = identifierToken(
@@ -225,31 +225,31 @@ class Identifiers {
   );
   static final componentFactory = CompileIdentifierMetadata(
     name: 'ComponentFactory',
-    moduleUrl: _angularRootUrl,
+    moduleUrl: _kelicapRootUrl,
   );
   static final directiveChangeDetector = CompileIdentifierMetadata(
     name: 'DirectiveChangeDetector',
     moduleUrl:
-        'asset:ngdart/lib/src/core/'
+        'asset:kelicap/lib/src/core/'
         'change_detection/directive_change_detector.dart',
   );
   static final componentRef = CompileIdentifierMetadata(
     name: 'ComponentRef',
-    moduleUrl: _angularRootUrl,
+    moduleUrl: _kelicapRootUrl,
   );
   static final templateRef = CompileIdentifierMetadata(
     name: 'TemplateRef',
-    moduleUrl: '$_angularLib/src/core/linker/template_ref.dart',
+    moduleUrl: '$_kelicapLib/src/core/linker/template_ref.dart',
   );
   static final templateRefToken = identifierToken(Identifiers.templateRef);
   static final injector = CompileIdentifierMetadata(
     name: 'Injector',
-    moduleUrl: '$_angularLib/src/di/injector.dart',
+    moduleUrl: '$_kelicapLib/src/di/injector.dart',
   );
   static final injectorToken = identifierToken(Identifiers.injector);
   static final viewType = CompileIdentifierMetadata(
     name: 'ViewType',
-    moduleUrl: '$_angularLib/src/core/linker/view_type.dart',
+    moduleUrl: '$_kelicapLib/src/core/linker/view_type.dart',
   );
   static final changeDetectionStrategy = CompileIdentifierMetadata(
     name: 'ChangeDetectionStrategy',
@@ -257,7 +257,7 @@ class Identifiers {
   );
   static final changeDetectionCheckedState = CompileIdentifierMetadata(
     name: 'ChangeDetectionCheckedState',
-    moduleUrl: '$_angularLib/src/meta/change_detection_constants.dart',
+    moduleUrl: '$_kelicapLib/src/meta/change_detection_constants.dart',
   );
   static final identical = CompileIdentifierMetadata(name: 'identical');
   static final profileSetup = CompileIdentifierMetadata(
@@ -471,7 +471,7 @@ class Identifiers {
 
   static final ngContentRef = CompileIdentifierMetadata(
     name: 'NgContentRef',
-    moduleUrl: '$_angularLib/src/core/linker/ng_content_ref.dart',
+    moduleUrl: '$_kelicapLib/src/core/linker/ng_content_ref.dart',
   );
   static final ngContentRefToken = identifierToken(Identifiers.ngContentRef);
 }

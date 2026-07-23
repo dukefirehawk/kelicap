@@ -91,7 +91,6 @@ void main() {
     );
   });
 
-  // https://github.com/angulardart/angular/issues/804#issuecomment-363217553
   test('should retain whitespace for inline text formatting', () {
     expect(
       _parseAndMinifiy(r'''

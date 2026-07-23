@@ -6,7 +6,7 @@ import 'package:analyzer/dart/element/visitor2.dart';
 import 'package:analyzer/src/dart/constant/value.dart';
 import 'package:analyzer/src/dart/element/element.dart';
 //import 'package:analyzer/src/generated/utilities_dart.dart';
-import 'package:kelicap_web/src/meta.dart';
+import 'package:kelicap/src/meta.dart';
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
@@ -251,7 +251,6 @@ class CompileTypeMetadataVisitor
   /// error) that there is invalid configuration. We don't need this for every
   /// piece of metadata.
   ///
-  /// See https://github.com/angulardart/angular/issues/906 for details.
   CompileTypeMetadata _getCompileTypeMetadata(
     ClassElement element, {
     bool enforceClassCanBeCreated = false,
@@ -297,7 +296,7 @@ class CompileTypeMetadataVisitor
       throw BuildError.withoutContext(
         'Could not link provider "${provider.getField('token')}" to '
         '"${e.constructorName}". You may have valid Dart code but the '
-        'angular2 compiler has limited support for `useValue` that '
+        'Kelicap compiler has limited support for `useValue` that '
         'eventually uses a private constructor. As a workaround we '
         'recommend `useFactory`.',
       );
@@ -455,7 +454,7 @@ class CompileTypeMetadataVisitor
       classUrl.symbol == 'OpaqueToken' || classUrl.symbol == 'MultiToken';
 
   CompileTokenMetadata _canonicalOpaqueToken(DartObject object) {
-    // Re-use code from angular_compiler :)
+    // Re-use code from kelicap_compiler :)
     const reader = TokenReader();
     final token = reader.parseTokenObject(object) as OpaqueTokenElement;
 
@@ -642,7 +641,7 @@ class CompileTypeMetadataVisitor
 
   // If deps: const [ ... ] is passed, we use that instead of the parameters.
   CompileDiDependencyMetadata _factoryDiDep(DartObject object) {
-    // Simple case: A dependency is a dart `Type` or an Angular `OpaqueToken`.
+    // Simple case: A dependency is a dart `Type` or a Kelicap `OpaqueToken`.
     if (object.toTypeValue() != null || _isOpaqueToken(object)) {
       return CompileDiDependencyMetadata(token: _token(object));
     }
@@ -767,7 +766,7 @@ class ParameterInfo {
       );
       if (annotation.constantEvaluationErrors!.isNotEmpty) {
         _exceptionHandler.handle(
-          AngularAnalysisError(
+          KelicapAnalysisError(
             annotation.constantEvaluationErrors!,
             indexedAnnotation,
           ),

@@ -8,19 +8,19 @@ import 'package:build/experiments.dart';
 import 'package:build_test/build_test.dart';
 import 'package:package_config/package_config.dart';
 
-const angular = 'package:kelicap_web/angular.dart';
+const kelicap = 'package:kelicap/kelicap.dart';
 
-/// A custom package resolver for Angular sources.
+/// A custom package resolver for Kelicap sources.
 ///
-/// This is needed to resolve sources that import Angular.
+/// This is needed to resolve sources that import Kelicap.
 final packageConfigFuture =
-    Platform.environment['ANGULAR_PACKAGE_CONFIG_PATH'] != null
+    Platform.environment['Kelicap_PACKAGE_CONFIG_PATH'] != null
     ? loadPackageConfigUri(
-        Uri.base.resolve(Platform.environment['ANGULAR_PACKAGE_CONFIG_PATH']!),
+        Uri.base.resolve(Platform.environment['Kelicap_PACKAGE_CONFIG_PATH']!),
       )
     : Isolate.packageConfig.then((uri) => loadPackageConfigUri(uri!));
 
-/// Resolves [source] code as-if it is implemented with an AngularDart import.
+/// Resolves [source] code as-if it is implemented with an kelicap import.
 ///
 /// Returns the resolved library as `package:test_lib/test_lib.dart`.
 Future<LibraryElement> resolveLibrary(String source) async {
@@ -29,7 +29,7 @@ Future<LibraryElement> resolveLibrary(String source) async {
   var inputSource =
       '''
       library _test;
-      import '$angular';
+      import '$kelicap';
 
       $source
     ''';
@@ -41,20 +41,20 @@ Future<LibraryElement> resolveLibrary(String source) async {
       (resolver) async => (await resolver.findLibraryByName('_test'))!,
       inputId: AssetId('test_lib', 'lib/test_lib.dart'),
       nonInputsToReadFromFilesystem: {
-        AssetId('ngdart', 'lib/angular.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_modules.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_arguments.dart'),
-        AssetId('ngdart', 'lib/src/meta/change_detection_constants.dart'),
-        AssetId('ngdart', 'lib/src/meta/change_detection_link.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_generate_injector.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_modules.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_providers.dart'),
-        AssetId('ngdart', 'lib/src/meta/di_tokens.dart'),
-        AssetId('ngdart', 'lib/src/meta/directives.dart'),
-        AssetId('ngdart', 'lib/src/meta/lifecycle_hooks.dart'),
-        AssetId('ngdart', 'lib/src/meta/typed.dart'),
-        AssetId('ngdart', 'lib/src/meta/view.dart'),
-        AssetId('ngdart', 'lib/src/meta/visibility.dart'),
+        AssetId('kelicap', 'lib/kelicap.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_modules.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_arguments.dart'),
+        AssetId('kelicap', 'lib/src/meta/change_detection_constants.dart'),
+        AssetId('kelicap', 'lib/src/meta/change_detection_link.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_generate_injector.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_modules.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_providers.dart'),
+        AssetId('kelicap', 'lib/src/meta/di_tokens.dart'),
+        AssetId('kelicap', 'lib/src/meta/directives.dart'),
+        AssetId('kelicap', 'lib/src/meta/lifecycle_hooks.dart'),
+        AssetId('kelicap', 'lib/src/meta/typed.dart'),
+        AssetId('kelicap', 'lib/src/meta/view.dart'),
+        AssetId('kelicap', 'lib/src/meta/visibility.dart'),
       },
       packageConfig: packageConfig,
     ),
@@ -62,7 +62,7 @@ Future<LibraryElement> resolveLibrary(String source) async {
   );
 }
 
-/// Resolves [source] code as-if it is implemented with an AngularDart import.
+/// Resolves [source] code as-if it is implemented with an kelicap import.
 ///
 /// Returns first `class` in the file, or by [name] if given.
 Future<ClassElement?> resolveClass(String source, [String? name]) async {

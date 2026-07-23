@@ -46,7 +46,7 @@ class RecursiveAstParser {
     var nameToken = _reader.next()!;
     if (_voidElements.contains(nameToken.lexeme)) {
       exceptionHandler.handle(
-        AngularParserException(
+        KelicapParserException(
           ParserErrorCode.voidElementInCloseTag,
           nameToken.offset,
           nameToken.length,
@@ -102,7 +102,7 @@ class RecursiveAstParser {
         _addStarAst(decorator, stars);
       } else {
         exceptionHandler.handle(
-          AngularParserException(
+          KelicapParserException(
             ParserErrorCode.invalidDecoratorInNgContainer,
             decorator.beginToken!.offset,
             decorator.endToken!.end - decorator.beginToken!.offset,
@@ -182,7 +182,7 @@ class RecursiveAstParser {
         // Disabling: event names can be as long as keyup.ctrl.shift.alt.mod.+
         // Should this be limited to 6 then? Or should it be left open?
         //if (decoratorToken.lexeme.split('.').length > 2) {
-        //  exceptionHandler.handle(new AngularParserException(
+        //  exceptionHandler.handle(new KelicapParserException(
         //    NgParserWarningCode.EVENT_NAME_TOO_MANY_FIXES,
         //    decoratorToken.offset,
         //    decoratorToken.length,
@@ -200,7 +200,7 @@ class RecursiveAstParser {
       } else if (prefixType == NgTokenType.propertyPrefix) {
         if (decoratorToken.lexeme.split('.').length > 3) {
           exceptionHandler.handle(
-            AngularParserException(
+            KelicapParserException(
               ParserErrorCode.propertyNameTooManyFixes,
               decoratorToken.offset,
               decoratorToken.length,
@@ -253,7 +253,7 @@ class RecursiveAstParser {
       );
       if (decoratorToken.lexeme == '') {
         exceptionHandler.handle(
-          AngularParserException(
+          KelicapParserException(
             ParserErrorCode.elementDecoratorAfterPrefix,
             onToken.offset,
             onToken.length,
@@ -277,7 +277,7 @@ class RecursiveAstParser {
       );
       if (decoratorToken.lexeme == '') {
         exceptionHandler.handle(
-          AngularParserException(
+          KelicapParserException(
             ParserErrorCode.elementDecoratorAfterPrefix,
             bindToken.offset,
             bindToken.length,
@@ -370,7 +370,7 @@ class RecursiveAstParser {
           if (!isTemplateElement) {
             // 'let-' binding can only exist in <template>.
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.invalidLetBindingInNoTemplate,
                 decoratorAst.beginToken!.offset,
                 decoratorAst.endToken!.end - decoratorAst.beginToken!.offset,
@@ -379,7 +379,7 @@ class RecursiveAstParser {
           } else if (decoratorAst.name.isEmpty) {
             var letToken = (decoratorAst as ParsedLetBindingAst).prefixToken;
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.elementDecoratorAfterPrefix,
                 letToken.offset,
                 letToken.length,
@@ -391,7 +391,7 @@ class RecursiveAstParser {
         } else if (decoratorAst is StarAst) {
           if (isTemplateElement) {
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.invalidDecoratorInTemplate,
                 decoratorAst.beginToken!.offset,
                 decoratorAst.endToken!.end - decoratorAst.beginToken!.offset,
@@ -400,7 +400,7 @@ class RecursiveAstParser {
           } else {
             if (stars.isNotEmpty) {
               exceptionHandler.handle(
-                AngularParserException(
+                KelicapParserException(
                   ParserErrorCode.duplicateStarDirective,
                   decoratorAst.beginToken!.offset,
                   decoratorAst.endToken!.end - decoratorAst.beginToken!.offset,
@@ -419,7 +419,7 @@ class RecursiveAstParser {
         } else if (decoratorAst is BananaAst) {
           if (isTemplateElement) {
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.invalidDecoratorInTemplate,
                 decoratorAst.beginToken!.offset,
                 decoratorAst.endToken!.end - decoratorAst.beginToken!.offset,
@@ -441,7 +441,7 @@ class RecursiveAstParser {
         !isSvgElement &&
         nextToken.type == NgTokenType.openElementEndVoid) {
       exceptionHandler.handle(
-        AngularParserException(
+        KelicapParserException(
           ParserErrorCode.nonVoidElementUsingVoidEnd,
           nextToken.offset,
           nextToken.length,
@@ -522,7 +522,7 @@ class RecursiveAstParser {
       final endOffset = decorator.endToken!.end;
       if (decorator is AttributeAst && decorator.name == 'select') {
         if (selectAttributeFound) {
-          var e = AngularParserException(
+          var e = KelicapParserException(
             ParserErrorCode.duplicateSelectDecorator,
             startOffset,
             endOffset - startOffset,
@@ -534,7 +534,7 @@ class RecursiveAstParser {
         }
       } else if (decorator is AttributeAst && decorator.name == 'ngProjectAs') {
         if (ngProjectAsAttributeFound) {
-          var e = AngularParserException(
+          var e = KelicapParserException(
             ParserErrorCode.duplicateProjectAsDecorator,
             startOffset,
             endOffset - startOffset,
@@ -546,7 +546,7 @@ class RecursiveAstParser {
         }
       } else if (decorator is ReferenceAst) {
         if (referenceAttributeFound) {
-          var e = AngularParserException(
+          var e = KelicapParserException(
             ParserErrorCode.duplicateReferenceDecorator,
             startOffset,
             endOffset - startOffset,
@@ -556,7 +556,7 @@ class RecursiveAstParser {
           referenceAttributeFound = true;
           reference = decorator;
           if (reference.identifier != null) {
-            var e = AngularParserException(
+            var e = KelicapParserException(
               ParserErrorCode.referenceIdentifierFound,
               startOffset,
               endOffset - startOffset,
@@ -565,7 +565,7 @@ class RecursiveAstParser {
           }
         }
       } else {
-        var e = AngularParserException(
+        var e = KelicapParserException(
           ParserErrorCode.invalidDecoratorInNgContent,
           decorator.beginToken!.offset,
           decorator.endToken!.end - decorator.beginToken!.offset,
@@ -587,7 +587,7 @@ class RecursiveAstParser {
 
     // Ensure closing </ng-content> exists.
     if (_reader.peekType() != NgTokenType.closeElementStart) {
-      var e = AngularParserException(
+      var e = KelicapParserException(
         ParserErrorCode.ngContentMustCLoseImmediately,
         beginToken.offset,
         endToken.end - beginToken.offset,
@@ -599,7 +599,7 @@ class RecursiveAstParser {
       var closeElementName = _reader.peek()!.lexeme;
 
       if (closeElementName != 'ng-content') {
-        var e = AngularParserException(
+        var e = KelicapParserException(
           ParserErrorCode.ngContentMustCLoseImmediately,
           beginToken.offset,
           endToken.end - beginToken.offset,
@@ -651,7 +651,7 @@ class RecursiveAstParser {
             // Second '{{' found before '}}' closes it.
             var firstMustacheBegin = absoluteTextOffset + seenOpenMustache;
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.unterminatedMustache,
                 firstMustacheBegin,
                 '{{'.length,
@@ -697,7 +697,7 @@ class RecursiveAstParser {
             var mustacheBegin = absoluteTextOffset + position;
             var mustacheEnd = absoluteTextOffset + matchPosition;
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.unopenedMustache,
                 mustacheEnd,
                 '}}'.length,
@@ -728,7 +728,7 @@ class RecursiveAstParser {
     if (seenOpenMustache != null) {
       var mustacheBegin = absoluteTextOffset + seenOpenMustache;
       exceptionHandler.handle(
-        AngularParserException(
+        KelicapParserException(
           ParserErrorCode.unterminatedMustache,
           mustacheBegin,
           '{{'.length,
@@ -786,7 +786,7 @@ class RecursiveAstParser {
         var danglingCloseIdentifier = _reader.peek()!.lexeme;
         var closeComplement = parseCloseElement(token);
         exceptionHandler.handle(
-          AngularParserException(
+          KelicapParserException(
             ParserErrorCode.danglingCloseElement,
             closeComplement.beginToken!.offset,
             closeComplement.endToken!.end - closeComplement.beginToken!.offset,
@@ -811,7 +811,7 @@ class RecursiveAstParser {
           throw Exception('Non-standalone starting token found!');
         }
         exceptionHandler.handle(
-          AngularParserException(
+          KelicapParserException(
             ParserErrorCode.expectedStandalone,
             token.offset,
             token.length,
@@ -827,7 +827,7 @@ class RecursiveAstParser {
       starAsts.add(starAst);
     } else {
       exceptionHandler.handle(
-        AngularParserException(
+        KelicapParserException(
           ParserErrorCode.duplicateStarDirective,
           starAst.beginToken!.offset,
           starAst.beginToken!.end - starAst.beginToken!.offset,
@@ -853,7 +853,7 @@ class RecursiveAstParser {
       final nextToken = _reader.next();
       if (nextToken == null) {
         exceptionHandler.handle(
-          AngularParserException(
+          KelicapParserException(
             ParserErrorCode.cannotFindMatchingClose,
             beginToken.offset,
             endToken.end - beginToken.offset,
@@ -874,7 +874,7 @@ class RecursiveAstParser {
             closeElementAst = CloseElementAst(nameToken.lexeme);
             closingTagFound = true;
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.cannotFindMatchingClose,
                 beginToken.offset,
                 endToken.end - beginToken.offset,
@@ -885,7 +885,7 @@ class RecursiveAstParser {
             // [ElementAst] to pair the dangling close and add as child.
             var closeComplement = parseCloseElement(nextToken as NgToken);
             exceptionHandler.handle(
-              AngularParserException(
+              KelicapParserException(
                 ParserErrorCode.danglingCloseElement,
                 closeComplement.beginToken!.offset,
                 closeComplement.endToken!.end -
@@ -931,7 +931,7 @@ class RecursiveAstParser {
     final endToken = _reader.next()!;
     if (endToken.type == NgTokenType.openElementEndVoid) {
       exceptionHandler.handle(
-        AngularParserException(
+        KelicapParserException(
           ParserErrorCode.nonVoidElementUsingVoidEnd,
           endToken.offset,
           endToken.length,

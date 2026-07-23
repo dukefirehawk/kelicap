@@ -4,7 +4,7 @@ import 'exception_handler/exception_handler.dart';
 import 'scanner.dart';
 import 'token/tokens.dart';
 
-/// Separates an Angular template into a series of lexical tokens.
+/// Separates an Kelicap template into a series of lexical tokens.
 ///
 /// ## Example use
 /// ```dart

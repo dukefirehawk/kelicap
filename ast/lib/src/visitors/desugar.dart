@@ -110,7 +110,7 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
           sourceUrl: astNode.sourceUrl!,
           origin: origin,
         );
-      } on AngularParserException catch (e) {
+      } on KelicapParserException catch (e) {
         exceptionHandler.handle(e);
         return astNode;
       }

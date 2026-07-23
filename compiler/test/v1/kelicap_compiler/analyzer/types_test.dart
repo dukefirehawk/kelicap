@@ -4,11 +4,11 @@ import 'package:test/test.dart';
 
 import '../src/resolve.dart';
 
-//const $Directive = TypeChecker.fromUrl('package:kelicap_web/angular.dart#Directive');
-//const $Component = TypeChecker.fromUrl('package:kelicap_web/angular.dart#Component');
-//const $Service = TypeChecker.fromUrl('package:kelicap_web/angular.dart#Service');
+//const $Directive = TypeChecker.fromUrl('package:kelicap/kelicap.dart#Directive');
+//const $Component = TypeChecker.fromUrl('package:kelicap/kelicap.dart#Component');
+//const $Service = TypeChecker.fromUrl('package:kelicap/kelicap.dart#Service');
 //const $Injectable =
-//    TypeChecker.fromUrl('package:kelicap_web/angular.dart#Injectable');
+//    TypeChecker.fromUrl('package:kelicap/kelicap.dart#Injectable');
 
 void main() {
   group('should resolve', () {

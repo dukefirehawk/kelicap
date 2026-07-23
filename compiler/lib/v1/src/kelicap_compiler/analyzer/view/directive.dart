@@ -9,7 +9,7 @@ import '../types.dart';
 /// Utility class for visiting important methods and fields in an `@Directive`.
 ///
 /// **NOTE**: This code is transitional, as much of the view compiler code lives
-/// currently within the `angular` package. As such, this helps, but does not
+/// currently within the `Kelicap` package. As such, this helps, but does not
 /// completely implement compiler logic.
 class DirectiveVisitor {
   static void _noopClassMember(Element _, DartObject _) {}

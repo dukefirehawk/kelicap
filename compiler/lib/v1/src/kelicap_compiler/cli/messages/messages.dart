@@ -1,7 +1,7 @@
 import '../messages.dart';
 
-/// URL of the AngularDart GitHub repository.
-const _github = 'https://github.com/angulardart-community/angular';
+/// URL of the Kelicap GitHub repository.
+const _github = 'https://github.com/dukefirehawk/kelicap';
 
 /// Concrete implementation of [Messages] for external users.
 class $Messages extends Messages {

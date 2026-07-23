@@ -5,10 +5,10 @@ import 'package:package_config/package_config.dart';
 import '../test/v1/kelicap_compiler/src/resolve.dart';
 
 // final _packageConfigFuture = Platform
-//           .environment['ANGULAR_PACKAGE_CONFIG_PATH'] !=
+//           .environment['KELICAP_PACKAGE_CONFIG_PATH'] !=
 //       null
 //   ? loadPackageConfigUri(
-//       Uri.base.resolve(Platform.environment['ANGULAR_PACKAGE_CONFIG_PATH']!))
+//       Uri.base.resolve(Platform.environment['KELICAP_PACKAGE_CONFIG_PATH']!))
 //   : Isolate.packageConfig.then(loadPackageConfigUri);
 
 void main() async {
@@ -24,7 +24,7 @@ void _testResolveModule() async {
   final inputSource = r'''
       library test;
 
-      import 'package:kelicap_web/angular.dart';
+      import 'package:kelicap/kelicap.dart';
 
       class Dependency {}
 
@@ -75,23 +75,23 @@ void _testResolveModule() async {
     inputSource,
     (resolver) async => (await resolver.findLibraryByName('test'))!,
     //inputId: AssetId('test_lib', 'lib/test_lib.dart'),
-    //inputId: AssetId('ngdart', 'lib/angular.dart'),
+    //inputId: AssetId('kelicap', 'lib/kelicap.dart'),
     nonInputsToReadFromFilesystem: {
-      AssetId('ngdart', 'lib/angular.dart'),
-      //   AssetId('ngdart', 'lib/src/meta.dart'),
-      AssetId('ngdart', 'lib/src/meta/di_modules.dart'),
-      AssetId('ngdart', 'lib/src/meta/di_arguments.dart'),
-      AssetId('ngdart', 'lib/src/meta/change_detection_constants.dart'),
-      AssetId('ngdart', 'lib/src/meta/change_detection_link.dart'),
-      AssetId('ngdart', 'lib/src/meta/di_generate_injector.dart'),
-      AssetId('ngdart', 'lib/src/meta/di_modules.dart'),
-      AssetId('ngdart', 'lib/src/meta/di_providers.dart'),
-      AssetId('ngdart', 'lib/src/meta/di_tokens.dart'),
-      AssetId('ngdart', 'lib/src/meta/directives.dart'),
-      AssetId('ngdart', 'lib/src/meta/lifecycle_hooks.dart'),
-      AssetId('ngdart', 'lib/src/meta/typed.dart'),
-      AssetId('ngdart', 'lib/src/meta/view.dart'),
-      AssetId('ngdart', 'lib/src/meta/visibility.dart'),
+      AssetId('kelicap', 'lib/kelicap.dart'),
+      //   AssetId('kelicap', 'lib/src/meta.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_modules.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_arguments.dart'),
+      AssetId('kelicap', 'lib/src/meta/change_detection_constants.dart'),
+      AssetId('kelicap', 'lib/src/meta/change_detection_link.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_generate_injector.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_modules.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_providers.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_tokens.dart'),
+      AssetId('kelicap', 'lib/src/meta/directives.dart'),
+      AssetId('kelicap', 'lib/src/meta/lifecycle_hooks.dart'),
+      AssetId('kelicap', 'lib/src/meta/typed.dart'),
+      AssetId('kelicap', 'lib/src/meta/view.dart'),
+      AssetId('kelicap', 'lib/src/meta/visibility.dart'),
     },
     packageConfig: packageConfig,
   );
@@ -107,7 +107,7 @@ void _testResolveModuleRaw() async {
   final inputSource = r'''
       library test;
 
-      import 'package:kelicap_web2/angular.dart';
+      import 'package:kelicap/kelicap.dart';
 
       class Dependency {}
 
@@ -148,17 +148,17 @@ void _testResolveModuleRaw() async {
 
   // final config = PackageConfig([
   //   Package(
-  //     'ngdart',
-  //     Uri.parse('file:///home/thii/dart_workspace/angular/ngdart/'),
+  //     'kelicap',
+  //     Uri.parse('file:///home/thii/dart_workspace/kelicap/kelicap/'),
   //     packageUriRoot: Uri.parse(
-  //       'file:///home/thii/dart_workspace/angular/ngdart/lib/',
+  //       'file:///home/thii/dart_workspace/kelicap/kelicap/lib/',
   //     ),
   //   ),
   // ]);
 
   final config = await loadPackageConfigUri(
     Uri.base.resolve(
-      'file:///home/thii/dart_workspace/angular/.dart_tool/package_config.json',
+      'file:///home/thii/dart_workspace/kelicap/.dart_tool/package_config.json',
     ),
   );
 
@@ -171,10 +171,10 @@ void _testResolveModuleRaw() async {
     },
     //inputId: testAssetId,
     nonInputsToReadFromFilesystem: {
-      AssetId('ngdart2', 'lib/angular.dart'),
-      AssetId('ngdart2', 'lib/src/meta.dart'),
-      AssetId('ngdart2', 'lib/src/meta/di_modules.dart'),
-      AssetId('ngdart2', 'lib/src/meta/di_arguments.dart'),
+      AssetId('kelicap', 'lib/kelicap.dart'),
+      AssetId('kelicap', 'lib/src/meta.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_modules.dart'),
+      AssetId('kelicap', 'lib/src/meta/di_arguments.dart'),
     },
     packageConfig: config,
   );

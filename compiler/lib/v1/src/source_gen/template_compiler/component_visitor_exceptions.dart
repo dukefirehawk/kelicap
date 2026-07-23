@@ -93,11 +93,11 @@ abstract class AsyncBuildError {
   String toString() => _message;
 }
 
-class AngularAnalysisError extends AsyncBuildError {
+class KelicapAnalysisError extends AsyncBuildError {
   final List<AnalysisError> constantEvaluationErrors;
   final IndexedAnnotation<Element> indexedAnnotation;
 
-  AngularAnalysisError(this.constantEvaluationErrors, this.indexedAnnotation);
+  KelicapAnalysisError(this.constantEvaluationErrors, this.indexedAnnotation);
 
   @override
   Future<BuildError> resolve(Resolver resolver) async {
@@ -270,7 +270,7 @@ class UnresolvedExpressionError extends AsyncBuildError {
             ''
             'Compiling @Component annotated class "${componentType.name}" '
             'failed.\n'
-            'NOTE: Your build triggered an error in the Angular error reporting\n'
+            'NOTE: Your build triggered an error in the kelicap error reporting\n'
             'code. Please report a bug: ${messages.urlFileBugs}\n'
             '\n\n${messages.analysisFailureReasons}',
       ),
@@ -306,7 +306,7 @@ class UnusedDirectiveTypeError extends ErrorMessageForAnnotation {
 
 /// Find the ancestor node that should have the metadata and return
 /// that metadata.
-/// Angular only looks at metadata on class declarations,
+/// kelicap only looks at metadata on class declarations,
 /// class members and formal parameters.
 List<Annotation> _metadataFromAncestry(AstNode node) {
   // NOTE: We check for [ClassMember] or [ClassDeclaration] explicitly
