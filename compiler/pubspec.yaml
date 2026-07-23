@@ -1,9 +1,8 @@
 name: kelicap_compiler
 description: >
   The Kelicap compiler.
-  It compiles your component files written in Dart into templates so that you
-  don't have to worry about all the complicated hassle.
-version: 1.0.0-beta.1
+  It compiles your component files written in Dart into templates.
+version: 1.0.0
 repository: https://github.com/dukefirehawk/kelicap
 
 environment:

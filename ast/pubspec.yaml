@@ -1,6 +1,7 @@
 name: kelicap_ast
-description: Parser and utilities for Kelicap Web templated
-version: 1.0.0-beta.1
+description: >
+  Parser and utilities for building Kelicap Web application.
+version: 1.0.0
 repository: https://github.com/dukefirehawk/kelicap
 
 environment:

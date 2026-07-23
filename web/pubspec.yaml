@@ -1,8 +1,8 @@
 name: kelicap_web
-description: >-
-  Fast and productive web framework by Google.
-  Separate, but similar to the JavaScript framework with a similar name.
-version: 1.0.0-rc.1
+description: >
+  Fast and productive web framework that is a derivative of AngularDart.
+  Syntatically similar to Angular 16.
+version: 1.0.0
 repository: https://github.com/dukefirehawk/kelicap
 
 environment:
