@@ -7,9 +7,9 @@ workspace:
   - ast
   - compiler
   - kelicap
-  #- ngtest
-  #- ngforms
-  #- ngrouter
+  - kelicap_test
+  - forms
+  - router
   #- goldens
   #- examples/hello_world
   #- _tests

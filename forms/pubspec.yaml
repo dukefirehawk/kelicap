@@ -1,0 +1,24 @@
+name: kelicap_forms
+description: >
+  Forms framework for Kelicap.
+  Easily create forms to accept input from users.
+version: 1.0.0
+repository: https://github.com/dukefirehawk/kelicap
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+
+resolution: workspace
+
+dependencies:
+  meta: ^1.8.0
+  kelicap: ^1.0.0
+  web: ^1.1.1
+dev_dependencies:
+  build_runner: ^2.3.3
+  build_test: ^3.0.0
+  build_web_compilers: ^4.6.0
+  lints: ^6.0.0
+  mockito: ^5.3.2
+  kelicap_test: ^1.0.0
+  test: ^1.22.2
