@@ -5,7 +5,7 @@
 /// from this package at any time, without changing the version.
 ///
 /// **Warning:** No API exposed as part of this package is considered stable.
-@experimental
+//@experimental
 library;
 
 import 'package:meta/meta.dart';

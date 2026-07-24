@@ -2,7 +2,7 @@ import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:package_config/package_config.dart';
 
-import '../test/v1/kelicap_compiler/src/resolve.dart';
+import '../../compiler/test/v1/kelicap_compiler/src/resolve.dart';
 
 // final _packageConfigFuture = Platform
 //           .environment['KELICAP_PACKAGE_CONFIG_PATH'] !=
@@ -13,6 +13,7 @@ import '../test/v1/kelicap_compiler/src/resolve.dart';
 
 void main() async {
   _testResolveModuleRaw();
+  _testResolveModule();
 }
 
 /* 

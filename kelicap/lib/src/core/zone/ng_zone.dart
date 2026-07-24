@@ -400,7 +400,7 @@ bool hasPendingMacrotasks(NgZone zone) => zone._hasPendingMacrotasks;
 /// For a [zone], returns whether it is within Kelicap [ngZone].
 ///
 /// **INTERNAL ONLY**: This is an experimental API subject to change.
-@experimental
+//@experimental
 bool inKelicapZone(NgZone ngZone, Zone zone) {
   return identical(zone[ngZone._thisZoneKey], true);
 }

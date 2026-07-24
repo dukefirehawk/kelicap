@@ -1,5 +1,4 @@
 import 'package:args/args.dart';
-import 'package:meta/meta.dart';
 
 // Force enables the data-debug-source attribute on DOM elements created by
 // Kelicap templates.
@@ -52,7 +51,7 @@ class CompilerFlags {
     ..addMultiOption(_argPolicyExceptionInPackages, hide: true);
 
   /// Whether to emit code that supports developer tooling.
-  @experimental
+  //@experimental
   final bool enableDevTools;
 
   /// Whether to opt-in to supporting a legacy mode of style encapsulation.
@@ -71,23 +70,23 @@ class CompilerFlags {
   final bool enableDataDebugSource;
 
   /// Whether to operate as if `preserveWhitespace: false` is always set.
-  @experimental
+  //@experimental
   final bool forceMinifyWhitespace;
 
   /// Whether to emit code supporting `SlowComponentLoader`.
-  @experimental
+  //@experimental
   final bool emitComponentFactories;
 
   /// Whether to emit code supporting `ReflectiveInjector`.
-  @experimental
+  //@experimental
   final bool emitInjectableFactories;
 
   /// Whether to emit `export {{file.dart}}` in `file.template.dart`.
-  @experimental
+  //@experimental
   final bool exportUserCodeFromTemplate;
 
   /// Exceptions keyed by `PolicyName` => `Packages`.
-  @experimental
+  //@experimental
   final Map<String, Set<String>> policyExceptionInPackages;
 
   /// Exceptions keyed by `Name` -> `Paths`.
