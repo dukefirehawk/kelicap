@@ -1,3 +1,4 @@
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:web/web.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
@@ -7,7 +8,6 @@ import '../../../core/linker/component_factory.dart';
 import '../../../core/linker/view_container.dart';
 import '../../../core/linker/view_fragment.dart';
 import '../../../di/injector.dart';
-import '../../../meta/change_detection_constants.dart';
 import '../../../runtime/dom_helpers.dart';
 
 import '../../../utilities/is_dev_mode.dart';

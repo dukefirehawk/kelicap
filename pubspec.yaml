@@ -5,6 +5,7 @@ environment:
 
 workspace:
   - ast
+  - common
   - compiler
   - kelicap
   - kelicap_test

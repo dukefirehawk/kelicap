@@ -1,6 +1,5 @@
-import 'package:kelicap/src/meta.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:kelicap_compiler/v1/src/compiler/analyzed_class.dart';
-import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart' as core;
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
 import 'package:kelicap_compiler/v1/src/compiler/ir/model.dart' as ir;
 import 'package:kelicap_compiler/v1/src/compiler/optimize_ir/merge_events.dart';
@@ -84,7 +83,7 @@ ir.MatchedDirective convertMatchedDirective(
   );
 }
 
-Set<ir.Lifecycle> _lifecycles(core.CompileDirectiveMetadata directive) => ir
+Set<ir.Lifecycle> _lifecycles(CompileDirectiveMetadata directive) => ir
     .Lifecycle
     .values
     .where(
@@ -94,12 +93,12 @@ Set<ir.Lifecycle> _lifecycles(core.CompileDirectiveMetadata directive) => ir
     .toSet();
 
 const _lifecyclesAsIr = {
-  ir.Lifecycle.afterChanges: core.LifecycleHooks.afterChanges,
-  ir.Lifecycle.onInit: core.LifecycleHooks.onInit,
-  ir.Lifecycle.doCheck: core.LifecycleHooks.doCheck,
-  ir.Lifecycle.afterContentInit: core.LifecycleHooks.afterContentInit,
-  ir.Lifecycle.afterContentChecked: core.LifecycleHooks.afterContentChecked,
-  ir.Lifecycle.afterViewInit: core.LifecycleHooks.afterViewInit,
-  ir.Lifecycle.afterViewChecked: core.LifecycleHooks.afterViewChecked,
-  ir.Lifecycle.onDestroy: core.LifecycleHooks.onDestroy,
+  ir.Lifecycle.afterChanges: LifecycleHooks.afterChanges,
+  ir.Lifecycle.onInit: LifecycleHooks.onInit,
+  ir.Lifecycle.doCheck: LifecycleHooks.doCheck,
+  ir.Lifecycle.afterContentInit: LifecycleHooks.afterContentInit,
+  ir.Lifecycle.afterContentChecked: LifecycleHooks.afterContentChecked,
+  ir.Lifecycle.afterViewInit: LifecycleHooks.afterViewInit,
+  ir.Lifecycle.afterViewChecked: LifecycleHooks.afterViewChecked,
+  ir.Lifecycle.onDestroy: LifecycleHooks.onDestroy,
 };

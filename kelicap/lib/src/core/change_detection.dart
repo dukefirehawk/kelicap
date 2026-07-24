@@ -3,7 +3,6 @@ library;
 
 export 'change_detection/change_detection.dart'
     show
-        ChangeDetectionStrategy,
         ChangeDetectorRef,
         DeprecatedChangeDetectorRef,
         DeprecatedDetectChanges;

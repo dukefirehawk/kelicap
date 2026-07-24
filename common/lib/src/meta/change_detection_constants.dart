@@ -1,5 +1,5 @@
 /// Describes the current state of the change detector.
-/* enum ChangeDetectorState {
+enum ChangeDetectorState {
   /// [neverChecked] means that the change detector has not been checked yet,
   /// and initialization methods should be called during detection.
   neverChecked,
@@ -15,12 +15,11 @@
   errored,
 }
 
- */
 /// Describes within the change detector which strategy will be used the next
 /// time change detection is triggered.
 ///
 /// ! Changes to this class require updates to view_compiler/constants.dart.
-/* enum ChangeDetectionStrategy {
+enum ChangeDetectionStrategy {
   /// The default type of change detection, always checking for changes.
   ///
   /// When an asynchronous event (such as user interaction or an RPC) occurs
@@ -46,12 +45,12 @@
   /// configured component as a child (or directive) of a component that is
   /// using [OnPush]. We hope to introduce more guidance here in the future.
   onPush,
-} */
+}
 
 /// **TRANSITIONAL**: These are runtime internal states to the `AppView`.
 ///
 /// TODO(b/128441899): Refactor into a change detection state machine.
-/* enum ChangeDetectionCheckedState {
+enum ChangeDetectionCheckedState {
   /// `AppView.detectChanges` should be invoked once.
   ///
   /// The next state is [waitingForMarkForCheck].
@@ -72,4 +71,3 @@
   /// configured for the view.
   waitingToBeAttached,
 }
- */

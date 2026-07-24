@@ -1,4 +1,4 @@
-import 'package:kelicap/src/meta.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 
 import '../compile_metadata.dart'
     show

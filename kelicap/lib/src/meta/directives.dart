@@ -1,9 +1,7 @@
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/meta_meta.dart';
 
-import 'change_detection_constants.dart';
 import 'typed.dart';
-import 'view.dart';
-import 'visibility.dart';
 
 /// An annotation that marks a class as an Kelicap directive, allowing you to
 /// attach behavior to elements in the DOM.

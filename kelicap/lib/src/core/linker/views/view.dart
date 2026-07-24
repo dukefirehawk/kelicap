@@ -1,13 +1,12 @@
 //import 'dart:html' show Element;
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:web/web.dart' show Element;
 
 import 'package:meta/meta.dart';
-import '../../../core/change_detection/change_detection.dart'
-    hide ChangeDetectorState, ChangeDetectionStrategy;
+import '../../../core/change_detection/change_detection.dart';
 import '../../../core/change_detection/host.dart';
 import '../../../di/errors.dart';
 import '../../../di/injector.dart';
-import '../../../meta/change_detection_constants.dart';
 import '../../../utilities/unsafe_cast.dart';
 
 /// The base implementation of all views.

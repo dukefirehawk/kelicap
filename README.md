@@ -4,11 +4,12 @@ Kelicap is a lightweight, native-HTML alternative to Flutter Web. It is a deriva
 
 ## Architecture
 
-Kelicap is built on a 3-layer architecture:
+Kelicap is built on a 3-layer architecture with the following modules:
 
 1. **ast**: The Abstract Syntax Tree of the kelicap application.
-2. **compiler**: The build-time tool that compiles the application to native HTML and JavaScripts.
-3. **web**: The runtime library that provides the foundation for the framework.
+2. **common**: The Abstract Syntax Tree of the kelicap application.
+3. **compiler**: The build-time tool that compiles the application to native HTML and JavaScripts.
+4. **kelicap**: The runtime library that provides the foundation for the framework.
 
 ## Getting Started
 

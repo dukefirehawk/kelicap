@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:kelicap/src/meta.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
 import 'package:kelicap_compiler/v1/src/compiler/analyzed_class.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart'

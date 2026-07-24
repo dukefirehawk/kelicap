@@ -1,5 +1,5 @@
 import 'package:source_span/source_span.dart';
-import 'package:kelicap/src/meta.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:kelicap_compiler/v2/context.dart';
 
 import 'compile_metadata.dart'

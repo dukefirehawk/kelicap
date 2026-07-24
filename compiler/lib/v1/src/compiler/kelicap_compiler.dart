@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:kelicap/src/meta.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:kelicap_compiler/v1/src/compiler/ast_directive_normalizer.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compiler_utils.dart';

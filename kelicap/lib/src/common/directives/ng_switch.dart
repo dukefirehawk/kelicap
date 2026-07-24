@@ -1,7 +1,8 @@
+import 'package:kelicap_common/kelicap_common.dart';
+
 import '../../core/linker.dart';
 import '../../meta/di_arguments.dart';
 import '../../meta/directives.dart';
-import '../../meta/visibility.dart';
 
 const _whenDefault = Object();
 

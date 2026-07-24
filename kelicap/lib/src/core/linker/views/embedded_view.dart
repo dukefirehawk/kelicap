@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:web/web.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
@@ -8,7 +9,6 @@ import '../../../core/linker/style_encapsulation.dart';
 import '../../../core/linker/view_container.dart';
 import '../../../core/linker/view_fragment.dart';
 import '../../../core/linker/view_ref.dart';
-import '../../../meta/change_detection_constants.dart';
 import '../../../runtime/dom_helpers.dart';
 
 import '../../../utilities/is_dev_mode.dart';

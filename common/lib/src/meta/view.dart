@@ -2,7 +2,7 @@
 /// [View].
 ///
 /// See [View#encapsulation].
-/* enum ViewEncapsulation {
+enum ViewEncapsulation {
   /// Emulate `Native` scoping of styles by adding an attribute containing
   /// surrogate id to the Host Element and pre-processing the style rules
   /// provided via [View#styles] or [View#stylesUrls], and
@@ -13,4 +13,4 @@
 
   /// Don't provide any template or style encapsulation.
   none,
-} */
+}

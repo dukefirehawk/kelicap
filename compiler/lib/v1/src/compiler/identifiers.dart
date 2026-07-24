@@ -257,7 +257,8 @@ class Identifiers {
   );
   static final changeDetectionCheckedState = CompileIdentifierMetadata(
     name: 'ChangeDetectionCheckedState',
-    moduleUrl: '$_kelicapLib/src/meta/change_detection_constants.dart',
+    //moduleUrl: '$_kelicapLib/src/meta/change_detection_constants.dart',
+    moduleUrl: _kelicapRootUrl,
   );
   static final identical = CompileIdentifierMetadata(name: 'identical');
   static final profileSetup = CompileIdentifierMetadata(
