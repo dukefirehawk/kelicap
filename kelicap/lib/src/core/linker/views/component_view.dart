@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 import '../../../core/change_detection/host.dart';
 import '../../../core/linker/style_encapsulation.dart';
 import '../../../devtools.dart';
-import '../../../utilities/is_dev_mode.dart';
 import 'render_view.dart';
 import 'view.dart';
 

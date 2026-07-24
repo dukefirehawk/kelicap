@@ -1,7 +1,8 @@
 import 'package:collection/collection.dart';
+import 'package:kelicap/src/utilities.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/dart2js.dart' as dart2js;
 import 'package:meta/meta.dart';
-import '../utilities.dart';
 
 /// Whether [_debugCheckBinding] should throw if the values are different.
 var _debugThrowIfChanged = false;

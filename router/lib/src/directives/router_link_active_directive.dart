@@ -3,7 +3,6 @@ import 'package:web/web.dart';
 
 import 'package:collection/collection.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap/src/utilities.dart';
 
 import '../router/router.dart';
 import '../router/router_state.dart';

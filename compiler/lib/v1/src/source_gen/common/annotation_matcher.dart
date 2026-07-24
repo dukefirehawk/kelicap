@@ -1,7 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/src/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:kelicap/src/meta.dart';
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
 

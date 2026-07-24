@@ -6,7 +6,7 @@ import 'package:analyzer/dart/element/visitor2.dart';
 import 'package:analyzer/src/dart/constant/value.dart';
 import 'package:analyzer/src/dart/element/element.dart';
 //import 'package:analyzer/src/generated/utilities_dart.dart';
-import 'package:kelicap/src/meta.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';

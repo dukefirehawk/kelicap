@@ -1,9 +1,9 @@
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:web/web.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
 import '../../core/linker/app_view_utils.dart';
 import '../../runtime/dom_helpers.dart';
-import '../../utilities/is_dev_mode.dart';
 import '../../utilities/unsafe_cast.dart';
 
 /// Clears all component styles from the DOM.

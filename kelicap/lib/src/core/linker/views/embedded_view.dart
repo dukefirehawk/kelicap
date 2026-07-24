@@ -11,7 +11,6 @@ import '../../../core/linker/view_fragment.dart';
 import '../../../core/linker/view_ref.dart';
 import '../../../runtime/dom_helpers.dart';
 
-import '../../../utilities/is_dev_mode.dart';
 import '../../../utilities/unsafe_cast.dart';
 import 'dynamic_view.dart';
 import 'render_view.dart';

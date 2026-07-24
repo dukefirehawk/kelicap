@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:build/build.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:kelicap_compiler/v1/src/kelicap_compiler/cli/messages.dart';
 import 'package:kelicap_compiler/v2/asset.dart';
-import 'package:kelicap/src/utilities.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 

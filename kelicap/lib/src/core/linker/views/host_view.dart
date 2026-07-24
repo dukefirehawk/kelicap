@@ -10,7 +10,6 @@ import '../../../core/linker/view_fragment.dart';
 import '../../../di/injector.dart';
 import '../../../runtime/dom_helpers.dart';
 
-import '../../../utilities/is_dev_mode.dart';
 import '../../../utilities/unsafe_cast.dart';
 import 'component_view.dart';
 import 'dynamic_view.dart';

@@ -1,10 +1,8 @@
+import 'package:kelicap/di.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/meta.dart';
 
 import '../utilities/unsafe_cast.dart';
-import 'di_tokens.dart';
-
-/// A marker that represents a lack-of-value for the `useValue` parameter.
-const Object noValueProvided = '__noValueProvided__';
 
 /// A contract for creating implementations of [Injector] at runtime.
 ///

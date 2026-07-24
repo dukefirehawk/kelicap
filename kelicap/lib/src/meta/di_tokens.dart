@@ -1,6 +1,5 @@
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/meta.dart';
-
-import '../utilities/is_dev_mode.dart';
 
 /// A token to be used instead of [Type] when configuring dependency injection.
 ///

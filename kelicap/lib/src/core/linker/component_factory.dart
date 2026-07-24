@@ -1,3 +1,4 @@
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:web/web.dart';
 
 import 'package:meta/meta.dart';
@@ -6,7 +7,6 @@ import '../../core/zone/ng_zone.dart';
 import '../../di/injector.dart';
 
 import '../../meta/lifecycle_hooks.dart';
-import '../../utilities/is_dev_mode.dart';
 import 'view_ref.dart' show ViewRef;
 import 'views/host_view.dart';
 

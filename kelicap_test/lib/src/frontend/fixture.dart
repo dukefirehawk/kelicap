@@ -1,7 +1,6 @@
 import 'package:web/web.dart';
 
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap/src/utilities.dart';
 
 import 'bed.dart';
 import 'stabilizer.dart';

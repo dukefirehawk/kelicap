@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/dart2js.dart' as dart2js;
 import 'package:meta/meta.dart';
 import '../../core/linker/views/view.dart';
 import '../../runtime/check_binding.dart';
 
-import '../../utilities/is_dev_mode.dart';
 import '../../utilities/unsafe_cast.dart';
 import 'change_detector_ref.dart';
 

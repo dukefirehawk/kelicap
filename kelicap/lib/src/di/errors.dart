@@ -1,6 +1,5 @@
+import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/dart2js.dart' as dart2js;
-
-import '../utilities/is_dev_mode.dart';
 
 /// Current stack of tokens being requested for an injection.
 List<Object> _tokenStack = [];

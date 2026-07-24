@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap/src/utilities.dart';
 
 import '../lifecycle.dart';
 import '../route_definition.dart';
