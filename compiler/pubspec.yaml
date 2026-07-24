@@ -23,7 +23,6 @@ dependencies:
   logging: ^1.1.0
   meta: ^1.8.0
   kelicap_ast: ^1.0.0
-  kelicap: ^1.0.0
   package_config: ^2.1.0
   path: ^1.8.3
   source_gen: ^4.0.0
