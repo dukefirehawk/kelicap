@@ -1,7 +1,8 @@
 name: kelicap_forms
 description: >
-  Forms framework for Kelicap.
-  Easily create forms to accept input from users.
+  Forms components for Kelicap framework.
+  Provides template-driven for simple forms built directly in HTML, and reactive for complex, 
+  scalable forms managed programmatically in Kelicap.
 version: 1.0.0
 repository: https://github.com/dukefirehawk/kelicap
 

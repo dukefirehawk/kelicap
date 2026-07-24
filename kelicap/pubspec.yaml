@@ -1,7 +1,7 @@
 name: kelicap
 description: >
-  Fast and productive web framework that is a derivative of AngularDart.
-  Syntatically similar to Angular 16.
+  Kelicap Web Application Framework.
+  A fast and productive web framework that is a derivative of AngularDart which is syntatically similar to Angular 16.
 version: 1.0.0
 repository: https://github.com/dukefirehawk/kelicap
 
