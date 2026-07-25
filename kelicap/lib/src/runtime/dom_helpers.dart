@@ -13,8 +13,7 @@ import 'package:web/web.dart' hide document;
 import 'package:meta/dart2js.dart' as dart2js;
 import '../utilities.dart';
 
-// TODO: use js interop instead of dart:js_util
-import 'dart:js_util' as js;
+import 'dart:js_interop_unsafe';
 
 /// https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode
 Text _createTextNode(String text) => Text(text);
@@ -47,7 +46,7 @@ var domRootRendererIsDirty = false;
 ///
 /// For [element]s not guaranteed to be HTML, see [updateClassBindingNonHtml].
 @dart2js.noInline
-void updateClassBinding(HtmlElement element, String className, bool isAdd) {
+void updateClassBinding(HTMLElement element, String className, bool isAdd) {
   if (isAdd) {
     element.classList.add(className);
   } else {
@@ -119,7 +118,7 @@ void setAttribute(Element element, String attribute, [String value = '']) {
 /// ```
 @dart2js.tryInline
 void setProperty(Element element, String property, Object? value) {
-  js.setProperty(element, property, value);
+  element.setProperty(property.toJS, value?.jsify());
 }
 
 /// Creates a [Text] node with the provided [contents].
@@ -172,7 +171,7 @@ Text createText(String contents) {
 /// This is an optimization to reduce code size for a common operation.
 @dart2js.noInline
 Text appendText(Node parent, String text) {
-  return unsafeCast(parent.append(createText(text)));
+  return unsafeCast(parent.appendChild(createText(text)));
 }
 
 /// Returns a new [Comment] node with empty contents.
@@ -186,7 +185,7 @@ Comment createAnchor() => _createComment();
 /// This is an optimization to reduce code size for a common operation.
 @dart2js.noInline
 Comment appendAnchor(Node parent) {
-  return unsafeCast(parent.append(_createComment()));
+  return unsafeCast(parent.appendChild(_createComment()));
 }
 
 /// Appends and returns a new empty [DivElement] to a [parent] node.
@@ -194,7 +193,7 @@ Comment appendAnchor(Node parent) {
 /// This is an optimization to reduce code size for a common operation.
 @dart2js.noInline
 HTMLDivElement appendDiv(Document doc, Node parent) {
-  return unsafeCast(parent.append(doc.createElement('div')));
+  return unsafeCast(parent.appendChild(doc.createElement('div')));
 }
 
 /// Appends and returns a new empty [SpanElement] to a [parent] node.
@@ -202,7 +201,7 @@ HTMLDivElement appendDiv(Document doc, Node parent) {
 /// This is an optimization to reduce code size for a common operation.
 @dart2js.noInline
 HTMLSpanElement appendSpan(Document doc, Node parent) {
-  return unsafeCast(parent.append(doc.createElement('span')));
+  return unsafeCast(parent.appendChild(doc.createElement('span')));
 }
 
 /// Appends and returns a new empty [Element] to a [parent] node.
@@ -216,7 +215,7 @@ T appendElement<T extends Element>(Document doc, Node parent, String tagName) {
   // HtmlElement e = appendElement(doc, parent, 'foo')
   //
   // ... without gratituous use of unsafeCast or casts in general.
-  return unsafeCast(parent.append(doc.createElement(tagName)));
+  return unsafeCast(parent.appendChild(doc.createElement(tagName)));
 }
 
 /// Inserts [nodes] into the DOM before [sibling].
@@ -235,7 +234,7 @@ void insertNodesBefore(List<Node> nodes, Node parent, Node sibling) {
 @dart2js.noInline
 void appendNodes(List<Node> nodes, Node parent) {
   for (var i = 0, l = nodes.length; i < l; i++) {
-    parent.append(nodes[i]);
+    parent.appendChild(nodes[i]);
   }
 }
 

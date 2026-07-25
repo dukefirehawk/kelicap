@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:kelicap/src/utilities.dart';
 import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/dart2js.dart' as dart2js;
-import 'package:meta/meta.dart';
 
 /// Whether [_debugCheckBinding] should throw if the values are different.
 var _debugThrowIfChanged = false;
@@ -142,8 +141,8 @@ class UnstableExpressionValue {
   final Object? newValue;
 
   UnstableExpressionValue._({
-    @required this.oldValue,
-    @required this.newValue,
+    this.oldValue,
+    this.newValue,
     this.expression,
     this.location,
   });

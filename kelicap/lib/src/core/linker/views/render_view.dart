@@ -188,9 +188,9 @@ abstract class RenderView extends View {
 
   // Styling -------------------------------------------------------------------
 
-  /// Equivalent to [addShimE], but optimized for [HtmlElement].
+  /// Equivalent to [addShimE], but optimized for [HTMLElement].
   @dart2js.tryInline
-  void addShimC(HtmlElement element) {
+  void addShimC(HTMLElement element) {
     componentStyles.addContentShimClassHtmlElement(element);
   }
 
@@ -200,7 +200,7 @@ abstract class RenderView extends View {
   /// shim class is needed for any styles to match [element].
   ///
   /// This should only be used for SVG or custom elements. For a plain
-  /// [HtmlElement], use [addShimC] instead.
+  /// [HTMLElement], use [addShimC] instead.
   @dart2js.tryInline
   void addShimE(Element element) {
     componentStyles.addContentShimClass(element);
@@ -213,7 +213,7 @@ abstract class RenderView extends View {
   ///
   /// For example, through the `[class]="..."` or `[attr.class]="..."` syntax.
   @dart2js.noInline
-  void updateChildClass(HtmlElement element, String newClass) {
+  void updateChildClass(HTMLElement element, String newClass) {
     componentStyles.updateChildClassHtmlElement(element, newClass);
   }
 

@@ -25,7 +25,7 @@ class TextBinding {
   /// Update the [Text] node if [newValue] differs from the previous value.
   void updateText(String newValue) {
     if (checkBinding(_currentValue, newValue)) {
-      element.text = newValue;
+      element.textContent = newValue;
       _currentValue = newValue;
     }
   }
@@ -34,7 +34,7 @@ class TextBinding {
   /// and differs from the previous value.
   void updateTextWithPrimitive(Object? newValue) {
     if (checkBinding(_currentValue, newValue)) {
-      element.text = interpolate0(newValue);
+      element.textContent = interpolate0(newValue);
       _currentValue = newValue;
     }
   }

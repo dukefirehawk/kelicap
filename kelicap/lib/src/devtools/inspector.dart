@@ -235,7 +235,7 @@ invocations. Please contact Kelicap-eng@ if you encounter this error.
   }
 
   /// Returns the root element of the component for [id].
-  HtmlElement getComponentElement(int id) {
+  HTMLElement getComponentElement(int id) {
     final componentView =
         _referenceCounter.toObject(id) as ComponentView<Object>;
     return componentView.rootElement;
