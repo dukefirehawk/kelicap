@@ -49,7 +49,7 @@ void main() {
     });
     test('should return checkbox accessor when provided', () {
       var checkboxAccessor = CheckboxControlValueAccessor(
-        web.document.createElement('input') as web.HtmlElement,
+        web.document.createElement('input') as web.HTMLElement,
       );
       expect(
         selectValueAccessor([defaultAccessor, checkboxAccessor]),
@@ -58,7 +58,7 @@ void main() {
     });
     test('should return select accessor when provided', () {
       var selectAccessor = SelectControlValueAccessor(
-        web.document.createElement('select') as web.HtmlElement,
+        web.document.createElement('select') as web.HTMLElement,
       );
       expect(
         selectValueAccessor([defaultAccessor, selectAccessor]),
@@ -67,10 +67,10 @@ void main() {
     });
     test('should throw when more than one build-in accessor is provided', () {
       var checkboxAccessor = CheckboxControlValueAccessor(
-        web.document.createElement('input') as web.HtmlElement,
+        web.document.createElement('input') as web.HTMLElement,
       );
       var selectAccessor = SelectControlValueAccessor(
-        web.document.createElement('select') as web.HtmlElement,
+        web.document.createElement('select') as web.HTMLElement,
       );
       expect(
         () => selectValueAccessor([checkboxAccessor, selectAccessor]),
@@ -80,7 +80,7 @@ void main() {
     test('should return custom accessor when provided', () {
       var customAccessor = MockValueAccessor();
       var checkboxAccessor = CheckboxControlValueAccessor(
-        web.document.createElement('input') as web.HtmlElement,
+        web.document.createElement('input') as web.HTMLElement,
       );
       expect(
         selectValueAccessor([
