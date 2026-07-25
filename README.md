@@ -1,21 +1,25 @@
 # Kelicap Web Framework
 
-Kelicap is a lightweight, native-HTML web framework for Dart—built as a modernized fork of AngularDart (ngdart) with support for Dart 3.12+. While its syntax remains close to AngularDart and stays compatible up to Angular 16, Kelicap follows its own path moving forward rather than strictly tracking Angular features. It is a pure Dart web solution with no intent to mimic or bridge with Flutter.
+Kelicap is a lightweight, native-HTML web framework for Dart, built as a modernized derivative fork of AngularDart (ngdart) with support for Dart 3.12+. While its syntax remains close to AngularDart and stays compatible up to Angular 16. Kelicap follows its own development path rather than strictly following Angular features development. It will remain as a pure Dart web solution with no intent to mimic or bridge with Flutter.
 
 ## Architecture
 
-Kelicap is structured into the following core modules:
+Kelicap is structured into the following core packages:
 
-* **`ast`**: Defines the Abstract Syntax Tree (AST) used internally by the framework.
-* **`common`**: Contains shared internal utilities and core helper classes.
-* **`compiler`**: Build-time tooling that compiles Kelicap applications into native HTML, CSS, and JavaScript.
-* **`kelicap`**: The core runtime library powering Kelicap applications.## Getting Started
+* **`kelicap_ast`**: Defines the Abstract Syntax Tree (AST) used internally by the framework.
+* **`kelicap_common`**: Contains shared internal utilities and core helper classes.
+* **`kelicap_compiler`**: Build-time tooling that compiles Kelicap applications into native HTML, CSS, and JavaScript.
+* **`kelicap`**: The core runtime library powering Kelicap applications.
+* **`kelicap_forms`**: Forms components for Kelicap framework.
+* **`kelicap_router`**: Router components for Kelicap framework.
 
-## Pre-requisite
+## Getting Started
+
+### Pre-requisite
 
 Dart 3.12 or later
 
-## Installation
+### Installation
 
 ```yaml
     dependencies:
@@ -29,7 +33,7 @@ Dart 3.12 or later
         lints: ^6.1.0
 ```
 
-## Build and run
+### Build and run
 
 ```bash
     dart pub upgrade
