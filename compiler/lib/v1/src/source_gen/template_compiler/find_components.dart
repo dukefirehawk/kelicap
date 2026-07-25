@@ -522,7 +522,7 @@ class _ComponentVisitor
       _exceptionHandler.handle(
         ErrorMessageForAnnotation(
           annotationInfo,
-          'Missing selector argument for "@${value!.type!.name}"',
+          'Missing selector argument for "@${value!.type!.getDisplayString()}"',
         ),
       );
       return [];
@@ -540,7 +540,7 @@ class _ComponentVisitor
       _exceptionHandler.handle(
         ErrorMessageForAnnotation(
           annotationInfo,
-          'Only a value of `String` or `Type` for "@${value!.type!.name}" is '
+          'Only a value of `String` or `Type` for "@${value!.type!.getDisplayString()}" is '
           'supported',
         ),
       );
@@ -549,7 +549,7 @@ class _ComponentVisitor
     return [
       CompileTokenMetadata(
         identifier: CompileIdentifierMetadata(
-          name: selectorType.name!,
+          name: selectorType.getDisplayString(),
           moduleUrl: moduleUrl(selectorType.element!),
         ),
       ),
@@ -571,7 +571,7 @@ class _ComponentVisitor
     if (readType != null) {
       readMetadata = CompileTokenMetadata(
         identifier: CompileIdentifierMetadata(
-          name: readType.name!,
+          name: readType.getDisplayString(),
           moduleUrl: moduleUrl(readType.element!),
         ),
       );

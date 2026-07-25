@@ -110,7 +110,7 @@ class TypedReader {
       if (root && !hasTypeElement) {
         throw BuildError.withoutContext(
           'Expected a "Typed" expression with a "Component" or "Directive" '
-          'annotated type, but got "Typed<${type.name}>"',
+          'annotated type, but got "Typed<${type.getDisplayString()}>"',
         );
       }
       String? on;
@@ -135,7 +135,7 @@ class TypedReader {
       for (final typeArgument in typeArguments) {
         if (typeArgument.isPrivate) {
           throw BuildError.withoutContext(
-            'Directive type arguments must be public, but "${type.name}" was '
+            'Directive type arguments must be public, but "${type.getDisplayString()}" was '
             'given private type argument "${typeArgument.symbol}" by '
             '"${_hostElement.name}".',
           );

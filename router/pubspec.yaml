@@ -1,9 +1,8 @@
 name: kelicap_router
 description: >
   Router components for Kelicap framework.
-  A feature-rich routing library for single-page applications, offering declarative
-  routing, dynamic route matching, route parameters, and nested views.
-version: 1.0.0
+  Offering declarative routing, dynamic route matching, and etc.
+version: 1.0.1
 repository: https://github.com/dukefirehawk/kelicap
 
 environment:
@@ -15,6 +14,7 @@ dependencies:
   collection: ^1.17.0
   kelicap: ^1.0.0
   web: ^1.1.1
+  
 dev_dependencies:
   async: ^2.10.0
   build_runner: ^2.3.3

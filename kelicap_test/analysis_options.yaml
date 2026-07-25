@@ -1,5 +1,6 @@
-include: ../analysis_options.yaml
+include: package:lints/recommended.yaml
 
 analyzer:
   errors:
     implementation_imports: ignore
+    uri_does_not_exist: ignore

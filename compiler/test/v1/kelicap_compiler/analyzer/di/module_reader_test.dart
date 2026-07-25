@@ -184,9 +184,9 @@ void main() {
           .map((o) {
             var value = o.toTypeValue();
             if (value != null) {
-              return value.name;
+              return value.getDisplayString();
             }
-            return o.getField('token')!.toTypeValue()!.name;
+            return o.getField('token')!.toTypeValue()!.getDisplayString();
           })
           .join(', ');
     }

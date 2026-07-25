@@ -225,7 +225,7 @@ void main() {
         useValue.token,
         TypeTokenElement(const TypeLink('Duration', 'dart:core')),
       );
-      expect(useValue.useValue!.type!.name, 'Duration');
+      expect(useValue.useValue!.type!.getDisplayString(), 'Duration');
     });
 
     test('using useValue: ... to define a literal', () {

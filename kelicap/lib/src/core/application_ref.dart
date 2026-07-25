@@ -57,7 +57,7 @@ class ApplicationRef extends ChangeDetectionHost {
     return unsafeCast(
       run(() {
         final component = componentFactory.create(_injector);
-        final existing = querySelector(componentFactory.selector);
+        final existing = document.querySelector(componentFactory.selector);
         Element? replacement;
         if (existing != null) {
           final newElement = component.location;
