@@ -342,7 +342,7 @@ void main() {
         errors: [
           contains(
             'Expected a "Typed" expression with a "Component" or "Directive" '
-            'annotated type, but got "Typed<List>"',
+            'annotated type, but got "Typed<List<int>>"',
           ),
         ],
       );
@@ -362,7 +362,7 @@ void main() {
         parseTyped,
         errors: [
           contains(
-            'Directive type arguments must be public, but "GenericComponent" '
+            'Directive type arguments must be public, but "GenericComponent<_Private>" '
             'was given private type argument "_Private" by "Example".',
           ),
         ],
