@@ -199,7 +199,7 @@ Event createKeyboardEvent(
       .isDefinedAndNotNull) {
     final script = document.createElement('script')
       ..setAttribute('type', 'text/javascript')
-      ..text = _createKeyboardEventScript;
+      ..textContent = _createKeyboardEventScript;
     document.body!.append(script);
   }
 

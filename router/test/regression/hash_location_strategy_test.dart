@@ -87,7 +87,7 @@ class AppComponent {
   late final List<RouteDefinition> routes = [fooRoute];
 
   @ViewChild('routerLink')
-  HtmlElement? anchor;
+  HTMLElement? anchor;
 }
 
 @Component(selector: 'foo', template: '')
