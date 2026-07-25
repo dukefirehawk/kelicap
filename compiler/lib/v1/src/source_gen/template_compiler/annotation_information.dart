@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
+//import 'package:analyzer/error/error.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:kelicap_compiler/v1/compiler.dart';
 
@@ -18,7 +19,7 @@ import 'component_visitor_exceptions.dart';
 class AnnotationInformation<T extends Element> extends IndexedAnnotation<T> {
   final ComponentVisitorExceptionHandler _exceptionHandler;
   final DartObject? constantValue;
-  final List<AnalysisError> constantEvaluationErrors;
+  final List<Diagnostic> constantEvaluationErrors;
 
   AnnotationInformation(
     super.element,

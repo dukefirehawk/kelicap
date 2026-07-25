@@ -1,7 +1,8 @@
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
+//import 'package:analyzer/error/error.dart';
 import 'package:build/build.dart';
 import 'package:source_span/source_span.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
@@ -94,7 +95,7 @@ abstract class AsyncBuildError {
 }
 
 class KelicapAnalysisError extends AsyncBuildError {
-  final List<AnalysisError> constantEvaluationErrors;
+  final List<Diagnostic> constantEvaluationErrors;
   final IndexedAnnotation<Element> indexedAnnotation;
 
   KelicapAnalysisError(this.constantEvaluationErrors, this.indexedAnnotation);
@@ -138,7 +139,7 @@ class KelicapAnalysisError extends AsyncBuildError {
 
     // Only include the errors that are inside the annotation.
     return _buildErrorForAnalysisErrors(
-      result.resolvedUnit!.errors.where(
+      result.resolvedUnit!.diagnostics.where(
         (error) =>
             error.offset >= resolvedAnnotation.offset &&
             error.offset <= resolvedAnnotation.end,
@@ -149,7 +150,7 @@ class KelicapAnalysisError extends AsyncBuildError {
   }
 
   BuildError _buildErrorForAnalysisErrors(
-    Iterable<AnalysisError> errors,
+    Iterable<Diagnostic> errors,
     Element element,
     String annnotationSouce,
   ) {
