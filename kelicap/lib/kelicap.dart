@@ -30,7 +30,6 @@ export 'src/devtools.dart' show enableDevTools, registerContentRoot;
 export 'src/di/errors.dart' show InjectionError, NoProviderError;
 export 'src/di/injector.dart' show Injector, InjectorFactory;
 
-//export 'src/meta/change_detection_constants.dart';
 export 'src/meta/change_detection_link.dart';
 export 'src/meta/di_arguments.dart';
 export 'src/meta/di_generate_injector.dart';
@@ -40,11 +39,7 @@ export 'src/meta/di_tokens.dart';
 export 'src/meta/directives.dart';
 export 'src/meta/lifecycle_hooks.dart';
 export 'src/meta/typed.dart';
-//export 'src/meta/view.dart';
-//export 'src/meta/visibility.dart';
 export 'src/meta/visible_for_template.dart';
-
-export 'package:kelicap_common/kelicap_common.dart';
 
 // export 'src/meta.dart'
 //     show
@@ -95,3 +90,5 @@ export 'src/runtime/check_binding.dart' show debugCheckBindings;
 // TODO(b/116697059): Move to a testonly=1 library.
 export 'src/testability.dart'
     show testabilityProvider, Testability, TestabilityRegistry;
+
+export 'package:kelicap_common/kelicap_common.dart';

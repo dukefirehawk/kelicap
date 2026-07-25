@@ -2,6 +2,7 @@ import 'compile_metadata.dart'
     show CompileIdentifierMetadata, CompileTokenMetadata;
 
 const _kelicapRootUrl = 'package:kelicap/kelicap.dart';
+const _kelicapCommonUrl = 'package:kelicap_common/kelicap_common.dart';
 const _kelicapLib = 'asset:kelicap/lib';
 
 const _appViewUtilsModuleUrl =
@@ -147,7 +148,7 @@ class Runtime {
 
   static final isDevMode = CompileIdentifierMetadata(
     name: 'isDevMode',
-    moduleUrl: _runtimeUrl,
+    moduleUrl: _kelicapCommonUrl,
   );
 
   static final unsafeCast = CompileIdentifierMetadata(
@@ -258,7 +259,7 @@ class Identifiers {
   static final changeDetectionCheckedState = CompileIdentifierMetadata(
     name: 'ChangeDetectionCheckedState',
     //moduleUrl: '$_kelicapLib/src/meta/change_detection_constants.dart',
-    moduleUrl: _kelicapRootUrl,
+    moduleUrl: _kelicapCommonUrl,
   );
   static final identical = CompileIdentifierMetadata(name: 'identical');
   static final profileSetup = CompileIdentifierMetadata(
