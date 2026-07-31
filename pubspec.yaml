@@ -6,6 +6,7 @@ environment:
 workspace:
   - ast
   - common
+  - observable
   - compiler
   - kelicap
   - kelicap_test
