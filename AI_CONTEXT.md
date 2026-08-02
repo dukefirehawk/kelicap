@@ -1,6 +1,7 @@
 # Kelicap AI Context
 
 ## Overview
+
 Kelicap is a lightweight, native-HTML alternative to Flutter Web. It is a derivative fork of AngularDart (ngdart), modernized to support Dart 3.12 and beyond. It diverges from the Angular TS development path, focusing on providing a fast and productive web framework that is syntactically similar to Angular 16. It strictly utilizes the modern `package:web` for DOM interactions.
 
 ## Project Structure
