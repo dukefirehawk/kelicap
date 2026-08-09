@@ -5,6 +5,8 @@ export 'src/kelicap_compiler/analyzer.dart'
         linkToReference,
         linkTypeOf,
         typeArgumentOf,
+        unerasedTypeOf,
+        unerasedTypeValueOf,
         urlOf,
         DependencyElement,
         DependencyInvocation,

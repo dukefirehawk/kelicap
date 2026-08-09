@@ -219,10 +219,12 @@ abstract class Injector {
   /// * [T] is explicitly or implicitly bound to `dynamic`.
   /// * If [T] is not `Object`, the DI [token] is not the *same* as [T].
   @nonVirtual
-  T provideTypeOptional<T extends Object>(Type token) {
+  T? provideTypeOptional<T extends Object>(Type token) {
     // See provideType.
     assert(T != dynamic, 'Returning a dynamic is not supported');
-    return unsafeCast(get(token));
+    // Passing `null` as the not-found value is what makes this the *optional*
+    // variant; without it `get` throws, which is what `provideType` does.
+    return unsafeCast(get(token, null));
   }
 
   /// Finds and returns an object instance provided for a [token].
@@ -267,8 +269,11 @@ abstract class Injector {
   /// }
   /// ```
   @nonVirtual
-  T provideTokenOptional<T extends Object>(OpaqueToken<T> token) {
-    return unsafeCast(get(token));
+  T? provideTokenOptional<T extends Object>(OpaqueToken<T> token) {
+    // As in provideTypeOptional: passing `null` as the not-found value is what
+    // makes this the *optional* variant; without it `get` throws, which is what
+    // provideToken does.
+    return unsafeCast(get(token, null));
   }
 }
 

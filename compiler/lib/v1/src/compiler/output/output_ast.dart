@@ -1292,7 +1292,9 @@ class ExpressionTransformer<C>
 
   @override
   Expression visitCastExpr(CastExpr ast, C context) {
-    return CastExpr(ast.value.visitExpression(this, context), null);
+    // The type has to be carried over: the emitter requires every cast to name
+    // a type, so dropping it here makes the transformed expression unemittable.
+    return CastExpr(ast.value.visitExpression(this, context), ast.type);
   }
 
   @override

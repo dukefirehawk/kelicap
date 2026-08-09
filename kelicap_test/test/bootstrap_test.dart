@@ -126,7 +126,7 @@ class BeforeChangeDetection {
 
 @Component(selector: 'test', template: '')
 class AddProviders {
-  final TestService? _testService;
+  final TestService _testService;
 
   AddProviders(this._testService);
 }

@@ -16,6 +16,8 @@ import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart' as o;
 import 'package:kelicap_compiler/v1/src/compiler/template_compiler.dart';
 import 'package:kelicap_compiler/v1/src/compiler/view_compiler/property_binder.dart'
     show isPrimitiveTypeName;
+import 'package:kelicap_compiler/v1/src/kelicap_compiler/analyzer/common.dart'
+    show unerasedTypeValueOf;
 import 'package:kelicap_compiler/v1/src/source_gen/common/annotation_matcher.dart';
 import 'package:kelicap_compiler/v1/src/source_gen/common/url_resolver.dart';
 import 'package:kelicap_compiler/v2/analyzer.dart';
@@ -164,7 +166,8 @@ class _NormalizedComponentVisitor extends RecursiveElementVisitor2<void> {
       final annotationImpl = annotation as ElementAnnotationImpl;
       for (final Argument argument
           in annotationImpl.annotationAst.arguments!.arguments) {
-        if (argument is NamedArgument && argument.name.stringValue == field) {
+        // `lexeme`, not `stringValue` -- see the note in `_extractExports`.
+        if (argument is NamedArgument && argument.name.lexeme == field) {
           if (argument.argumentExpression is! ListLiteral) {
             // Something like
             //   directives: 'Ha Ha!'
@@ -343,15 +346,23 @@ class _ComponentVisitor
           if (setter == null) {
             return;
           }
-          //DartType propertyType = setter.parameters.first.type;
-          final dynamicType = setter.library.typeProvider.dynamicType;
-          var propertyType = setter.formalParameters.first.library?.typeSystem;
+          final propertyType = setter.formalParameters.first.type;
 
           // Resolves unspecified or bounded generic type parameters.
-          // TODO: Migration to 3.6 (Need review)
-          //print('=== ResolveToBound(propertyType) ===');
-          //final resolvedType = propertyType.resolveToBound(dynamicType);
-          final resolvedType = propertyType?.resolveToBound(dynamicType);
+          //
+          // `resolveToBound` moved from `DartType` to `TypeSystem`, and now
+          // takes the type to resolve rather than the bound to fall back to.
+          // An unbounded type parameter resolves to `Object?` there, so keep
+          // falling back to `dynamic` to preserve the original behaviour.
+          final DartType resolvedType;
+          if (propertyType is TypeParameterType &&
+              propertyType.element.bound == null) {
+            resolvedType = setter.library.typeProvider.dynamicType;
+          } else {
+            resolvedType = setter.library.typeSystem.resolveToBound(
+              propertyType,
+            );
+          }
 
           final typeName = getTypeName(resolvedType);
           _addPropertyBindingTo(
@@ -368,7 +379,7 @@ class _ComponentVisitor
             } else {
               // Convert any generic type parameters from the input's type to
               // our internal output AST.
-              var typeArguments = resolvedType?.alias?.typeArguments;
+              var typeArguments = resolvedType.alias?.typeArguments;
               if (typeArguments == null) {
                 if (resolvedType is InterfaceType) {
                   typeArguments = resolvedType.typeArguments;
@@ -534,7 +545,12 @@ class _ComponentVisitor
           .map((s) => CompileTokenMetadata(value: s))
           .toList();
     }
-    var selectorType = selector!.toTypeValue();
+    // Un-erased, as for `read:` below: a query selector is matched by identity
+    // against what the element publishes, and the erased `toTypeValue()` would
+    // report `package:web`'s extension types as `dart:_interceptors`' `JSObject`
+    // -- which matches nothing, and drags a private SDK library into the
+    // generated template. See [unerasedTypeValueOf].
+    var selectorType = unerasedTypeValueOf(selector!) ?? selector.toTypeValue();
     if (selectorType == null) {
       // NOTE(deboer): This code is untested and probably unreachable.
       _exceptionHandler.handle(
@@ -565,7 +581,15 @@ class _ComponentVisitor
     DartType? propertyType,
   ) {
     final value = annotationInfo.constantValue;
-    final readType = getField(value, 'read')?.toTypeValue();
+    // Un-erased: `read:` is matched by identity against the tokens an element
+    // publishes, which include `package:web`'s `Element` and `HTMLElement`.
+    // Those are extension types, so the erased `toTypeValue()` yields `JSObject`
+    // from `dart:_interceptors`, which matches nothing and silently drops the
+    // query. See [unerasedTypeValueOf].
+    final readField = getField(value, 'read');
+    final readType = readField == null
+        ? null
+        : unerasedTypeValueOf(readField) ?? readField.toTypeValue();
     CompileTokenMetadata? readMetadata;
 
     if (readType != null) {
@@ -897,7 +921,8 @@ class _ComponentVisitor
                 .firstWhereOrNull(
                   (Argument argument) =>
                       argument is NamedArgument &&
-                      argument.name.stringValue == 'template',
+                      // `lexeme` -- see the note in `_extractExports`.
+                      argument.name.lexeme == 'template',
                 )
             as NamedArgument?;
     if (templateExpression != null) {
@@ -965,15 +990,69 @@ class _ComponentVisitor
 
     var arguments = annotation.annotationAst.arguments!.arguments;
     var exportsArg = arguments.whereType<NamedArgument>().firstWhereOrNull(
-      (arg) => arg.name.stringValue == 'exports',
+      // `lexeme`, not `stringValue`: `NamedArgument.name` is a `Token`, and
+      // `Token.stringValue` is the token *type's* canonical lexeme -- null for
+      // identifier tokens by design. `stringValue` type-checks here but never
+      // matches, so every `exports:` entry was silently dropped and templates
+      // fell back to resolving the name against the component instance.
+      (arg) => arg.name.lexeme == 'exports',
     );
     if (exportsArg == null || exportsArg.argumentExpression is! ListLiteral) {
       return exports;
     }
 
     var staticNames = (exportsArg.argumentExpression as ListLiteral).elements;
+
+    final unresolvedExports = <AstNode>[];
     for (var staticName in staticNames) {
-      if (staticName is! Identifier) {
+      String name;
+      String? prefix;
+      Element? staticElement;
+
+      if (staticName is TypeLiteral) {
+        // A bare type name in an expression position resolves to a
+        // `TypeLiteral` wrapping a `NamedType`, not to a `SimpleIdentifier`, so
+        // `exports: [SomeClass]` lands here. Enums and classes are the common
+        // case; the `Identifier` branch below still covers exported top-level
+        // functions and constants.
+        final namedType = staticName.type;
+        name = namedType.name.lexeme;
+        final importPrefix = namedType.importPrefix;
+        if (importPrefix != null) {
+          // We only allow prefixed identifiers to have library prefixes.
+          if (importPrefix.element is! PrefixElement) {
+            _exceptionHandler.handle(
+              ErrorMessageForAnnotation(
+                annotationInfo,
+                'Item $staticName in the "exports" field must be either a '
+                'simple identifier or an identifier with a library prefix',
+              ),
+            );
+            return exports;
+          }
+          prefix = importPrefix.name.lexeme;
+        }
+        staticElement = namedType.element;
+      } else if (staticName is Identifier) {
+        if (staticName is PrefixedIdentifier) {
+          // We only allow prefixed identifiers to have library prefixes.
+          if (staticName.prefix.element is! PrefixElement) {
+            _exceptionHandler.handle(
+              ErrorMessageForAnnotation(
+                annotationInfo,
+                'Item $staticName in the "exports" field must be either a '
+                'simple identifier or an identifier with a library prefix',
+              ),
+            );
+            return exports;
+          }
+          name = staticName.identifier.name;
+          prefix = staticName.prefix.name;
+        } else {
+          name = staticName.name;
+        }
+        staticElement = staticName.element;
+      } else {
         _exceptionHandler.handle(
           ErrorMessageForAnnotation(
             annotationInfo,
@@ -982,37 +1061,12 @@ class _ComponentVisitor
         );
         return exports;
       }
-    }
 
-    final unresolvedExports = <Identifier>[];
-    for (var staticName in staticNames) {
-      var id = staticName as Identifier;
-      String name;
-      String? prefix;
       AnalyzedClass? analyzedClass;
-      if (id is PrefixedIdentifier) {
-        // We only allow prefixed identifiers to have library prefixes.
-        if (id.prefix.element is! PrefixElement) {
-          _exceptionHandler.handle(
-            ErrorMessageForAnnotation(
-              annotationInfo,
-              'Item $id in the "exports" field must be either a simple '
-              'identifier or an identifier with a library prefix',
-            ),
-          );
-          return exports;
-        }
-        name = id.identifier.name;
-        prefix = id.prefix.name;
-      } else {
-        name = id.name;
-      }
-
-      final staticElement = id.element;
       if (staticElement is ClassElement) {
         analyzedClass = AnalyzedClass(staticElement);
       } else if (staticElement == null) {
-        unresolvedExports.add(id);
+        unresolvedExports.add(staticName);
         continue;
       }
 

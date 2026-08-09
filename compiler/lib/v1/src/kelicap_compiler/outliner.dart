@@ -85,10 +85,10 @@ class TemplateOutliner implements Builder {
     // Unlike the main compiler, we do not do an allow-list check here; this is
     // both to speed up the outliner (reducing duplicate checks) and because we
     // do not have a configured CompileContext when the outliner is run.
-    //final emitNullSafeCode = library.isNonNullableByDefault;
-    final emitNullSafeCode = !library.metadata.hasJS;
-    final languageVersion = emitNullSafeCode ? '' : '\n\n';
-    final output = StringBuffer('$languageVersion$_analyzerIgnores\n');
+    // Every library is null safe under Dart 3, so no `// @dart=` language
+    // version comment is needed ahead of the ignores. The removed
+    // `isNonNullableByDefault` this used to consult was always true.
+    final output = StringBuffer('$_analyzerIgnores\n');
     if (exportUserCodeFromTemplate) {
       output
         ..writeln('// The .template.dart files also export the user code.')

@@ -21,14 +21,14 @@ void main() {
   template: '{{value}}',
 )
 class ViewComponent implements OnInit {
-  final DataService? _service;
+  final DataService _service;
 
   String? value;
 
   ViewComponent(this._service);
 
   @override
-  Future<String> ngOnInit() async => value = await _service!.fetch();
+  Future<String> ngOnInit() async => value = await _service.fetch();
 }
 
 @Component(

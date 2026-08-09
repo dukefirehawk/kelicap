@@ -23,7 +23,9 @@ import 'shared.dart' show setUpControl, setUpControlGroup;
 class MemorizedForm extends NgForm {
   MemorizedForm(
     @Optional() @Self() @Inject(ngValidators) super.validators,
-    super.changeDetectorRef,
+    // A super parameter inherits the declared type but not the annotations, so
+    // `@Optional()` has to be repeated to match `NgForm`'s nullable parameter.
+    @Optional() super.changeDetectorRef,
   );
 
   /// Add a control if it isn't already found in the container.

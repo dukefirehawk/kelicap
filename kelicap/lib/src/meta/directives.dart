@@ -1,6 +1,5 @@
-import 'package:kelicap_common/kelicap_common.dart';
 import 'package:meta/meta_meta.dart';
-
+import 'package:kelicap_common/kelicap_common.dart';
 import 'typed.dart';
 
 /// An annotation that marks a class as an Kelicap directive, allowing you to
@@ -10,7 +9,7 @@ import 'typed.dart';
 /// ```dart
 /// import 'package:web/web.dart';
 ///
-/// import '../web.dart';
+/// import '../kelicap.dart';
 ///
 /// @Directive(selector: '[myHighlight]')
 /// class HighlightDirective {
@@ -142,7 +141,6 @@ class Directive {
 /// the callbacks are called by the change detection at defined points in time
 /// during the life of the component.
 ///
-/// [LCH]: https://webdev.dartlang.org/Kelicap/guide/lifecycle-hooks
 @Target({TargetKind.classType})
 class Component {
   /// Defines the used change detection strategy.
@@ -202,7 +200,7 @@ class Component {
   ///     )
   ///     class Example {}
   ///
-  final List<Object> exports;
+  final List<Object?> exports;
 
   final String? templateUrl;
   final String? template;
@@ -369,8 +367,7 @@ abstract class _Query {
 ///
 /// **WARNING**: There is a known issue (b/129297484) where, when used in
 /// combination with an `NgFor` (or a custom directive that supports moving
-/// embedded views) this field or setter may _not_ be updated. For details see
-/// go/Kelicap-dart/dev/template-queries.
+/// embedded views) this field or setter may _not_ be updated.
 @Target({TargetKind.field, TargetKind.setter})
 class ContentChildren extends _Query {
   const ContentChildren(super.selector, {super.descendants = true, super.read});
@@ -569,8 +566,8 @@ abstract class _ViewQuery extends _Query {
 ///
 /// **WARNING**: There is a known issue (b/129297484) where, when used in
 /// combination with an `NgFor` (or a custom directive that supports moving
-/// embedded views) this field or setter may _not_ be updated. For details see
-/// go/Kelicap-dart/dev/template-queries.
+/// embedded views) this field or setter may _not_ be updated.
+
 @Target({TargetKind.field, TargetKind.setter})
 class ViewChildren extends _ViewQuery {
   const ViewChildren(super.selector, {super.read}) : super(descendants: true);

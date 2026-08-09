@@ -33,11 +33,11 @@ void main() {
 
     final testFixture = await testBed.create();
     final router = testFixture.assertOnlyInstance.router;
-    final requests = router?.onRouteActivated.map((state) => state.path);
+    final requests = router.onRouteActivated.map((state) => state.path);
 
-    unawaited(router?.navigate('/first'));
-    unawaited(router?.navigate('/second'));
-    unawaited(router?.navigate('/third'));
+    unawaited(router.navigate('/first'));
+    unawaited(router.navigate('/second'));
+    unawaited(router.navigate('/third'));
     // Expect navigation to complete in order requested.
     expect(requests, emitsInOrder(['/first', '/second', '/third']));
 
@@ -59,7 +59,7 @@ void main() {
   providers: [routerProvidersTest],
 )
 class TestComponent {
-  final Router? router;
+  final Router router;
   final List<RouteDefinition> routes = [
     RouteDefinition(
       path: '/first',

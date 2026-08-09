@@ -3,6 +3,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
+import 'package:kelicap_compiler/v1/src/kelicap_compiler/analyzer/common.dart'
+    show unerasedTypeOf;
 import 'package:kelicap_compiler/v2/context.dart';
 
 /// Returns the [CompileTypeMetadata] appropriate for `T` in `Provider<T>`.
@@ -20,7 +22,12 @@ DartType? inferProviderType(DartObject provider, DartObject token) {
   //    case.
   //
   // Check for MultiToken<T>.
-  final tokenType = token.type;
+  //
+  // These read the un-erased types: the `<T>` recovered here becomes the type of
+  // the generated provider field, so an extension type such as `package:web`'s
+  // `HTMLElement` must not collapse to `dart:_interceptors`' `JSObject`.
+  // See [unerasedTypeOf].
+  final tokenType = unerasedTypeOf(token);
   if (tokenType != null && $MultiToken.isAssignableFromType(tokenType)) {
     if (tokenType is InterfaceType && $MultiToken.isExactlyType(tokenType)) {
       return tokenType.typeArguments.first;
@@ -30,7 +37,7 @@ DartType? inferProviderType(DartObject provider, DartObject token) {
     if (tokenTypeClass is ClassElement) {
       var supertype = tokenTypeClass.supertype!;
       if (!$MultiToken.isExactlyType(supertype)) {
-        // When we start using kelicap_compiler to resolve all of the time
+        // When we start using angular_compiler to resolve all of the time
         // remove this message, since we already validate there.
         throw BuildError.forElement(
           tokenType.element!,
@@ -44,7 +51,7 @@ DartType? inferProviderType(DartObject provider, DartObject token) {
     }
   }
   // Lookup Inferred Type (i.e. the <T> recorded for Provider<T>).
-  var providerType = provider.type;
+  var providerType = unerasedTypeOf(provider);
   if (providerType is InterfaceType) {
     final providerOfTArgs = providerType.typeArguments;
     if (providerOfTArgs.isNotEmpty) {

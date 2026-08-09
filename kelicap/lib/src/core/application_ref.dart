@@ -76,10 +76,14 @@ class ApplicationRef extends ChangeDetectionHost {
         final testability = injector.provideTypeOptional<Testability>(
           Testability,
         );
-        final registry = _injector.provideType<TestabilityRegistry>(
-          TestabilityRegistry,
-        );
-        registry.registerApplication(component.location, testability);
+        // Testability is only provided when the app is bootstrapped for tests,
+        // so its absence is the normal case, not an error.
+        if (testability != null) {
+          final registry = _injector.provideType<TestabilityRegistry>(
+            TestabilityRegistry,
+          );
+          registry.registerApplication(component.location, testability);
+        }
 
         _loadedRootComponent(component, replacement);
         return component;

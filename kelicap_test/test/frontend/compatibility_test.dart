@@ -23,13 +23,13 @@ void main() {
   tearDown(disposeAnyRunningTest);
 
   group('with injector', () {
-    late NgTestBed<KelicapInjector> testBed;
+    late NgTestBed<AngularInjector> testBed;
     TestService? testService;
 
     setUp(() {
       testService = null;
       testBed = NgTestBed(
-        ng.createKelicapInjectorFactory(),
+        ng.createAngularInjectorFactory(),
         host: testRoot,
         rootInjector: (i) => Injector.map({TestService: TestService()}, i),
       );
@@ -133,12 +133,12 @@ void main() {
 }
 
 @Component(selector: 'test', template: '{{value}}')
-class KelicapInjector {
-  final TestService? _testService;
+class AngularInjector {
+  final TestService _testService;
 
-  KelicapInjector(this._testService);
+  AngularInjector(this._testService);
 
-  String? get value => _testService?.value;
+  String? get value => _testService.value;
 }
 
 @Injectable()

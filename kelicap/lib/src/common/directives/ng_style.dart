@@ -1,4 +1,4 @@
-import 'dart:js_interop_unsafe';
+import 'dart:js_interop';
 
 import 'package:web/web.dart';
 
@@ -85,15 +85,27 @@ class NgStyle implements DoCheck {
   }
 
   void _setProperty(KeyValueChangeRecord record) {
-    /*
-    _ngElement.style.setProperty(
+    // A removed key arrives with a null value. The empty string clears the
+    // declaration, which is what `dart:html` did when handed null.
+    _inlineStyle?.setProperty(
       unsafeCast(record.key),
-      unsafeCast(record.currentValue),
+      record.currentValue as String? ?? '',
     );
-    */
-    _ngElement?.setProperty(
-      unsafeCast(record.key),
-      unsafeCast(record.currentValue),
-    );
+  }
+
+  /// The host element's inline style declaration.
+  ///
+  /// `style` is declared on the element subtypes rather than on [Element], so
+  /// it cannot be reached through the statically known type. Note this must be
+  /// a CSS property on `style` -- setting a property of the same name directly
+  /// on the element, as `dart:js_interop_unsafe`'s `setProperty` does, defines
+  /// a JavaScript field on the DOM object and changes nothing about how the
+  /// element renders.
+  CSSStyleDeclaration? get _inlineStyle {
+    final element = _ngElement;
+    if (element == null) return null;
+    if (element.isA<HTMLElement>()) return (element as HTMLElement).style;
+    if (element.isA<SVGElement>()) return (element as SVGElement).style;
+    return null;
   }
 }

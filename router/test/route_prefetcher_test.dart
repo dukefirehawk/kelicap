@@ -47,11 +47,11 @@ void main() {
     var router = testFixture.assertOnlyInstance.router;
     // Assert that initial navigation is awaiting prefetcher's result.
     expect(prefetcherWasCalled, true);
-    expect(router?.current, null);
+    expect(router.current, null);
     await testFixture.update(prefetcherCompleter.complete);
     // Assert that initial navigation is now complete.
     expect(
-      router?.current,
+      router.current,
       TypeMatcher<RouterState>().having((s) => s.path, 'path', ''),
     );
   });
@@ -114,7 +114,7 @@ final appInjector = ng.appInjector$Injector;
 class AppComponent {
   static late List<RouteDefinition> routes;
 
-  final Router? router;
+  final Router router;
 
   AppComponent(this.router);
 }

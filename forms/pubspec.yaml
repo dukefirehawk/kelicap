@@ -2,7 +2,7 @@ name: kelicap_forms
 description: >
   Forms components for Kelicap framework.
   Provides template-driven forms, reactive forms and validation.
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/dukefirehawk/kelicap
 
 environment:

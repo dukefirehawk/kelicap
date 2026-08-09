@@ -1,4 +1,6 @@
 import 'package:kelicap_common/kelicap_common.dart';
+import 'package:kelicap_compiler/v2/src/context/build_error.dart'
+    show BuildError;
 
 import '../compile_metadata.dart'
     show
@@ -267,6 +269,28 @@ class CompileElement extends CompileNode implements ProviderResolverHost {
         if (providerSource != null) {
           value = providerSource.build();
           changeDetectorRef = providerSource.buildChangeDetectorRef();
+        } else {
+          // Nothing publishes this token, so no query result can ever be
+          // assigned. Silently emitting no query leaves the annotated field
+          // permanently null, which only shows up as a null dereference at
+          // runtime, so fail the build instead.
+          //
+          // Thrown rather than reported via `CompileContext.reportAndRecover`:
+          // `throwRecoverableErrors` is only called from the template parser,
+          // so anything reported this late in view compilation is collected and
+          // never surfaced.
+          final read = queryWithRead.read.identifier!;
+          throw BuildError.withoutContext(
+            'No provider found for `read: ${read.name}` '
+            '(${read.moduleUrl}) on the query for '
+            '`${queryWithRead.query.metadata.propertyName}`.\n\n'
+            'The `read` token is matched by identity against what the element '
+            'publishes. A DOM element publishes `Element` and `HTMLElement` '
+            'from `package:web` -- note that the identically named `dart:html` '
+            'types are different tokens and will not match. Otherwise `read` '
+            'must name a directive on the element, `ElementRef`, '
+            '`TemplateRef`, or `ViewContainerRef`.',
+          );
         }
       } else {
         // Query for a reference.

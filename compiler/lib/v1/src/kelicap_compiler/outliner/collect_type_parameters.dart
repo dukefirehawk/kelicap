@@ -79,12 +79,14 @@ Future<void> _collectTypeParametersFromUnit(
   for (final declaration in unit.declarations) {
     if (declaration is ClassDeclaration &&
         declaration.namePart.typeParameters != null &&
-        typeParameters.containsKey(declaration.namePart.typeName.stringValue)) {
-      typeParameters[declaration.namePart.typeName.stringValue!] = source
-          .substring(
-            declaration.namePart.typeParameters!.offset,
-            declaration.namePart.typeParameters!.end,
-          );
+        // `lexeme`, not `stringValue`: `typeName` is a `Token`, and
+        // `Token.stringValue` is null for identifier tokens, so this never
+        // matched and generic directives lost their type parameters.
+        typeParameters.containsKey(declaration.namePart.typeName.lexeme)) {
+      typeParameters[declaration.namePart.typeName.lexeme] = source.substring(
+        declaration.namePart.typeParameters!.offset,
+        declaration.namePart.typeParameters!.end,
+      );
     }
   }
 }
