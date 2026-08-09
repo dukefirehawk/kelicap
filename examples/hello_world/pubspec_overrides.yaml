@@ -1,0 +1,13 @@
+dependency_overrides:
+  kelicap:
+    path: ../../kelicap
+  kelicap_ast:
+    path: ../../ast
+  kelicap_common:
+    path: ../../common
+  kelicap_compiler:
+    path: ../../compiler
+  kelicap_forms:
+    path: ../../forms
+  kelicap_router:
+    path: ../../router

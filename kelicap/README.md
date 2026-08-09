@@ -12,6 +12,7 @@ Kelicap is structured into the following core packages:
 
 * **`kelicap_ast`**: Defines the Abstract Syntax Tree (AST) used internally by the framework.
 * **`kelicap_common`**: Contains shared internal utilities and core helper classes.
+* **`kelicap_observables`**: Contains code for observables, the reactive primitive of Kelicap, providing change detection and state management.
 * **`kelicap_compiler`**: Build-time tooling that compiles Kelicap applications into native HTML, CSS, and JavaScript.
 * **`kelicap`**: The core runtime library powering Kelicap applications.
 * **`kelicap_forms`**: Forms components for Kelicap framework.
@@ -41,5 +42,5 @@ Dart 3.12 or later
 
 ```bash
     dart pub upgrade
-    dart run build_runner build
+    dart run build_runner serve --enable-sourcemaps
 ```

@@ -50,7 +50,7 @@ class ViewFragment {
       if (node is ViewContainer) {
         target.append(node.nativeElement);
         final nestedViews = node.nestedViews;
-        if (nestedViews != null) {
+        if (nestedViews.isNotEmpty) {
           final length = nestedViews.length;
           for (var n = 0; n < length; n++) {
             nestedViews[n].viewFragment!.appendDomNodesInto(target);
@@ -79,7 +79,7 @@ class ViewFragment {
 
   static Node? _findLastDomNode(ViewContainer container) {
     final nestedViews = container.nestedViews;
-    return nestedViews != null && nestedViews.isNotEmpty
+    return nestedViews.isNotEmpty
         ? nestedViews.last.viewFragment!.findLastDomNode()
         : container.nativeElement;
   }
@@ -97,7 +97,7 @@ class ViewFragment {
       if (node is ViewContainer) {
         target.add(node.nativeElement);
         final nestedViews = node.nestedViews;
-        if (nestedViews != null) {
+        if (nestedViews.isNotEmpty) {
           final length = nestedViews.length;
           for (var n = 0; n < length; n++) {
             _flattenDomNodes(

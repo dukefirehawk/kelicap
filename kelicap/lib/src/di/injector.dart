@@ -81,7 +81,7 @@ abstract class Injector {
       result = injectFromAncestryOptional(token, orElse);
     }
     errors.debugInjectorLeave(token);
-    return unsafeCast(result);
+    return unsafeCast<T>(result);
   }
 
   /// Injects and returns an object representing [token] from this injector.

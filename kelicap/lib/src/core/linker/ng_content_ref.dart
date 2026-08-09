@@ -36,7 +36,7 @@ class NgContentRef {
       // *ngFor).
       if (node is ViewContainer) {
         final nestedViews = node.nestedViews;
-        if (nestedViews != null && nestedViews.isNotEmpty) {
+        if (nestedViews.isNotEmpty) {
           return true;
         }
       } else {

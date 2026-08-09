@@ -1,10 +1,14 @@
 # Change Log
 
+## 1.0.2
+
+- feat: Added type to injector
+
 ## 1.0.1
 
-- Remove usage of querySelector and directly use document.querySelector
-- Update README
+- fix: Remove usage of querySelector and directly use document.querySelector
+- chore: Update README
 
 ## 1.0.0
 
-- Initial release
+- chore: Initial release

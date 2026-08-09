@@ -93,7 +93,7 @@ abstract class RenderView extends View {
       if (node is ViewContainer) {
         target.append(node.nativeElement);
         final nestedViews = node.nestedViews;
-        if (nestedViews != null) {
+        if (nestedViews.isNotEmpty) {
           final length = nestedViews.length;
           for (var n = 0; n < length; n++) {
             nestedViews[n].viewFragment!.appendDomNodesInto(target);

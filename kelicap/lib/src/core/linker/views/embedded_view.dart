@@ -106,7 +106,7 @@ abstract class EmbeddedView<T> extends RenderView
   @override
   void destroy() {
     final viewContainer = _data.viewContainer;
-    viewContainer?.detachView(viewContainer.nestedViews!.indexOf(this));
+    viewContainer?.detachView(viewContainer.nestedViews.indexOf(this));
     destroyInternalState();
   }
 

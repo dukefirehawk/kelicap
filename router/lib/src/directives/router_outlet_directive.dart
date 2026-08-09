@@ -109,17 +109,17 @@ class RouterOutlet implements OnInit, OnDestroy {
   /// If the component is currently active, or reusable, a cached instance will
   /// be returned instead of creating a new one.
   ComponentRef<Object> prepare(ComponentFactory<Object> componentFactory) {
-    if (_viewContainerRef == null) {
-      if (_loadedComponents.containsKey(componentFactory)) {
-        return _loadedComponents[componentFactory]!;
-      }
-      throw StateError('Cannot prepare component without a ViewContainerRef');
-    }
+    //if (_viewContainerRef == null) {
+    //  if (_loadedComponents.containsKey(componentFactory)) {
+    //    return _loadedComponents[componentFactory]!;
+    //  }
+    //  throw StateError('Cannot prepare component without a ViewContainerRef');
+    //}
     return _loadedComponents.putIfAbsent(componentFactory, () {
       final componentRef = componentFactory.create(
         Injector.map({
           RouterOutletToken: RouterOutletToken(),
-        }, _viewContainerRef.injector),
+        }, _viewContainerRef!.injector),
       );
       // ignore: deprecated_member_use
       componentRef.changeDetectorRef.detectChanges();
@@ -153,6 +153,7 @@ class RouterOutlet implements OnInit, OnDestroy {
       } else {
         // Destroy the active component.
         _loadedComponents.remove(_activeComponentFactory);
+        //_loadedComponents.clear();
         activeComponent.destroy();
         _viewContainerRef?.clear();
       }
@@ -160,6 +161,7 @@ class RouterOutlet implements OnInit, OnDestroy {
     // Render the new component in the outlet.
     _activeComponentFactory = componentFactory;
     final component = prepare(componentFactory);
+
     _viewContainerRef?.insert(component.hostView);
     // ignore: deprecated_member_use
     component.changeDetectorRef.detectChanges();

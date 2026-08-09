@@ -94,7 +94,7 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
 
   void destroy() {
     final viewContainer = _data.viewContainer;
-    viewContainer?.detachView(viewContainer.nestedViews!.indexOf(this));
+    viewContainer?.detachView(viewContainer.nestedViews.indexOf(this));
     destroyInternalState();
   }
 
