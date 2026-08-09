@@ -83,11 +83,10 @@ Future<void> _collectTypeParametersFromUnit(
         // `Token.stringValue` is null for identifier tokens, so this never
         // matched and generic directives lost their type parameters.
         typeParameters.containsKey(declaration.namePart.typeName.lexeme)) {
-      typeParameters[declaration.namePart.typeName.lexeme] = source
-          .substring(
-            declaration.namePart.typeParameters!.offset,
-            declaration.namePart.typeParameters!.end,
-          );
+      typeParameters[declaration.namePart.typeName.lexeme] = source.substring(
+        declaration.namePart.typeParameters!.offset,
+        declaration.namePart.typeParameters!.end,
+      );
     }
   }
 }
