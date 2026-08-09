@@ -129,8 +129,12 @@ abstract class RenderView extends View {
   ///   * Calls [markForCheck] on this view to ensure it gets change detected
   ///   during the next change detection cycle, in case it uses a non-default
   ///   change detection strategy.
-  // TODO: Migrated to dart 3.6 (Need to review)
-  JSFunction? jsEventHandler0(void Function() handler) {
+  // Non-nullable: the body is a single `.toJS`, which yields a non-nullable
+  // `JSExportedDartFunction`. `EventManager.addEventListener` takes a
+  // non-nullable `JSFunction` and immediately calls it, so a nullable return
+  // here made every keyed event binding (`keydown.enter` and friends, the only
+  // ones routed through `EventManager`) fail to compile in generated code.
+  JSFunction jsEventHandler0(void Function() handler) {
     return (Event event) {
       markForCheck();
       appViewUtils.eventManager.zone.runGuarded(handler);
@@ -172,7 +176,8 @@ abstract class RenderView extends View {
     };
   }
 
-  JSFunction? jsEventHandler1<E, F extends E>(void Function(F) handler) {
+  // Non-nullable -- see [jsEventHandler0].
+  JSFunction jsEventHandler1<E, F extends E>(void Function(F) handler) {
     assert(
       E == Null || F != Null,
       "Event handler '$handler' isn't assignable to expected type "

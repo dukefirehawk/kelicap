@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:kelicap/src/meta.dart';
 import 'package:web/web.dart' show Element;
 
@@ -43,15 +45,14 @@ class SafeInnerHtmlDirective {
   set safeInnerHtml(dynamic safeInnerHtml) {
     // print('Setting inner html as $safeInnerHtml');
     if (safeInnerHtml is SafeHtml) {
-      //_element.setInnerHtml(
-      //  safeInnerHtml.changingThisWillBypassSecurityTrust,
-      //  treeSanitizer: NodeTreeSanitizer.trusted,
-      //);
-      _element?.textContent = safeInnerHtml.changingThisWillBypassSecurityTrust;
-      // print('$safeInnerHtml is SafeHtml!');
-      // print(_element.innerHTML);
+      // `setHTMLUnsafe` parses without sanitizing, which is what this directive
+      // is for and what the `NodeTreeSanitizer.trusted` argument meant when
+      // this used `setInnerHtml`. Assigning `textContent` instead would insert
+      // the markup as a text node, rendering the tags as visible characters.
+      _element?.setHTMLUnsafe(
+        safeInnerHtml.changingThisWillBypassSecurityTrust.toJS,
+      );
     } else if (safeInnerHtml == null) {
-      //_element.setInnerHtml('');
       _element?.textContent = '';
     } else {
       // A regular string is not allowed since a security audit needs to be able

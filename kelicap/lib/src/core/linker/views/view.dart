@@ -1,9 +1,9 @@
-//import 'dart:html' show Element;
-import 'package:kelicap_common/kelicap_common.dart';
+import 'dart:js_interop';
+
+import 'package:kelicap/kelicap.dart';
 import 'package:web/web.dart' show Element;
 
 import 'package:meta/meta.dart';
-import '../../../core/change_detection/change_detection.dart';
 import '../../../core/change_detection/host.dart';
 import '../../../di/errors.dart';
 import '../../../di/injector.dart';
@@ -124,9 +124,18 @@ abstract class View implements ChangeDetectorRef {
 
   @override
   void markChildForCheck(Object child) {
-    // TODO: Migrate to 3.6 (Need review)
-    // assert(child is! Element , 'Expected a component instance');
-    assert(child == Element, 'Expected a component instance');
+    // The guard is that [child] is a component instance rather than a DOM node.
+    // `Element` is a JS interop extension type, so `is` would erase to its
+    // representation type and is not platform-consistent; `isA` is the real
+    // runtime check.
+    assert(
+      // `child` is an `Object` and has to be narrowed to a JS type before `isA`
+      // can do the real instanceof check. That narrowing is what the lint
+      // objects to, and there is no other way to ask the question here.
+      // ignore: invalid_runtime_check_with_js_interop_types
+      !(child is JSObject && child.isA<Element>()),
+      'Expected a component instance',
+    );
     queryChangeDetectorRefs[child]?.markForCheck();
   }
 

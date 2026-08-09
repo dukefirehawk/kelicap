@@ -2,11 +2,12 @@
 
 ## 1.0.2
 
-- feat: Added type to injector
+- feat: Update injector
+- fix: Misc. JavaScript runtime errors contributed by the community
 
 ## 1.0.1
 
-- fix: Remove usage of querySelector and directly use document.querySelector
+- fix: Replace `querySelector` with `document.querySelector`
 - chore: Update README
 
 ## 1.0.0
