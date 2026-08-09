@@ -37,13 +37,17 @@ o.OutputType? fromDartType(DartType? dartType, {bool resolveBounds = true}) {
   }
   if (dartType is TypeParameterType && resolveBounds) {
     // Resolve generic type to its bound or dynamic if it has none.
-    final dynamicType = dartType.element.library!.typeProvider.dynamicType;
-    var propertyType = dartType.element.library?.typeSystem;
-
-    // TODO: Migrate to dart 3.6 (Need to review)
-    //print('=== ResolveToBound(dartType) ===');
-    //dartType = dartType.resolveToBound(dynamicType);
-    dartType = propertyType?.resolveToBound(dynamicType);
+    //
+    // `resolveToBound` moved from `DartType` to `TypeSystem`, and now takes the
+    // type to resolve rather than the bound to fall back to. Passing the
+    // fallback, as this used to, resolves `dynamic` to itself and so collapsed
+    // *every* type parameter to `dynamic`. An unbounded type parameter resolves
+    // to `Object?` there, so keep falling back to `dynamic` explicitly to
+    // preserve the original behaviour.
+    final library = dartType.element.library!;
+    dartType = dartType.element.bound == null
+        ? library.typeProvider.dynamicType
+        : library.typeSystem.resolveToBound(dartType);
   }
   // Note this check for dynamic should come after the check for a type
   // parameter, since a type parameter could resolve to dynamic.
@@ -64,15 +68,16 @@ o.OutputType? fromDartType(DartType? dartType, {bool resolveBounds = true}) {
   }
   var outputType = o.ExternalType(
     CompileIdentifierMetadata(
-      name: dartType?.element?.name ?? dartType!.getDisplayString(),
-      moduleUrl: moduleUrl((dartType?.element)!),
+      //name: dartType.element?.name ?? dartType.getDisplayString(),
+      name: dartType.getDisplayString(),
+      moduleUrl: moduleUrl(dartType.element!),
       // Most o.ExternalTypes are not created, but those that are (like
       // OpaqueToken<...> need this generic type.
       typeArguments: typeArguments,
     ),
     typeArguments,
   );
-  if (dartType?.nullabilitySuffix == NullabilitySuffix.question) {
+  if (dartType.nullabilitySuffix == NullabilitySuffix.question) {
     outputType = outputType.asNullable();
   }
   return outputType;

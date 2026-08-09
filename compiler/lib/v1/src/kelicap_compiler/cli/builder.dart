@@ -32,8 +32,9 @@ class Compiler implements Generator {
 
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) {
-    //final isNullSafe = library.element.isNonNullableByDefault;
-    final isNullSafe = !library.element.metadata.hasJS;
+    // Every library is null safe under Dart 3; `isNonNullableByDefault`, which
+    // this replaced, was removed from the analyzer because it is always true.
+    const isNullSafe = true;
     return runWithContext(
       CompileContext(
         buildStep.inputId,

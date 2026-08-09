@@ -5,6 +5,7 @@ import 'package:kelicap_compiler/v2/context.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 
+import '../common.dart';
 import '../link.dart';
 import '../types.dart';
 
@@ -30,7 +31,10 @@ class TokenReader {
       throw FormatException(errorMsg);
     }
     if (constant.isType) {
-      final typeValue = constant.typeValue;
+      // Un-erased: `ConstantReader.typeValue` erases extension types, which
+      // would emit `package:web`'s `Window` as `dart:_interceptors`' `JSObject`.
+      // See [unerasedTypeValueOf].
+      final typeValue = unerasedTypeValueOf(object) ?? constant.typeValue;
       // TODO: assertNotFunctionType.
       return TypeTokenElement(linkTypeOf(typeValue));
     }
@@ -55,7 +59,10 @@ class TokenReader {
   /// Returns [constant] parsed into an [OpaqueTokenElement].
   OpaqueTokenElement _parseOpaqueToken(ConstantReader constant, [Element? on]) {
     final value = constant.objectValue;
-    final valueType = value.type!;
+    // Un-erased: for `OpaqueToken<HTMLElement>` the erased `value.type` is
+    // `OpaqueToken<JSObject>`, and `typeUrl` below would emit the private
+    // `dart:_interceptors`. See [unerasedTypeOf].
+    final valueType = unerasedTypeOf(value)!;
     late List<DartType> typeArgs;
     if (!$OpaqueToken.isExactlyType(valueType) &&
         !$MultiToken.isExactlyType(valueType)) {
@@ -73,7 +80,7 @@ class TokenReader {
     return OpaqueTokenElement(
       uniqueName,
       isMultiToken: constant.instanceOf($MultiToken),
-      classUrl: linkToOpaqueToken(constant.objectValue.type!),
+      classUrl: linkToOpaqueToken(valueType),
       typeUrl: typeArgs.isNotEmpty ? linkTypeOf(typeArgs.first) : null,
     );
   }

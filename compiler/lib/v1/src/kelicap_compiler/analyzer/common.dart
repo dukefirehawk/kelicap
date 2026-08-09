@@ -44,6 +44,45 @@ String? getTypeName(DartType? type) {
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
 
+/// Returns the type of the constant [object], without extension type erasure.
+///
+/// The analyzer's constant evaluator erases extension types: for
+/// `const OpaqueToken<HTMLElement>(...)`, `DartObject.type` reports
+/// `OpaqueToken<JSObject>`, because `JSObject` is `HTMLElement`'s representation
+/// type. That is right for constant *identity*, but wrong for code generation.
+/// `JSObject` is declared in `dart:_interceptors` (`dart:js_interop` only
+/// re-exports it), so emitting it puts a private SDK import into the generated
+/// `.template.dart`. `build_web_compilers` treats any library importing a
+/// `dart:_` library as non-importable, and then silently skips every entrypoint
+/// that transitively reaches it -- for both ddc and dart2js -- reporting an
+/// *empty* list of offending libraries, because the library it wants to name is
+/// exactly the one it could not write a `.module.library` for.
+///
+/// Use this wherever the result is emitted as a *reference*: a token, or a type
+/// argument. Sites that need a constructible class -- anything that casts the
+/// element to `ClassElement` -- must keep using [DartObject.type], since an
+/// extension type has an `ExtensionTypeElement`, not a `ClassElement`.
+///
+/// The accessor is `@experimental`, but it is the API the analyzer added for
+/// precisely this case -- see the comment on `TypeState.typeNotExtensionTypeErased`
+/// in `analyzer/lib/src/dart/constant/value.dart`. Confining the use to this one
+/// function keeps the blast radius to a single line if it is ever renamed.
+DartType? unerasedTypeOf(DartObject object) =>
+    // ignore: experimental_member_use
+    object.typeNotExtensionTypeErased ?? object.type;
+
+/// Returns the `Type` value of the constant [object], without extension type
+/// erasure.
+///
+/// The [unerasedTypeOf] problem, but for `Type` literal tokens such as the
+/// `Window` in `FactoryProvider(Window, getWindow)`, which otherwise reaches
+/// codegen as `JSObject`. Note that erasure also collapses `Document`, `Window`
+/// and `Location` onto the *same* token, so two providers in one injector become
+/// indistinguishable `identical(token, JSObject)` branches.
+DartType? unerasedTypeValueOf(DartObject object) =>
+    // ignore: experimental_member_use
+    object.toTypeValueNotExtensionTypeErased() ?? object.toTypeValue();
+
 /// Returns the bound [DartType] from the instance [object].
 ///
 /// For example for the following code:
