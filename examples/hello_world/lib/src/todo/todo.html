@@ -1,0 +1,14 @@
+<div class="todo-container">
+  <h2>My Tasks</h2>
+
+  <!-- Basic *ngFor loop with index tracking -->
+  <ul>
+    <li *ngFor="let todo of todos; let i = index">
+      <span>{{ i + 1 }}. {{ todo }}</span>
+      <button (click)="removeTodo(i)">Delete</button>
+    </li>
+  </ul>
+
+  <!-- Fallback if list is empty using *ngIf -->
+  <p *ngIf="todos.isEmpty">No tasks remaining! Great job.</p>
+</div>

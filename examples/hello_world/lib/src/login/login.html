@@ -1,1 +1,18 @@
-<div class="login-panel">Login</div>
+<div class="login-panel">
+    <div>
+      Login
+    </div>
+    <!-- Basic *ngIf usage -->
+    <div *ngIf="isLoggedIn">
+        <h2>Welcome back, {{ username }}!</h2>
+        <p>Your session is active.</p>
+    </div>
+
+    <div *ngIf="!isLoggedIn">
+        <h2>Please Login</h2>
+        <p>You are currently logged out.</p>
+    </div>
+    <div>
+        <button (click)="toggleLogin()">Toggle Login</button>
+    </div>
+</div>
