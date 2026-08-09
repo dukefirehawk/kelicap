@@ -1,5 +1,12 @@
 # Hello World
 
+## Features
+
+- *ngIf*
+- *ngFor*
+- outer/inner component
+- Router
+
 ## Development build
 
 To debug locally with DDC:
