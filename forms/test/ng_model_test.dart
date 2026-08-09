@@ -139,7 +139,7 @@ class CustomEditorWithNgModelSupport implements ControlValueAccessor<String> {
   /// purposes we just set a boolean.
   bool isDisabled = false;
 
-  CustomEditorWithNgModelSupport(this._ngControl) {
+  CustomEditorWithNgModelSupport(@Optional() this._ngControl) {
     _ngControl?.valueAccessor = this;
   }
 

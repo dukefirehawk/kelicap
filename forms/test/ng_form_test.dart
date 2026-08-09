@@ -160,7 +160,7 @@ void main() {
 class NgFormTest {
   NgFormTest(this.changeDetectorRef);
 
-  final ChangeDetectorRef? changeDetectorRef;
+  final ChangeDetectorRef changeDetectorRef;
 
   @ViewChild('form')
   NgForm? form;

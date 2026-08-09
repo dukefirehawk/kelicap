@@ -21,7 +21,7 @@ import 'validators.dart' show ValidatorFn;
 ///   directives: const [formDirectives],
 ///   template: '''
 ///     <div>
-///       <h2>Kelicap Control &amp; AbstractControlGroup Example</h2>
+///       <h2>Angular Control &amp; AbstractControlGroup Example</h2>
 ///       <form #f="ngForm">
 ///         <div ngControlGroup="name" #cg-name="form">
 ///           <h3>Enter your name:</h3>
@@ -67,7 +67,7 @@ class NgControlGroup extends ControlContainer<AbstractControlGroup>
   bool _disabledChanged = false;
 
   NgControlGroup(
-    @SkipSelf() this._parent,
+    @Optional() @SkipSelf() this._parent,
     @Optional() @Self() @Inject(ngValidators) List<dynamic>? validators,
   ) : validator = composeValidators(validators);
 
