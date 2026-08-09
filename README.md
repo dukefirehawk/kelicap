@@ -37,5 +37,5 @@ Dart 3.12 or later
 
 ```bash
     dart pub upgrade
-    dart run build_runner build
+    dart run build_runner serve
 ```
