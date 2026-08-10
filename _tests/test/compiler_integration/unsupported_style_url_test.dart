@@ -1,0 +1,45 @@
+import 'package:test/test.dart';
+// ignore: avoid_relative_lib_imports
+import '../../lib/compiler.dart';
+import 'package:kelicap_compiler/v2/context.dart';
+
+void main() {
+  CompileContext.overrideForTesting();
+
+  test('should fail on a non-".css" file extension', () async {
+    await compilesExpecting(
+      """
+      import '$ngImport';
+
+      @Component(
+        selector: 'example',
+        template: '',
+        styleUrls: [
+          'example.scss',
+        ],
+      )
+      class Example {}
+    """,
+      errors: [contains('Unsupported extension in styleUrls: "example.scss"')],
+    );
+  });
+
+  test('should fail on an invalid URI', () async {
+    await compilesExpecting(
+      """
+      import '$ngImport';
+
+      @Component(
+        selector: 'example',
+        template: '',
+        styleUrls: [
+           // Intentionally mis-spell package as packages.
+          'packages:foo/foo.css',
+        ],
+      )
+      class Example {}
+    """,
+      errors: [contains('Invalid Style URL: "packages:foo/foo.css"')],
+    );
+  });
+}

@@ -1,0 +1,75 @@
+import 'package:web/web.dart';
+
+import 'package:test/test.dart';
+import 'package:kelicap/kelicap.dart';
+import 'package:kelicap_test/kelicap_test.dart';
+
+import 'query_html_element_test.template.dart' as ng;
+
+void main() {
+  tearDown(disposeAnyRunningTest);
+
+  test('should support @ViewChild with Element', () async {
+    final fixture = await NgTestBed<UsesElement>(
+      ng.createUsesElementFactory(),
+    ).create();
+    expect(fixture.assertOnlyInstance.element!.textContent, '1');
+  });
+
+  test('should support @ViewChild with HtmlElement', () async {
+    final fixture = await NgTestBed<UsesHtmlElement>(
+      ng.createUsesHtmlElementFactory(),
+    ).create();
+    expect(fixture.assertOnlyInstance.element!.textContent, '2');
+  });
+
+  test('should support @ViewChildren with Element', () async {
+    final fixture = await NgTestBed<UsesListOfElement>(
+      ng.createUsesListOfElementFactory(),
+    ).create();
+    expect(fixture.assertOnlyInstance.elements!.map((e) => e.textContent), [
+      '1',
+      '2',
+    ]);
+  });
+
+  test('should support @ViewChildren with HtmlElement', () async {
+    final fixture = await NgTestBed<UsesListOfHtmlElement>(
+      ng.createUsesListOfHtmlElementFactory(),
+    ).create();
+    expect(fixture.assertOnlyInstance.elements!.map((e) => e.textContent), [
+      '1',
+      '2',
+    ]);
+  });
+}
+
+@Component(selector: 'uses-element', template: '<div #div>1</div>')
+class UsesElement {
+  @ViewChild('div')
+  Element? element;
+}
+
+@Component(selector: 'uses-element', template: '<div #div>2</div>')
+class UsesHtmlElement {
+  @ViewChild('div')
+  HtmlElement? element;
+}
+
+@Component(
+  selector: 'uses-list-of-element',
+  template: '<div #div>1</div><div #div>2</div>',
+)
+class UsesListOfElement {
+  @ViewChildren('div')
+  List<Element>? elements;
+}
+
+@Component(
+  selector: 'uses-list-of-element',
+  template: '<div #div>1</div><div #div>2</div>',
+)
+class UsesListOfHtmlElement {
+  @ViewChildren('div')
+  List<HtmlElement>? elements;
+}

@@ -12,7 +12,7 @@ workspace:
   - kelicap_test
   - forms
   - router
-  #- goldens
+  - _tests
   #- examples/hello_world
   #- _tests
 
