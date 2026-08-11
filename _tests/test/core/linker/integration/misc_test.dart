@@ -4,8 +4,7 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 import 'package:web/web.dart';
 
-import 'misc_test.template.dart'
-    as ng;
+import 'misc_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);
@@ -151,7 +150,7 @@ class DynamicViewport {
     final injector = Injector.map({MyService: myService}, vc.injector);
     final factoryFuture = Future.value(ng.createChildCompUsingServiceFactory());
     done = factoryFuture.then(
-      (componentFactory) =>
+      (ComponentFactory componentFactory) =>
           vc.createComponent<Object>(componentFactory, 0, injector),
     );
   }

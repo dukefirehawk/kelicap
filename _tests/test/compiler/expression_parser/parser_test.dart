@@ -26,15 +26,15 @@ void main() {
 
 void _runTests(ExpressionParser Function() createParser) {
   ASTWithSource parseAction(String text, [String? location]) {
-    return createParser().parseAction(text, location, []);
+    return createParser().parseAction(text, location!, []);
   }
 
   ASTWithSource parseBinding(String text, [String? location]) {
-    return createParser().parseBinding(text, location, []);
+    return createParser().parseBinding(text, location!, []);
   }
 
   ASTWithSource parseInterpolation(String text, [String? location]) {
-    return createParser().parseInterpolation(text, location, []);
+    return createParser().parseInterpolation(text, location!, [])!;
   }
 
   String unparse(ASTWithSource ast) {
@@ -165,7 +165,7 @@ void _runTests(ExpressionParser Function() createParser) {
           final parser = createParser();
           final text = 'fn(a: 1)';
           final export = CompileIdentifierMetadata(name: 'a');
-          final ast = parser.parseAction(text, null, [export]);
+          final ast = parser.parseAction(text, '', [export]);
           expect(unparse(ast), text);
         });
       });
@@ -237,7 +237,7 @@ void _runTests(ExpressionParser Function() createParser) {
       test('should not crash when encountering an invalid event', () {
         // Template validator should prevent from ever getting here, but just
         // in case lets avoid an NPE error that is impossible to debug.
-        expectActionError(null, throwsWith('Blank expressions are not'));
+        expectActionError('', throwsWith('Blank expressions are not'));
       });
       test('should throw on a lexer error', () {
         expectActionError('a = 1E-', _throwsParseException);

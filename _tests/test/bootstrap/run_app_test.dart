@@ -7,7 +7,7 @@ import 'package:web/web.dart';
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+import 'package:kelicap/src/testability/js_api.dart';
 
 import 'run_app_test.template.dart' as ng;
 
@@ -41,10 +41,10 @@ void main() {
   /// **NOTE**: We will use the JS API, since that is how users access it.
   void verifyTestability() {
     expect(component.injector.get(Testability), isNotNull);
-    var jsTestability = getAngularTestability(
+    var jsTestability = getKelicapTestability(
       rootDomContainer.children.item(0)!,
     );
-    expect(getAllAngularTestabilities().toDart, isNot(hasLength(0)));
+    expect(getAllKelicapTestabilities().toDart, isNot(hasLength(0)));
     expect(jsTestability.isStable(), isTrue, reason: 'Expected stability');
     jsTestability.whenStable(
       expectAsync0(() {
@@ -169,7 +169,7 @@ class StubExceptionHandler implements ExceptionHandler {
 }
 
 @JS()
-external JsTestability getAngularTestability(Element e);
+external JsTestability getKelicapTestability(Element e);
 
 @JS()
-external JSArray<JsTestability> getAllAngularTestabilities();
+external JSArray<JsTestability> getAllKelicapTestabilities();

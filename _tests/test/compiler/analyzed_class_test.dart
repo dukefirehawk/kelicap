@@ -18,7 +18,7 @@ void main() {
           List<String> getNames() => _names;
         }''');
         final expression = MethodCall(ImplicitReceiver(), 'getNames', []);
-        final type = getExpressionType(expression, analyzedClass);
+        final type = getExpressionType(expression, analyzedClass!);
         expect(typeToCode(type), 'List<String>');
       },
     );
@@ -35,7 +35,7 @@ void main() {
           LiteralPrimitive(1),
           LiteralPrimitive(4),
         ]);
-        final type = getExpressionType(rangeExpr, analyzedClass);
+        final type = getExpressionType(rangeExpr, analyzedClass!);
         expect(typeToCode(type), 'Iterable<String>');
       },
     );
@@ -46,7 +46,7 @@ void main() {
           final List<int> values;
         }''');
       final expression = PropertyRead(ImplicitReceiver(), 'values');
-      final type = getExpressionType(expression, analyzedClass);
+      final type = getExpressionType(expression, analyzedClass!);
       expect(typeToCode(type), 'List<int>');
     });
 
@@ -57,7 +57,7 @@ void main() {
         }''');
       final valuesExpr = PropertyRead(ImplicitReceiver(), 'values');
       final lengthExpr = PropertyRead(valuesExpr, 'length');
-      final type = getExpressionType(lengthExpr, analyzedClass);
+      final type = getExpressionType(lengthExpr, analyzedClass!);
       expect(typeToCode(type), 'int');
     });
   });
@@ -87,7 +87,7 @@ void main() {
           final int eight = 8;
         }
       ''');
-      var analyzedClass = AnalyzedClass(library.getClass('SubComponent'));
+      var analyzedClass = AnalyzedClass(library.getClass('SubComponent')!);
       final sevenExpr = PropertyRead(ImplicitReceiver(), 'seven');
       final eightExpr = PropertyRead(ImplicitReceiver(), 'eight');
       final someNumberExpr = PropertyRead(ImplicitReceiver(), 'someNumber');
@@ -118,7 +118,7 @@ class AnalyzedClassVisitor extends RecursiveElementVisitor2<AnalyzedClass> {
 
   @override
   AnalyzedClass? visitLibraryElement(LibraryElement element) {
-    return _visitAll(element.fragments);
+    return _visitAll(element.fragments.cast<Element>());
   }
 
   AnalyzedClass? _visitAll(List<Element> elements) {

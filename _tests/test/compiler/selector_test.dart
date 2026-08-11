@@ -17,7 +17,10 @@ void main() {
 
     setUp(() {
       reset();
-      s1 = s2 = s3 = s4 = null;
+      s1 = [];
+      s2 = [];
+      s3 = [];
+      s4 = [];
       selectableCollector = (selector, context) {
         matched.add(selector);
         matched.add(context);

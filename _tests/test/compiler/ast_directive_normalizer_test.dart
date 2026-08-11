@@ -1,8 +1,8 @@
 //import 'package:build_test/build_test.dart';
+import 'package:kelicap/kelicap.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
-import 'package:kelicap/src/meta.dart';
-import 'package:kelicap_compiler/v1/angular_compiler.dart';
+import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/src/compiler/ast_directive_normalizer.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
 import 'package:kelicap_compiler/v2/context.dart';

@@ -80,7 +80,7 @@ class TestZone implements NgZone {
   }
 
   @override
-  R runOutsideAngular<R>(callback) => _delegate.runOutsideAngular(callback);
+  R runOutsideKelicap<R>(callback) => _delegate.runOutsideKelicap(callback);
 }
 
 void main() {

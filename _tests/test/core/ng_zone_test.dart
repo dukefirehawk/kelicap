@@ -106,7 +106,7 @@ void main() {
       setUp(() => createNgZone());
 
       test('should be false outside of the zone', () {
-        zone.runOutsideAngular(() {
+        zone.runOutsideKelicap(() {
           expect(zone.inInnerZone, isFalse);
         });
       });

@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:term_glyph/term_glyph.dart' as term_glyph;
 import 'package:test/test.dart';
 import 'package:kelicap_compiler/v1/cli.dart';
-import 'package:kelicap_compiler/v1/src/compiler/analyzed_class.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
 import 'package:kelicap_compiler/v1/src/compiler/expression_parser/parser.dart';
 import 'package:kelicap_compiler/v1/src/compiler/identifiers.dart'
@@ -2822,7 +2821,7 @@ CompileDirectiveMetadata createCompileDirectiveMetadata({
   }
 
   return CompileDirectiveMetadata(
-    type: type,
+    type: type!,
     metadataType: metadataType,
     selector: selector,
     exportAs: exportAs,
@@ -2836,7 +2835,7 @@ CompileDirectiveMetadata createCompileDirectiveMetadata({
     viewProviders: viewProviders,
     queries: queries,
     template: template ?? CompileTemplateMetadata(),
-    analyzedClass: AnalyzedClass(null),
+    analyzedClass: null,
   );
 }
 
