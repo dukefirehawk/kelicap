@@ -5,6 +5,7 @@ import 'login/login.template.dart' as login_template;
 import 'dashboard/dashboard.template.dart' as dashboard_template;
 import 'home/home.template.dart' as home_template;
 import 'error/not_found.template.dart' as not_found_template;
+import 'user/user.template.dart' as user_template;
 
 import 'app_route_paths.dart' as paths;
 
@@ -31,6 +32,10 @@ class AppRoute {
     RouteDefinition(
       routePath: paths.AppRoutePaths.home,
       component: home_template.HomeComponentNgFactory,
+    ),
+    RouteDefinition(
+      routePath: paths.AppRoutePaths.user,
+      component: user_template.UserFormComponentNgFactory,
     ),
     RouteDefinition(
       routePath: paths.AppRoutePaths.others,

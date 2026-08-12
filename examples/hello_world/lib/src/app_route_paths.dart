@@ -4,5 +4,6 @@ class AppRoutePaths {
   static final login = RoutePath(path: 'login');
   static final dashboard = RoutePath(path: 'dashboard');
   static final home = RoutePath(path: 'home');
+  static final user = RoutePath(path: 'user');
   static final others = RoutePath(path: '/**');
 }

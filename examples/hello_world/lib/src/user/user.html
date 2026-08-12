@@ -1,0 +1,8 @@
+<div>
+    <label for="name-input">Enter your name:</label>
+    <input id="name-input" [(ngModel)]="userName" placeholder="Your name" />
+    
+    <p>Hello, <strong>{{userName}}</strong>!</p>
+    
+    <button (click)="resetName()">Reset</button>
+</div>

@@ -5,6 +5,8 @@ import 'package:hello_world/src/dashboard/dashboard.dart';
 import 'package:hello_world/src/login/login.dart';
 import 'package:hello_world/src/todo/todo.dart';
 import 'package:hello_world/src/app_route.dart';
+import 'package:hello_world/src/user/user.dart';
+
 import 'package:kelicap_router/kelicap_router.dart';
 
 import 'src/home/home.dart';
@@ -19,6 +21,7 @@ import 'src/home/home.dart';
     LoginComponent,
     DashboardComponent,
     TodoComponent,
+    UserFormComponent,
     routerDirectives,
   ],
   providers: [ClassProvider(AppRoute)],
