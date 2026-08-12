@@ -3,8 +3,6 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:kelicap_compiler/v1/compiler.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
-import 'package:kelicap_compiler/v1/src/kelicap_compiler/analyzer/common.dart'
-    show unerasedTypeOf;
 import 'package:kelicap_compiler/v2/context.dart';
 
 /// Returns the [CompileTypeMetadata] appropriate for `T` in `Provider<T>`.

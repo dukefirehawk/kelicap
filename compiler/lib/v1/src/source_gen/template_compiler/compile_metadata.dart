@@ -12,8 +12,6 @@ import 'package:kelicap_compiler/v1/cli.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
 import 'package:kelicap_compiler/v1/src/compiler/output/convert.dart';
 import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart' as o;
-import 'package:kelicap_compiler/v1/src/kelicap_compiler/analyzer/common.dart'
-    show unerasedTypeValueOf;
 import 'package:kelicap_compiler/v1/src/source_gen/common/url_resolver.dart';
 import 'package:kelicap_compiler/v2/analyzer.dart';
 import 'package:kelicap_compiler/v2/context.dart';
