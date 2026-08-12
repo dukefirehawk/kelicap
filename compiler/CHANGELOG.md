@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.3
+
+- fix: incorrect raw type reference
+
 ## 1.0.2
 
 - fix: Misc. compile and runtime errors contributed by the community
