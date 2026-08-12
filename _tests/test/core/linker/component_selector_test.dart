@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 import 'package:_tests/matchers.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
+import 'package:web/src/dom/dom.dart';
 
 import 'component_selector_test.template.dart' as ng;
 
@@ -22,7 +23,7 @@ void main() {
         ng.createExactAttributeSelectorTestComponentFactory(),
       );
       final testFixture = await testBed.create();
-      final select = (String s) => testFixture.rootElement.querySelector(s);
+      Element? select(String s) => testFixture.rootElement.querySelector(s);
       expect(select('[foo]')!.textContent, isEmpty);
       expect(select('[foo=bar]')!.textContent, 'Matched!');
       expect(select('[foo=barbaz]')!.textContent, isEmpty);
@@ -33,7 +34,7 @@ void main() {
         ng.createHyphenAttributeSelectorTestComponentFactory(),
       );
       final testFixture = await testBed.create();
-      final select = (String s) => testFixture.rootElement.querySelector(s);
+      Element? select(String s) => testFixture.rootElement.querySelector(s);
       expect(select('[foo=bar]')!.textContent, 'Matched!');
       expect(select('[foo="bar-baz"]')!.textContent, 'Matched!');
       expect(select('[foo=barbaz]')!.textContent, isEmpty);
@@ -44,7 +45,7 @@ void main() {
         ng.createListAttributeSelectorTestComponentFactory(),
       );
       final testFixture = await testBed.create();
-      final select = (String s) => testFixture.rootElement.querySelector(s);
+      Element? select(String s) => testFixture.rootElement.querySelector(s);
       expect(select('[foo=bar]')!.textContent, 'Matched!');
       expect(select('[foo="bar baz"]')!.textContent, 'Matched!');
       expect(select('[foo="baz bar qux"]')!.textContent, 'Matched!');
@@ -56,7 +57,7 @@ void main() {
         ng.createPrefixAttributeSelectorTestComponentFactory(),
       );
       final testFixture = await testBed.create();
-      final select = (String s) => testFixture.rootElement.querySelector(s);
+      Element? select(String s) => testFixture.rootElement.querySelector(s);
       expect(select('[foo=bar]')!.textContent, 'Matched!');
       expect(select('[foo=barbaz]')!.textContent, 'Matched!');
       expect(select('[foo=bazbar]')!.textContent, isEmpty);
@@ -67,7 +68,7 @@ void main() {
         ng.createSetAttributeSelectorTestComponentFactory(),
       );
       final testFixture = await testBed.create();
-      final select = (String s) => testFixture.rootElement.querySelector(s);
+      Element? select(String s) => testFixture.rootElement.querySelector(s);
       expect(select('div')!.textContent, isEmpty);
       expect(select('[foo]')!.textContent, 'Matched!');
       expect(select('[foo=""]')!.textContent, 'Matched!');
@@ -79,7 +80,7 @@ void main() {
         ng.createSubstringAttributeSelectorTestComponentFactory(),
       );
       final testFixture = await testBed.create();
-      final select = (String s) => testFixture.rootElement.querySelector(s);
+      Element? select(String s) => testFixture.rootElement.querySelector(s);
       expect(select('[foo=bar]')!.textContent, 'Matched!');
       expect(select('[foo=barbaz]')!.textContent, 'Matched!');
       expect(select('[foo=bazbar]')!.textContent, 'Matched!');
@@ -90,7 +91,7 @@ void main() {
         ng.createSuffixAttributeSelectorTestComponentFactory(),
       );
       final testFixture = await testBed.create();
-      final select = (String s) => testFixture.rootElement.querySelector(s);
+      Element? select(String s) => testFixture.rootElement.querySelector(s);
       expect(select('[foo=bar]')!.textContent, 'Matched!');
       expect(select('[foo=barbaz]')!.textContent, isEmpty);
       expect(select('[foo=bazbar]')!.textContent, 'Matched!');

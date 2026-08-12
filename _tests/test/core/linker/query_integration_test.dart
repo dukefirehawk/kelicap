@@ -797,7 +797,7 @@ class LabeledElementViewChildrenComponent {
   List<String> list = <String>['3', '1', '4'];
 
   @ViewChildren('divLabel')
-  List<HtmlElement>? elementRefs;
+  List<HTMLElement>? elementRefs;
 }
 
 @Component(
@@ -812,5 +812,5 @@ class TestSingleDynamicResult {
   var showEmbeddedViews = false;
 
   @ViewChild('label')
-  HtmlElement? div;
+  HTMLElement? div;
 }

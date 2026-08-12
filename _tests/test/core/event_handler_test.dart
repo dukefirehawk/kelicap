@@ -227,19 +227,19 @@ void main() {
 )
 class ClickHandler extends SuperClick {
   @ViewChild('noArg')
-  HtmlElement? noArgButton;
+  HTMLElement? noArgButton;
 
   @ViewChild('oneArg')
-  HtmlElement? oneArgButton;
+  HTMLElement? oneArgButton;
 
   @ViewChild('noArgTearoff')
-  HtmlElement? noArgTearoffButton;
+  HTMLElement? noArgTearoffButton;
 
   @ViewChild('oneArgTearoff')
-  HtmlElement? oneArgTearoffButton;
+  HTMLElement? oneArgTearoffButton;
 
   @ViewChild('superTearoff')
-  HtmlElement? superTearoffButton;
+  HTMLElement? superTearoffButton;
 
   void onClick() {
     _clicks.add(null);

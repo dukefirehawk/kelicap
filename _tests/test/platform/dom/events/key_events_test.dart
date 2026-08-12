@@ -218,7 +218,7 @@ Event createKeyboardEvent(
       .isDefinedAndNotNull) {
     var script = document.createElement('script')
       ..setAttribute('type', 'text/javascript')
-      ..text = CREATE_KEYBOARD_EVENT_SCRIPT;
+      ..textContent = CREATE_KEYBOARD_EVENT_SCRIPT;
     document.body!.append(script);
   }
   return globalContext.callMethodVarArgs(CREATE_KEYBOARD_EVENT_NAME.toJS, [

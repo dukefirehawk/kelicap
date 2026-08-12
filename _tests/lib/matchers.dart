@@ -74,7 +74,7 @@ String? _elementText(Object? n) {
   // The DOM types from `package:web` are extension types over `JSObject`, so
   // `is` erases to the representation type and cannot distinguish them. Runtime
   // checks have to go through `isA`.
-  if (n is JSObject) {
+  if (n.isA<JSObject>()) {
     if (n.isA<NodeList>()) {
       final nodes = n as NodeList;
       final text = StringBuffer();

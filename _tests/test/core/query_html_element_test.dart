@@ -53,7 +53,7 @@ class UsesElement {
 @Component(selector: 'uses-element', template: '<div #div>2</div>')
 class UsesHtmlElement {
   @ViewChild('div')
-  HtmlElement? element;
+  HTMLElement? element;
 }
 
 @Component(
@@ -71,5 +71,5 @@ class UsesListOfElement {
 )
 class UsesListOfHtmlElement {
   @ViewChildren('div')
-  List<HtmlElement>? elements;
+  List<HTMLElement>? elements;
 }

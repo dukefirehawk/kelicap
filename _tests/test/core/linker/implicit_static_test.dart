@@ -108,7 +108,7 @@ class InvokeTearOff {
 
   @Input()
   set invoke(String Function() value) {
-    _host.text = value();
+    _host.textContent = value();
   }
 }
 

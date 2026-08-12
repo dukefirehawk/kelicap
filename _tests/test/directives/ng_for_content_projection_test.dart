@@ -138,7 +138,7 @@ abstract class TestNgForBase {
   @Input()
   List<int>? items;
 
-  List<HtmlElement>? get children;
+  List<HTMLElement>? get children;
 }
 
 @Component(
@@ -157,7 +157,7 @@ class TestNgForReorderContentChildren extends TestNgForBase {
   ContentProjectedChild? child;
 
   @override
-  List<HtmlElement>? get children => child!.children;
+  List<HTMLElement>? get children => child!.children;
 }
 
 @Component(
@@ -178,7 +178,7 @@ class TestNestedNgForReorderContentChildren extends TestNgForBase {
   ContentProjectedChild? child;
 
   @override
-  List<HtmlElement>? get children => child!.children;
+  List<HTMLElement>? get children => child!.children;
 }
 
 @Component(
@@ -200,7 +200,7 @@ class TestReferencedNgForReorderContentChildren extends TestNgForBase {
   ContentProjectedChild? child;
 
   @override
-  List<HtmlElement>? get children => child!.children;
+  List<HTMLElement>? get children => child!.children;
 }
 
 @Component(
@@ -209,7 +209,7 @@ class TestReferencedNgForReorderContentChildren extends TestNgForBase {
 )
 class ContentProjectedChild {
   @ContentChildren('listItem')
-  List<HtmlElement>? children;
+  List<HTMLElement>? children;
 }
 
 @Component(
@@ -224,7 +224,7 @@ class ContentProjectedChild {
 class TestNgForReorderViewChildren extends TestNgForBase {
   @ViewChildren('listItem')
   @override
-  List<HtmlElement>? children;
+  List<HTMLElement>? children;
 }
 
 @Component(
@@ -241,7 +241,7 @@ class TestNgForReorderViewChildren extends TestNgForBase {
 class TestNestedNgForReorderViewChildren extends TestNgForBase {
   @ViewChildren('listItem')
   @override
-  List<HtmlElement>? children;
+  List<HTMLElement>? children;
 }
 
 @Component(
@@ -258,5 +258,5 @@ class TestNestedNgForReorderViewChildren extends TestNgForBase {
 class TestReferencedNgForReorderViewChildren extends TestNgForBase {
   @ViewChildren('listItem')
   @override
-  List<HtmlElement>? children;
+  List<HTMLElement>? children;
 }

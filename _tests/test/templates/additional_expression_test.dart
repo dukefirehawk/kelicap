@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
-import 'package:web/helpers.dart';
+import 'package:web/web.dart';
 
 import 'additional_expression_lib.dart' as lib;
 import 'additional_expression_test.template.dart' as ng;

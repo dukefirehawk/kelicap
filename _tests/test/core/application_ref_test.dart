@@ -54,7 +54,7 @@ void main() {
   group('bootstrap should', () {
     test('replace an existing element if in the DOM', () {
       final existing = document.createElement('hello-component')
-        ..text = 'Loading...';
+        ..textContent = 'Loading...';
       document.body!.append(existing);
       final comp = appRef.bootstrap<HelloComponent>(
         ng.createHelloComponentFactory(),
@@ -101,12 +101,12 @@ void main() {
 
     test('return an asynchronous null', () {
       final result = appRef.run(() async => null);
-      expect(result, isInstanceOf<Future<void>>());
+      expect(result, isA<Future<void>>());
     });
 
     test('return an asynchronous nullable value', () {
       final result = appRef.run<String?>(() async => null);
-      expect(result, isInstanceOf<Future<String?>>());
+      expect(result, isA<Future<String?>>());
     });
 
     test('never return (threw synchronously)', () {

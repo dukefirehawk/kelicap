@@ -21,7 +21,7 @@ void main() {
     );
     final testFixture = await testBed.create();
     final imgElement =
-        testFixture.rootElement.querySelector('img') as ImageElement;
+        testFixture.rootElement.querySelector('img') as HTMLImageElement;
     expect(imgElement.alt, 'A puppy!');
   });
 
