@@ -1,12 +1,12 @@
 import 'dart:async';
+
 import 'package:web/web.dart';
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'on_push_test.template.dart'
-    as ng;
+import 'on_push_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

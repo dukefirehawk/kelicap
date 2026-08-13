@@ -4,8 +4,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'detect_host_changes_test.template.dart'
-    as ng;
+import 'detect_host_changes_test.template.dart' as ng;
 
 /// This is a regression test for instances where a directive on a component
 /// is also a Provider. When checking DirectiveAst's on a CompileElement

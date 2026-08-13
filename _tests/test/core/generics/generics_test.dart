@@ -5,8 +5,7 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
 import 'bound.dart';
-import 'generics_test.template.dart'
-    as ng;
+import 'generics_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

@@ -4,8 +4,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'ng_class_test.template.dart'
-    as ng;
+import 'ng_class_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);
@@ -471,11 +470,9 @@ void main() {
       final fixture = await testBed.create(
         beforeChangeDetection: (i) => i.name = 'dynamic',
       );
-      expect(
-        fixture.rootElement.allCssClasses,
-        ['dynamic'],
-        reason: '"static" is overriden by [attr.class]',
-      );
+      expect(fixture.rootElement.allCssClasses, [
+        'dynamic',
+      ], reason: '"static" is overriden by [attr.class]');
     });
 
     test('and @HostBinding but DOES NOT', () async {
@@ -485,11 +482,9 @@ void main() {
       final fixture = await testBed.create(
         beforeChangeDetection: (i) => i.name = 'dynamic',
       );
-      expect(
-        fixture.rootElement.allCssClasses,
-        ['dynamic'],
-        reason: '"static" is overriden by the @HostBinding of the child',
-      );
+      expect(fixture.rootElement.allCssClasses, [
+        'dynamic',
+      ], reason: '"static" is overriden by the @HostBinding of the child');
     });
 
     test('and [class.], and ngClass', () async {
@@ -531,11 +526,9 @@ void main() {
           ..name = 'dynamic'
           ..enabled = true,
       );
-      expect(
-        fixture.rootElement.allCssClasses,
-        ['dynamic'],
-        reason: '"enabled" is overriden by class="{{..}}"',
-      );
+      expect(fixture.rootElement.allCssClasses, [
+        'dynamic',
+      ], reason: '"enabled" is overriden by class="{{..}}"');
     });
 
     test('and [attr.class] but DOES NOT', () async {
@@ -547,11 +540,9 @@ void main() {
           ..name1 = 'dynamic1'
           ..name2 = 'dynamic2',
       );
-      expect(
-        fixture.rootElement.allCssClasses,
-        ['dynamic1'],
-        reason: '"dynamic2" is overriden by class="{{..}}"',
-      );
+      expect(fixture.rootElement.allCssClasses, [
+        'dynamic1',
+      ], reason: '"dynamic2" is overriden by class="{{..}}"');
     });
 
     test('and @HostBinding but DOES NOT', () async {
@@ -563,11 +554,9 @@ void main() {
           ..name1 = 'dynamic1'
           ..name2 = 'dynamic2',
       );
-      expect(
-        fixture.rootElement.allCssClasses,
-        ['dynamic2'],
-        reason: '"dynamic1" is overriden by child\'s @HostBinding',
-      );
+      expect(fixture.rootElement.allCssClasses, [
+        'dynamic2',
+      ], reason: '"dynamic1" is overriden by child\'s @HostBinding');
     });
   });
 }

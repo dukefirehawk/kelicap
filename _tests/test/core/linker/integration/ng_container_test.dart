@@ -3,8 +3,7 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
 // ignore: uri_has_not_been_generated
-import 'ng_container_test.template.dart'
-    as ng;
+import 'ng_container_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

@@ -183,11 +183,9 @@ void main() {
     );
     metadata = await normalizer.normalizeDirective(metadata);
     expect(metadata.template?.encapsulation, ViewEncapsulation.emulated);
-    expect(
-      metadata.template?.styles,
-      [contains(':host { margin: 10px; }')],
-      reason: 'Only one inline style should have been processed',
-    );
+    expect(metadata.template?.styles, [
+      contains(':host { margin: 10px; }'),
+    ], reason: 'Only one inline style should have been processed');
   });
 }
 

@@ -1,6 +1,7 @@
 import 'dart:js_interop_unsafe';
 
 import 'package:web/web.dart';
+
 import 'dart:js_interop';
 
 import 'package:test/test.dart';
@@ -222,12 +223,11 @@ Event createKeyboardEvent(
     document.body!.append(script);
   }
   return globalContext.callMethodVarArgs(CREATE_KEYBOARD_EVENT_NAME.toJS, [
-        type.toJS,
-        keyCode.toJS,
-        ctrlKey.toJS,
-        altKey.toJS,
-        shiftKey.toJS,
-        metaKey.toJS,
-      ])
-      as Event;
+    type.toJS,
+    keyCode.toJS,
+    ctrlKey.toJS,
+    altKey.toJS,
+    shiftKey.toJS,
+    metaKey.toJS,
+  ]) as Event;
 }

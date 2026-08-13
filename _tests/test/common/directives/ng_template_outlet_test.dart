@@ -3,8 +3,8 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
 import 'package:_tests/matchers.dart';
-import 'ng_template_outlet_test.template.dart'
-    as ng;
+
+import 'ng_template_outlet_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

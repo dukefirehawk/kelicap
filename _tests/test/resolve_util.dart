@@ -10,6 +10,7 @@ import 'package:kelicap_compiler/v1/src/source_gen/template_compiler/component_v
 import 'package:kelicap_compiler/v1/src/source_gen/template_compiler/find_components.dart';
 import 'package:package_config/package_config.dart';
 import 'package:source_gen/source_gen.dart';
+
 //import 'package:kelicap_compiler/v2/src/compiler/template_compiler.dart';
 //import 'package:kelicap_compiler/v2/src/source_gen/template_compiler/component_visitor_exceptions.dart';
 //import 'package:kelicap_compiler/v2/src/source_gen/template_compiler/find_components.dart';

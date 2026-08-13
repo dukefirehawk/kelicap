@@ -23,23 +23,20 @@ void main() {
           throwsAnInvalidPipeArgumentException,
         );
       });
-      test(
-        'should not support patterns other than strings and regular expressions',
-        () {
-          expect(
-            () => pipe.transform(str, {}, 'Hugh'),
-            throwsAnInvalidPipeArgumentException,
-          );
-          expect(
-            () => pipe.transform(str, null, 'Hugh'),
-            throwsAnInvalidPipeArgumentException,
-          );
-          expect(
-            () => pipe.transform(str, 123, 'Hugh'),
-            throwsAnInvalidPipeArgumentException,
-          );
-        },
-      );
+      test('should not support patterns other than strings and regular expressions', () {
+        expect(
+          () => pipe.transform(str, {}, 'Hugh'),
+          throwsAnInvalidPipeArgumentException,
+        );
+        expect(
+          () => pipe.transform(str, null, 'Hugh'),
+          throwsAnInvalidPipeArgumentException,
+        );
+        expect(
+          () => pipe.transform(str, 123, 'Hugh'),
+          throwsAnInvalidPipeArgumentException,
+        );
+      });
       test(
         'should not support replacements other than strings and functions',
         () {

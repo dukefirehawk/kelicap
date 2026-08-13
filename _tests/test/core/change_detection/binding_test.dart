@@ -2,8 +2,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'binding_test.template.dart'
-    as ng;
+import 'binding_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);
@@ -13,9 +12,8 @@ void main() {
   });
 
   test('should strip quotes from literals', () async {
-    await _GetValue<TestStripQuotes>(
-      ng.createTestStripQuotesFactory(),
-    ).runTest();
+    await _GetValue<TestStripQuotes>(ng.createTestStripQuotesFactory())
+        .runTest();
   });
 
   test('should support newlines in literals', () async {
@@ -23,15 +21,13 @@ void main() {
   });
 
   test('should support + operations', () async {
-    await _GetValue<TestAddOperation>(
-      ng.createTestAddOperationFactory(),
-    ).runTest();
+    await _GetValue<TestAddOperation>(ng.createTestAddOperationFactory())
+        .runTest();
   });
 
   test('should support - operations', () async {
-    await _GetValue<TestMinusOperation>(
-      ng.createTestMinusOperationFactory(),
-    ).runTest();
+    await _GetValue<TestMinusOperation>(ng.createTestMinusOperationFactory())
+        .runTest();
   });
 
   test('should support * operations', () async {
@@ -101,15 +97,13 @@ void main() {
   });
 
   test('should support && operations', () async {
-    await _GetValue<TestAndOperation>(
-      ng.createTestAndOperationFactory(),
-    ).runTest();
+    await _GetValue<TestAndOperation>(ng.createTestAndOperationFactory())
+        .runTest();
   });
 
   test('should support || operations', () async {
-    await _GetValue<TestOrOperation>(
-      ng.createTestOrOperationFactory(),
-    ).runTest();
+    await _GetValue<TestOrOperation>(ng.createTestOrOperationFactory())
+        .runTest();
   });
 
   test('should support ternary operations', () async {
@@ -119,9 +113,8 @@ void main() {
   });
 
   test('should support ! operations', () async {
-    await _GetValue<TestNegateOperation>(
-      ng.createTestNegateOperationFactory(),
-    ).runTest();
+    await _GetValue<TestNegateOperation>(ng.createTestNegateOperationFactory())
+        .runTest();
   });
 
   test('should support !! operations', () async {
@@ -139,9 +132,8 @@ void main() {
   });
 
   test('should support property access', () async {
-    await _GetValue<TestPropertyAccess>(
-      ng.createTestPropertyAccessFactory(),
-    ).runTest();
+    await _GetValue<TestPropertyAccess>(ng.createTestPropertyAccessFactory())
+        .runTest();
   });
 
   test('should support chained property access', () async {
@@ -151,9 +143,8 @@ void main() {
   });
 
   test('should support a function call', () async {
-    await _GetValue<TestFunctionCall>(
-      ng.createTestFunctionCallFactory(),
-    ).runTest();
+    await _GetValue<TestFunctionCall>(ng.createTestFunctionCallFactory())
+        .runTest();
   });
 
   test('should support assigning explicitly to null', () async {
@@ -161,9 +152,8 @@ void main() {
   });
 
   test('should support assigning explicitly to null', () async {
-    await _GetValue<TestElvisOperation>(
-      ng.createTestElvisOperationFactory(),
-    ).runTest();
+    await _GetValue<TestElvisOperation>(ng.createTestElvisOperationFactory())
+        .runTest();
   });
 
   test('should support assigning explicitly to null', () async {
