@@ -698,9 +698,8 @@ class CompileTypeMetadataVisitor
       $OpaqueToken.isAssignableFromType(token.type!);
 
   o.Expression _expressionForEnum(DartObject token) {
-    final field = _enumValues(
-      token,
-    ).singleWhere((field) => field.computeConstantValue() == token);
+    final field = _enumValues(token)
+        .singleWhere((field) => field.computeConstantValue() == token);
     return o.importExpr(_idFor(token.type!)).prop(field.displayName);
   }
 
@@ -717,9 +716,8 @@ class CompileTypeMetadataVisitor
 
   bool _isProtobufEnum(DartType? type) {
     return type is InterfaceType &&
-        const TypeChecker.fromUrl(
-          'package:protobuf/protobuf.dart#ProtobufEnum',
-        ).isExactlyType(type.superclass!);
+        const TypeChecker.fromUrl('package:protobuf/protobuf.dart#ProtobufEnum')
+            .isExactlyType(type.superclass!);
   }
 
   /// Creates an expression for protobuf enums.

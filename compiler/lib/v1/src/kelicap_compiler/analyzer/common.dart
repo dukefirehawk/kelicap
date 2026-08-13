@@ -8,17 +8,15 @@ import 'package:source_gen/src/utils.dart';
 String getTypeImport(DartType type) {
   var aliasElement = type.alias?.element;
   if (aliasElement != null) {
-    return normalizeUrl(
-      aliasElement.library.firstFragment.source.uri,
-    ).toString();
+    return normalizeUrl(aliasElement.library.firstFragment.source.uri)
+        .toString();
   }
   if (type is DynamicType) {
     return 'dart:core';
   }
   if (type is InterfaceType) {
-    return normalizeUrl(
-      type.element.library.firstFragment.source.uri,
-    ).toString();
+    return normalizeUrl(type.element.library.firstFragment.source.uri)
+        .toString();
   }
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
@@ -145,7 +143,6 @@ Uri urlOf(Element? element, [String? name]) {
 
   // NOTE: element.source.uri might be a file that is not importable (i.e. is
   // a "part"), while element.library.source.uri is always importable.
-  return normalizeUrl(
-    element.library!.firstFragment.source.uri,
-  ).replace(fragment: fragment);
+  return normalizeUrl(element.library!.firstFragment.source.uri)
+      .replace(fragment: fragment);
 }

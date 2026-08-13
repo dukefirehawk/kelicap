@@ -106,8 +106,8 @@ class _DartEmitterVisitor extends AbstractEmitterVisitor
   /// Whether this is currently emitting a new instance of a class.
   var _inInvokeOrNewInstance = false;
 
-  _DartEmitterVisitor(this._moduleUrl, {required bool emitNullSafeSyntax})
-    : super(true, emitNullSafeSyntax: emitNullSafeSyntax);
+  _DartEmitterVisitor(this._moduleUrl, {required super.emitNullSafeSyntax})
+    : super(true);
 
   @override
   void visitNamedExpr(o.NamedExpr ast, EmitterVisitorContext context) {

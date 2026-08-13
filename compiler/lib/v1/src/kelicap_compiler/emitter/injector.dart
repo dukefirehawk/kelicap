@@ -120,9 +120,9 @@ class InjectorEmitter implements InjectorVisitor {
       statements.add(
         _ifIsTokenThen(
           tokenExpression,
-          literalList(
-            methods.map((m) => refer(m).call(const [])),
-          ).returned.statement,
+          literalList(methods.map((m) => refer(m).call(const [])))
+              .returned
+              .statement,
         ),
       );
     });
@@ -270,9 +270,9 @@ class InjectorEmitter implements InjectorVisitor {
         (b) => b
           ..name = methodName
           ..returns = returnType
-          ..body = refer(
-            fieldName,
-          ).assignNullAware(function.call(dependencies)).code,
+          ..body = refer(fieldName)
+              .assignNullAware(function.call(dependencies))
+              .code,
       ),
     );
 

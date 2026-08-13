@@ -4,31 +4,25 @@ import 'package:kelicap_router/kelicap_router.dart';
 
 class MockPlatformLocation extends Mock implements PlatformLocation {
   @override
-  String get pathname =>
-      super.noSuchMethod(
-            Invocation.getter(#pathname),
-            returnValue: '',
-            returnValueForMissingStub: '',
-          )
-          as String;
+  String get pathname => super.noSuchMethod(
+    Invocation.getter(#pathname),
+    returnValue: '',
+    returnValueForMissingStub: '',
+  ) as String;
 
   @override
-  String get search =>
-      super.noSuchMethod(
-            Invocation.getter(#search),
-            returnValue: '',
-            returnValueForMissingStub: '',
-          )
-          as String;
+  String get search => super.noSuchMethod(
+    Invocation.getter(#search),
+    returnValue: '',
+    returnValueForMissingStub: '',
+  ) as String;
 
   @override
-  String get hash =>
-      super.noSuchMethod(
-            Invocation.getter(#hash),
-            returnValue: '',
-            returnValueForMissingStub: '',
-          )
-          as String;
+  String get hash => super.noSuchMethod(
+    Invocation.getter(#hash),
+    returnValue: '',
+    returnValueForMissingStub: '',
+  ) as String;
 }
 
 void main() {

@@ -320,9 +320,8 @@ void main() {
     });
 
     test('a static method with a parameter annotated with an OpaqueToken', () {
-      final method = classNamed(
-        'Creator',
-      )!.getMethod('createExampleInjectToken');
+      final method = classNamed('Creator')!
+          .getMethod('createExampleInjectToken');
       final deps = reader.parseDependencies(method);
       expect(deps.positional, [
         DependencyElement(

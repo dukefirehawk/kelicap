@@ -36,8 +36,8 @@ class _LexemeNgToken extends NgToken {
     int offset,
     this.lexeme,
     NgTokenType type, {
-    bool errorSynthetic = false,
-  }) : super._(type, offset, errorSynthetic: errorSynthetic);
+    super.errorSynthetic = false,
+  }) : super._(type, offset);
 
   @override
   bool operator ==(Object other) {

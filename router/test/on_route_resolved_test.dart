@@ -26,9 +26,8 @@ void main() {
     });
 
     test("doesn't fire when navigation is prohibited", () async {
-      final testBed = NgTestBed<TestComponent>(
-        ng.createTestComponentFactory(),
-      ).addInjector((i) => Injector.map({canNavigateToken: false}, i));
+      final testBed = NgTestBed<TestComponent>(ng.createTestComponentFactory())
+          .addInjector((i) => Injector.map({canNavigateToken: false}, i));
       final testFixture = await testBed.create();
       final router = testFixture.assertOnlyInstance.router!;
       await expectLater(
@@ -38,9 +37,8 @@ void main() {
     });
 
     test('fires when deactivation is prohibited', () async {
-      final testBed = NgTestBed<TestComponent>(
-        ng.createTestComponentFactory(),
-      ).addInjector((i) => Injector.map({canDeactivateToken: false}, i));
+      final testBed = NgTestBed<TestComponent>(ng.createTestComponentFactory())
+          .addInjector((i) => Injector.map({canDeactivateToken: false}, i));
       final testFixture = await testBed.create();
       final router = testFixture.assertOnlyInstance.router!;
       await expectLater(

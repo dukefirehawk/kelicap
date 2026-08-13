@@ -119,9 +119,8 @@ class _NormalizedComponentVisitor extends RecursiveElementVisitor2<void> {
   List<CompilePipeMetadata> _visitPipes(ClassElement element) {
     final values = _getResolvedArgumentsOrFail(element, 'pipes');
     return visitAll(values, (value) {
-      return typeDeclarationOf(
-        value,
-      )?.accept(PipeVisitor(_library, _exceptionHandler));
+      return typeDeclarationOf(value)
+          ?.accept(PipeVisitor(_library, _exceptionHandler));
     });
   }
 

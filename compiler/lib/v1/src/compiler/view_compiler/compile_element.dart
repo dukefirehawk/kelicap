@@ -250,9 +250,8 @@ class CompileElement extends CompileNode implements ProviderResolverHost {
         view!.nameResolver.addLocal(varName, varValue);
         var varToken = CompileTokenMetadata(value: varName);
         queriesWithReads.addAll(
-          _getQueriesFor(
-            varToken,
-          ).map((query) => _QueryWithRead(query, varToken)),
+          _getQueriesFor(varToken)
+              .map((query) => _QueryWithRead(query, varToken)),
         );
       });
     }

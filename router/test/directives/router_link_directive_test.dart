@@ -1,6 +1,7 @@
 import 'dart:js_interop_unsafe';
 
 import 'package:web/web.dart' hide Location;
+
 import 'dart:js_interop';
 
 import 'package:test/test.dart';

@@ -117,3 +117,17 @@ ObservableList _toObservableDeepIterable(Iterable<dynamic> value) {
       })
       as ObservableList<dynamic>;
 }
+
+class TypedMap<K, V> {
+  final Map<K, V> map;
+
+  TypedMap(this.map);
+
+  // You always have direct access to K and V here without hacks
+  Type get keyType => K;
+  Type get valueType => V;
+
+  R executeWithTypes<R>(R Function<TK, TV>(Map<TK, TV> typedMap) action) {
+    return action<K, V>(map);
+  }
+}

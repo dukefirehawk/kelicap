@@ -6,8 +6,10 @@ import 'package:kelicap_compiler/v1/src/source_gen/template_compiler/find_compon
 import 'package:kelicap_compiler/v2/context.dart';
 import 'package:source_gen/source_gen.dart';
 
-typedef UncaughtExceptionHandler =
-    bool Function(Object exception, StackTrace stackTrace);
+typedef UncaughtExceptionHandler = bool Function(
+  Object exception,
+  StackTrace stackTrace,
+);
 
 Future<KelicapArtifacts?>? kelicapArtifactsForKythe(
   LibraryElement element, {

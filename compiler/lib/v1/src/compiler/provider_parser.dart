@@ -385,9 +385,8 @@ class ProviderElementContext implements ElementProviderUsage {
       if (result == null) {
         if (!dep.isHost ||
             _rootProviderContext.component.type.isHost ||
-            identifierToken(
-              _rootProviderContext.component.type,
-            ).equalsTo(dep.token!) ||
+            identifierToken(_rootProviderContext.component.type)
+                .equalsTo(dep.token!) ||
             _rootProviderContext.viewProviders.get(dep.token!) != null) {
           result = dep;
         } else {
