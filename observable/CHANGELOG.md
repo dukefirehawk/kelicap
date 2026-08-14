@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.0
+
+- chore: Upgrade min sdk to 3.13.0 and other dependency upgrades
+- chore: Remove dependency on dart_internal package
+- refactor: Deprecated `toObservable` function and replaced with `toObservableList` and `toObservableMap` functions for better reactive state management.
+
 ## 1.0.0
 
-* Initial release.
+- chore: Initial release

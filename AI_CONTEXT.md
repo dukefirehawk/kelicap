@@ -10,11 +10,15 @@ The project is set up as a Dart monorepo using the native Dart `workspace` featu
 
 - `ast/` (`kelicap_ast`): The Abstract Syntax Tree of the Kelicap application.
 - `compiler/` (`kelicap_compiler`): The build-time tool that compiles the application to native HTML and JavaScript.
+- `observable/` (`kelicap_observable`): The reactive state management library that powers the framework.
+- `common/` (`kelicap_common`): The shared utilities and common code used across the framework.
 - `kelicap/` (`kelicap`): The runtime library that provides the foundation for the framework.
+- `forms/` (`kelicap_forms`): The forms library that provides form handling and validation capabilities.
+- `router/` (`kelicap_router`): The routing library that provides navigation and route management capabilities.
 
-## Tech Stack
+## Tech Stac
 
-- **Language**: Dart `>=3.12.0 <4.0.0`
+- **Language**: Dart `>=3.13.0 <4.0.0`
 - **DOM Interop**: Uses `package:web` (`^1.1.1`)
 - **Monorepo Tooling**: Dart workspaces and Melos.
 - **Dependencies**: Uses `build`, `build_web_compilers`, `built_value`, `sanitize_html`, etc.

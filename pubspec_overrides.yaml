@@ -1,5 +1,4 @@
 dependency_overrides:
-  dart_internal: ^0.2.17
   # kelicap:
   #   git:
   #     url: https://github.com/dukefirehawk/kelicap.git
