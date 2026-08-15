@@ -1,5 +1,7 @@
 # Kelicap Web Framework
 
+[![Kelicap Web Framework](../assets/branding/kelicap_1_banner.jpeg)](https://github.com/dukefirehawk/kelicap)
+
 ![Pub Version (including pre-releases)](https://img.shields.io/pub/v/kelicap?include_prereleases)
 [![Null Safety](https://img.shields.io/badge/null-safety-brightgreen)](https://dart.dev/null-safety)
 [![License](https://img.shields.io/github/license/dukefirehawk/kelicap)](https://github.com/dukefirehawk/kelicap/blob/master/LICENSE)
@@ -42,5 +44,5 @@ Dart 3.12 or later
 
 ```bash
     dart pub upgrade
-    dart run build_runner serve --enable-sourcemaps
+    dart run build_runner serve
 ```
