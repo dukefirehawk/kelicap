@@ -1,6 +1,6 @@
 sdk: ">=3.12.0 <4.0.0"
 
-analyzer: ^13.0.0
+analyzer:  ^14.0.0
 args: ^2.6.0
 async: ^2.12.0
 build_resolvers: ^2.4.2
