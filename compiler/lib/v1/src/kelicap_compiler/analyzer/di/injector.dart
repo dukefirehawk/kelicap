@@ -193,40 +193,34 @@ class InjectorReader {
     return deps.map((dep) {
       if (dep.self) {
         if (dep.optional) {
-          return refer(
-            'injectFromSelfOptional',
-          ).call([_tokenToIdentifier(dep.token), literalNull]);
+          return refer('injectFromSelfOptional')
+              .call([_tokenToIdentifier(dep.token), literalNull]);
         } else {
           return refer('injectFromSelf').call([_tokenToIdentifier(dep.token)]);
         }
       }
       if (dep.skipSelf) {
         if (dep.optional) {
-          var expression = refer(
-            'injectFromAncestryOptional',
-          ).call([_tokenToIdentifier(dep.token), literalNull]);
+          var expression = refer('injectFromAncestryOptional')
+              .call([_tokenToIdentifier(dep.token), literalNull]);
           return refer('unsafeCast', _utilities).call([expression]);
         } else {
-          return refer(
-            'injectFromAncestry',
-          ).call([_tokenToIdentifier(dep.token)]);
+          return refer('injectFromAncestry')
+              .call([_tokenToIdentifier(dep.token)]);
         }
       }
       if (dep.host) {
         if (dep.optional) {
-          return refer(
-            'injectFromParentOptional',
-          ).call([_tokenToIdentifier(dep.token), literalNull]);
+          return refer('injectFromParentOptional')
+              .call([_tokenToIdentifier(dep.token), literalNull]);
         } else {
-          return refer(
-            'injectFromParent',
-          ).call([_tokenToIdentifier(dep.token)]);
+          return refer('injectFromParent')
+              .call([_tokenToIdentifier(dep.token)]);
         }
       }
       if (dep.optional) {
-        return refer(
-          'provideUntyped',
-        ).call([_tokenToIdentifier(dep.token), literalNull]);
+        return refer('provideUntyped')
+            .call([_tokenToIdentifier(dep.token), literalNull]);
       } else {
         return refer('this.get').call([_tokenToIdentifier(dep.token)]);
       }

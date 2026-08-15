@@ -4,8 +4,7 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 import 'package:web/web.dart';
 
-import 'binding_integration_test.template.dart'
-    as ng;
+import 'binding_integration_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

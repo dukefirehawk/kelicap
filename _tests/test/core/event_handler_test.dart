@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:web/web.dart';
 
 import 'package:kelicap/kelicap.dart';
@@ -122,21 +123,17 @@ void main() {
     });
   });
 
-  test(
-    'should support top-level methods tear-offs for events',
-    () async {
-      final testBed = NgTestBed<TestTopLevelMethods>(
-        ng.createTestTopLevelMethodsFactory(),
-      );
-      final fixture = await testBed.create();
-      overrideTopLevelDoCapture = expectAsync0(() {});
-      await fixture.update((_) {
-        (fixture.rootElement.querySelector('button') as HTMLButtonElement)
-            .click();
-      });
-    },
-    skip: 'https://github.com/angulardart/angular/issues/1670',
-  );
+  test('should support top-level methods tear-offs for events', () async {
+    final testBed = NgTestBed<TestTopLevelMethods>(
+      ng.createTestTopLevelMethodsFactory(),
+    );
+    final fixture = await testBed.create();
+    overrideTopLevelDoCapture = expectAsync0(() {});
+    await fixture.update((_) {
+      (fixture.rootElement.querySelector('button') as HTMLButtonElement)
+          .click();
+    });
+  }, skip: 'https://github.com/angulardart/angular/issues/1670');
 
   test('should support top-level methods invoked for events', () async {
     final testBed = NgTestBed<TestTopLevelMethodsDirect>(
@@ -174,21 +171,17 @@ void main() {
     });
   });
 
-  test(
-    'should support chained method tear-offs for events',
-    () async {
-      final testBed = NgTestBed<TestChainedMethods>(
-        ng.createTestChainedMethodsFactory(),
-      );
-      final fixture = await testBed.create();
-      fixture.assertOnlyInstance.bar.overrideDoCapture = expectAsync0(() {});
-      await fixture.update((_) {
-        (fixture.rootElement.querySelector('button') as HTMLButtonElement)
-            .click();
-      });
-    },
-    skip: 'https://github.com/angulardart/angular/issues/1670',
-  );
+  test('should support chained method tear-offs for events', () async {
+    final testBed = NgTestBed<TestChainedMethods>(
+      ng.createTestChainedMethodsFactory(),
+    );
+    final fixture = await testBed.create();
+    fixture.assertOnlyInstance.bar.overrideDoCapture = expectAsync0(() {});
+    await fixture.update((_) {
+      (fixture.rootElement.querySelector('button') as HTMLButtonElement)
+          .click();
+    });
+  }, skip: 'https://github.com/angulardart/angular/issues/1670');
 
   test('should support chained method invoked for events', () async {
     final testBed = NgTestBed<TestChainedMethodsDirect>(

@@ -11,9 +11,8 @@ void main() {
 
   test('Should normally run change detection', () async {
     final valueService = ValueService()..value = 'Hello';
-    final testBed = NgTestBed<NoCrash>(
-      ng.createNoCrashFactory(),
-    ).addInjector((i) => Injector.map({ValueService: valueService}, i));
+    final testBed = NgTestBed<NoCrash>(ng.createNoCrashFactory())
+        .addInjector((i) => Injector.map({ValueService: valueService}, i));
     final fixture = await testBed.create();
     expect(fixture.text, contains('Hello'));
     await fixture.update((_) => valueService.value = 'Goodbye');
@@ -22,9 +21,8 @@ void main() {
 
   test('Should disable change detection on components that throw', () async {
     final valueService = ValueService()..value = '1';
-    final testBed = NgTestBed<Crash>(
-      ng.createCrashFactory(),
-    ).addInjector((i) => Injector.map({ValueService: valueService}, i));
+    final testBed = NgTestBed<Crash>(ng.createCrashFactory())
+        .addInjector((i) => Injector.map({ValueService: valueService}, i));
 
     // Initially create with the crashing component disabled.
     final fixture = await testBed.create();

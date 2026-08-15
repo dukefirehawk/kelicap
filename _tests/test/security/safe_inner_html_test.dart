@@ -55,8 +55,7 @@ void main() {
         print(testRoot.rootElement.innerHTML);
         expect(testRoot.text, contains('(Unsafe)'));
       },
-      skip:
-          'TODO(GZGavinZhao): interpolate0 converts anything to string, which messed up sanitizeHTML',
+      skip: 'TODO(GZGavinZhao): interpolate0 converts anything to string, which messed up sanitizeHTML',
     );
 
     test('unsafe HTML should throw', () async {

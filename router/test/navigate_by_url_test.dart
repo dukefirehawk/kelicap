@@ -14,9 +14,8 @@ void main() {
   group('navigateByUrl', () {
     setUp(() {
       mockRouter = MockRouter();
-      when(
-        mockRouter.navigate('', any),
-      ).thenAnswer((_) => Future.value(NavigationResult.success));
+      when(mockRouter.navigate('', any))
+          .thenAnswer((_) => Future.value(NavigationResult.success));
       router = DelegatingRouter(mockRouter);
     });
 
@@ -67,17 +66,13 @@ class MockRouter extends Mock implements Router {
   Future<NavigationResult> navigate(
     String? path, [
     NavigationParams? navigationParams,
-  ]) =>
-      super.noSuchMethod(
-            Invocation.method(#navigate, [path, navigationParams]),
-            returnValue: Future<NavigationResult>.value(
-              NavigationResult.success,
-            ),
-            returnValueForMissingStub: Future<NavigationResult>.value(
-              NavigationResult.success,
-            ),
-          )
-          as Future<NavigationResult>;
+  ]) => super.noSuchMethod(
+    Invocation.method(#navigate, [path, navigationParams]),
+    returnValue: Future<NavigationResult>.value(NavigationResult.success),
+    returnValueForMissingStub: Future<NavigationResult>.value(
+      NavigationResult.success,
+    ),
+  ) as Future<NavigationResult>;
 }
 
 class DelegatingRouter extends RouterImpl {

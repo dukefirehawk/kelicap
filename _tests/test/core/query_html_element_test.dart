@@ -10,9 +10,8 @@ void main() {
   tearDown(disposeAnyRunningTest);
 
   test('should support @ViewChild with Element', () async {
-    final fixture = await NgTestBed<UsesElement>(
-      ng.createUsesElementFactory(),
-    ).create();
+    final fixture = await NgTestBed<UsesElement>(ng.createUsesElementFactory())
+        .create();
     expect(fixture.assertOnlyInstance.element!.textContent, '1');
   });
 

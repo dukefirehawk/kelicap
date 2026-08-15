@@ -24,12 +24,11 @@ import 'template_humanizer_util.dart';
 
 const someModuleUrl = 'package:someModule';
 
-typedef ParseTemplate =
-    List<TemplateAst> Function(
-      String template,
-      List<CompileDirectiveMetadata> directives, [
-      List<CompilePipeMetadata> pipes,
-    ]);
+typedef ParseTemplate = List<TemplateAst> Function(
+  String template,
+  List<CompileDirectiveMetadata> directives, [
+  List<CompilePipeMetadata> pipes,
+]);
 
 class ArrayConsole {
   List<String> logs = [];
@@ -2175,35 +2174,31 @@ void main() {
         parse('<div [invalid-prop]></div>', [dirA]);
       });
 
-      test(
-        'should not allow more than 1 component per element',
-        () {
-          var dirA = createCompileDirectiveMetadata(
-            selector: 'div',
-            metadataType: CompileDirectiveMetadataType.component,
-            type: CompileTypeMetadata(moduleUrl: someModuleUrl, name: 'DirA'),
-            template: CompileTemplateMetadata(ngContentSelectors: []),
-          );
-          var dirB = createCompileDirectiveMetadata(
-            selector: 'div',
-            metadataType: CompileDirectiveMetadataType.component,
-            type: CompileTypeMetadata(moduleUrl: someModuleUrl, name: 'DirB'),
-            template: CompileTemplateMetadata(ngContentSelectors: []),
-          );
-          expect(
-            () => parse('<div></div>', [dirB, dirA]),
-            throwsWith(
-              'Template parse errors:\n'
-              'line 1, column 1 of path://to/test-comp: ParseErrorLevel.FATAL: More than one component: DirB,DirA\n'
-              '  ,\n'
-              '1 | <div>\n'
-              '  | ^^^^^\n'
-              "  '",
-            ),
-          );
-        },
-        skip: 'Doesn\'t throw yet.',
-      );
+      test('should not allow more than 1 component per element', () {
+        var dirA = createCompileDirectiveMetadata(
+          selector: 'div',
+          metadataType: CompileDirectiveMetadataType.component,
+          type: CompileTypeMetadata(moduleUrl: someModuleUrl, name: 'DirA'),
+          template: CompileTemplateMetadata(ngContentSelectors: []),
+        );
+        var dirB = createCompileDirectiveMetadata(
+          selector: 'div',
+          metadataType: CompileDirectiveMetadataType.component,
+          type: CompileTypeMetadata(moduleUrl: someModuleUrl, name: 'DirB'),
+          template: CompileTemplateMetadata(ngContentSelectors: []),
+        );
+        expect(
+          () => parse('<div></div>', [dirB, dirA]),
+          throwsWith(
+            'Template parse errors:\n'
+            'line 1, column 1 of path://to/test-comp: ParseErrorLevel.FATAL: More than one component: DirB,DirA\n'
+            '  ,\n'
+            '1 | <div>\n'
+            '  | ^^^^^\n'
+            "  '",
+          ),
+        );
+      }, skip: 'Doesn\'t throw yet.');
 
       test('should not allow components or element bindings nor dom events '
           'on explicit embedded templates', () {

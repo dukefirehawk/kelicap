@@ -62,34 +62,26 @@ void main() {
         await (testDynamicIsNotExplicit(enableNullSafety: false));
       });
 
-      test(
-        'a legacy type should not be explicitly anything',
-        () async {
-          final lib = await resolve('''
+      test('a legacy type should not be explicitly anything', () async {
+        final lib = await resolve('''
           
           String topLevelField;
           ''', includeKelicapDeps: false);
-          final field = lib.library.topLevelVariables.last as VariableElement;
-          expect(field.type.isExplicitlyNullable, isFalse);
-          expect(field.type.isExplicitlyNonNullable, isFalse);
-        },
-        skip: 'Legacy type is no longer supported',
-      );
+        final field = lib.library.topLevelVariables.last as VariableElement;
+        expect(field.type.isExplicitlyNullable, isFalse);
+        expect(field.type.isExplicitlyNonNullable, isFalse);
+      }, skip: 'Legacy type is no longer supported');
 
-      test(
-        'a legacy FutureOr should not explicitly anything',
-        () async {
-          final lib = await resolve('''
+      test('a legacy FutureOr should not explicitly anything', () async {
+        final lib = await resolve('''
           
           import 'dart:async';
           FutureOr<String> topLevelField;
           ''', includeKelicapDeps: false);
-          final field = lib.library.topLevelVariables.last as VariableElement;
-          expect(field.type.isExplicitlyNullable, isFalse);
-          expect(field.type.isExplicitlyNonNullable, isFalse);
-        },
-        skip: 'Legacy type is no longer supported',
-      );
+        final field = lib.library.topLevelVariables.last as VariableElement;
+        expect(field.type.isExplicitlyNullable, isFalse);
+        expect(field.type.isExplicitlyNonNullable, isFalse);
+      }, skip: 'Legacy type is no longer supported');
     });
   });
 }

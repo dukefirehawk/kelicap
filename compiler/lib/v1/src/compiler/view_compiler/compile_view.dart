@@ -197,9 +197,8 @@ class TextBindingNodeReference extends NodeReference {
   o.Expression updateExpr(o.Expression newValueExpr) =>
       ReadNodeReferenceExpr(this).callMethod('updateText', [newValueExpr]);
   o.Expression updateWithPrimitiveExpr(o.Expression newValueExpr) =>
-      ReadNodeReferenceExpr(
-        this,
-      ).callMethod('updateTextWithPrimitive', [newValueExpr]);
+      ReadNodeReferenceExpr(this)
+          .callMethod('updateTextWithPrimitive', [newValueExpr]);
 }
 
 /// An AST expression that reads the value of a NodeReference.
@@ -824,9 +823,8 @@ class CompileView {
       _createMethod.addStmt(elementRef.toWriteStmt(createExpr));
     } else {
       // No parent node, just create element and assign.
-      final createRenderNodeExpr = o.ReadVarExpr(
-        docVarName,
-      ).callMethod('createElement', [o.literal(tagName)]);
+      final createRenderNodeExpr = o.ReadVarExpr(docVarName)
+          .callMethod('createElement', [o.literal(tagName)]);
       _createMethod.addStmt(
         elementRef.toWriteStmt(unsafeCast(createRenderNodeExpr)),
       );
@@ -1291,9 +1289,9 @@ class CompileView {
             // `HostView` already has a dedicated field for it.
             propName = hostViewComponentFieldName;
             _createMethod.addStmt(
-              o.ReadClassMemberExpr(
-                propName,
-              ).set(resolvedProviderValueExpr).toStmt(),
+              o.ReadClassMemberExpr(propName)
+                  .set(resolvedProviderValueExpr)
+                  .toStmt(),
             );
           } else {
             var item = storage.allocate(

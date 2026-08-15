@@ -402,13 +402,11 @@ class _ListCompileQuery extends CompileQuery {
     if (!_queryResultOrigins.add(origin)) {
       return;
     }
-    final queryDirtyField =
-        getPropertyInView(
-              _storage.buildReadExpr(_dirtyField),
-              origin,
-              _queryRoot,
-            )
-            as o.ReadPropExpr;
+    final queryDirtyField = getPropertyInView(
+      _storage.buildReadExpr(_dirtyField),
+      origin,
+      _queryRoot,
+    ) as o.ReadPropExpr;
     origin.dirtyParentQueriesMethod.addStmt(
       queryDirtyField.set(o.literal(true)).toStmt(),
     );

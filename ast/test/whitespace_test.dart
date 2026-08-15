@@ -303,9 +303,10 @@ void main() {
 }
 
 String _parseAndMinifiy(String template) {
-  final nodes =
-      parse(template, sourceUrl: 'whitespace_test.dart')
-          as List<StandaloneTemplateAst>;
+  final nodes = parse(
+    template,
+    sourceUrl: 'whitespace_test.dart',
+  ) as List<StandaloneTemplateAst>;
   final buffer = StringBuffer();
   for (final node in _minimizing.visitAllRoot(nodes)) {
     buffer.write(_humanize(node));

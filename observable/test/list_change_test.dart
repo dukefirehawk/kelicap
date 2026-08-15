@@ -87,7 +87,7 @@ void listChangeTests() {
     });
 
     test('Contained', () {
-      var model = toObservable(['a', 'b']);
+      var model = toObservableList<String>(['a', 'b']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -100,7 +100,7 @@ void listChangeTests() {
     });
 
     test('Delete Empty', () {
-      var model = toObservable(<dynamic>[1]);
+      var model = toObservableList<dynamic>([1]);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -111,7 +111,7 @@ void listChangeTests() {
     });
 
     test('Right Non Overlap', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -124,7 +124,7 @@ void listChangeTests() {
     });
 
     test('Left Non Overlap', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -137,7 +137,7 @@ void listChangeTests() {
     });
 
     test('Right Adjacent', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -150,7 +150,7 @@ void listChangeTests() {
     });
 
     test('Left Adjacent', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -164,7 +164,7 @@ void listChangeTests() {
     });
 
     test('Right Overlap', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -177,7 +177,7 @@ void listChangeTests() {
     });
 
     test('Left Overlap', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -192,7 +192,7 @@ void listChangeTests() {
     });
 
     test('Prefix And Suffix One In', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -203,7 +203,7 @@ void listChangeTests() {
     });
 
     test('Remove First', () {
-      var model = toObservable([16, 15, 15]);
+      var model = toObservableList<int>([16, 15, 15]);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -213,7 +213,7 @@ void listChangeTests() {
     });
 
     test('Update Remove', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -226,7 +226,7 @@ void listChangeTests() {
     });
 
     test('Remove Mid List', () {
-      var model = toObservable(['a', 'b', 'c', 'd']);
+      var model = toObservableList<String>(['a', 'b', 'c', 'd']);
       var copy = model.toList();
       var changes = model.listChanges.first;
 
@@ -251,14 +251,14 @@ void listChangeTests() {
     });
 
     test('add items', () {
-      var model = toObservable([]);
+      var model = toObservableList<dynamic>([]);
       var changes = model.listChanges.first;
       model.addAll([1, 2, 3]);
       return assertEditDistance(model, changes, 3);
     });
 
     test('trunacte and add, sharing a contiguous block', () {
-      var model = toObservable(['x', 'x', 'x', 'x', '1', '2', '3']);
+      var model = toObservableList<String>(['x', 'x', 'x', 'x', '1', '2', '3']);
       var changes = model.listChanges.first;
       model.length = 0;
       model.addAll(['1', '2', '3', 'y', 'y', 'y', 'y']);
@@ -266,7 +266,7 @@ void listChangeTests() {
     });
 
     test('truncate and add, sharing a discontiguous block', () {
-      var model = toObservable(['1', '2', '3', '4', '5']);
+      var model = toObservableList<String>(['1', '2', '3', '4', '5']);
       var changes = model.listChanges.first;
       model.length = 0;
       model.addAll(['a', '2', 'y', 'y', '4', '5', 'z', 'z']);
@@ -274,7 +274,7 @@ void listChangeTests() {
     });
 
     test('insert at beginning and end', () {
-      var model = toObservable([2, 3, 4]);
+      var model = toObservableList<int>([2, 3, 4]);
       var changes = model.listChanges.first;
       model.insert(0, 5);
       model[2] = 6;

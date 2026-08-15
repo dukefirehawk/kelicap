@@ -38,31 +38,25 @@ PlatformLocation platformLocationFactory() => platformLocation;
 
 class MockPlatformLocation extends Mock implements BrowserPlatformLocation {
   @override
-  String get pathname =>
-      super.noSuchMethod(
-            Invocation.getter(#pathname),
-            returnValue: '',
-            returnValueForMissingStub: '',
-          )
-          as String;
+  String get pathname => super.noSuchMethod(
+    Invocation.getter(#pathname),
+    returnValue: '',
+    returnValueForMissingStub: '',
+  ) as String;
 
   @override
-  String get search =>
-      super.noSuchMethod(
-            Invocation.getter(#search),
-            returnValue: '',
-            returnValueForMissingStub: '',
-          )
-          as String;
+  String get search => super.noSuchMethod(
+    Invocation.getter(#search),
+    returnValue: '',
+    returnValueForMissingStub: '',
+  ) as String;
 
   @override
-  String get hash =>
-      super.noSuchMethod(
-            Invocation.getter(#hash),
-            returnValue: '',
-            returnValueForMissingStub: '',
-          )
-          as String;
+  String get hash => super.noSuchMethod(
+    Invocation.getter(#hash),
+    returnValue: '',
+    returnValueForMissingStub: '',
+  ) as String;
 }
 
 @GenerateInjector([

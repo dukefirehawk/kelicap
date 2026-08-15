@@ -2,8 +2,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'ng_switch_test.template.dart'
-    as ng;
+import 'ng_switch_test.template.dart' as ng;
 
 void main() {
   group('ngSwitch', () {

@@ -8,9 +8,8 @@ void main() {
   tearDown(disposeAnyRunningTest);
 
   test('should support pipes with optional paramters', () async {
-    final fixture = await NgTestBed<Example>(
-      ng.createExampleFactory(),
-    ).create();
+    final fixture = await NgTestBed<Example>(ng.createExampleFactory())
+        .create();
     expect(fixture.text, contains('Unpiped: 2014-04-29 06:04:00.000'));
     expect(fixture.text, contains('Piped: Apr 29, 2014'));
   });

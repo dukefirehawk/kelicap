@@ -2,8 +2,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'component_providers_test.template.dart'
-    as ng;
+import 'component_providers_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

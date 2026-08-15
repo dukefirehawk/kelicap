@@ -373,10 +373,8 @@ class RouterImpl extends Router {
       // that it can be passed to Future.wait().
       var prefetcherFuture = Future.value(prefetcher(state.build()));
       var loaderFuture = route.loader();
-      return Future.wait([
-        prefetcherFuture,
-        loaderFuture,
-      ]).then((_) => loaderFuture);
+      return Future.wait([prefetcherFuture, loaderFuture])
+          .then((_) => loaderFuture);
     }
     return null;
   }

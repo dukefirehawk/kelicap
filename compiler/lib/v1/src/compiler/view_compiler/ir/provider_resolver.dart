@@ -56,8 +56,8 @@ class ProviderResolver {
   /// instances can handle the createProviderInstance callback on the
   /// host interface.
   void addDirectiveProviders(
-    final List<ProviderAst> providerList,
-    final List<CompileDirectiveMetadata> directives,
+    List<ProviderAst> providerList,
+    List<CompileDirectiveMetadata> directives,
   ) {
     // Create a lookup map from token to provider.
     for (var provider in providerList) {

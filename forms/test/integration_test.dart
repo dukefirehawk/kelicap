@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:web/web.dart';
 
 import 'package:test/test.dart';
@@ -589,12 +590,12 @@ void main() {
         );
         var required =
             fixture.rootElement.querySelector('[required]') as HTMLInputElement;
-        var minLength =
-            fixture.rootElement.querySelector('[ngControl=min]')
-                as HTMLInputElement;
-        var maxLength =
-            fixture.rootElement.querySelector('[ngControl=max]')
-                as HTMLInputElement;
+        var minLength = fixture.rootElement.querySelector(
+          '[ngControl=min]',
+        ) as HTMLInputElement;
+        var maxLength = fixture.rootElement.querySelector(
+          '[ngControl=max]',
+        ) as HTMLInputElement;
         await fixture.update((_) {
           required.value = '';
           minLength.value = '1';

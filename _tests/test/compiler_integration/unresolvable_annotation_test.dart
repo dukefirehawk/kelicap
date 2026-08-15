@@ -1,6 +1,8 @@
 import 'package:test/test.dart';
+
 // ignore: avoid_relative_lib_imports
 import '../../lib/compiler.dart';
+
 import 'package:kelicap_compiler/v2/context.dart';
 
 void main() {
@@ -86,25 +88,18 @@ void main() {
     );
   });
 
-  test(
-    'should warn on a bad enum annotation',
-    () async {
-      await compilesExpecting(
-        '''
+  test('should warn on a bad enum annotation', () async {
+    await compilesExpecting(
+      '''
       @UndefinedAnnotation()
       enum SomeEnum {
         cool,
       }
     ''',
-        errors: [],
-        warnings: [
-          allOf(
-            contains('@UndefinedAnnotation()'),
-            containsSourceLocation(1, 7),
-          ),
-        ],
-      );
-    },
-    skip: 'No warn for a bad enum annotation',
-  );
+      errors: [],
+      warnings: [
+        allOf(contains('@UndefinedAnnotation()'), containsSourceLocation(1, 7)),
+      ],
+    );
+  }, skip: 'No warn for a bad enum annotation');
 }

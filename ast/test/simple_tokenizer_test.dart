@@ -157,26 +157,23 @@ void main() {
     },
   );
 
-  test(
-    'should tokenize an HTML element with bracket, period, percentage, and backSlash',
-    () {
-      expect(tokenize(r'''<div [style.he\ight.%>'''), [
-        NgSimpleToken.openTagStart(0),
-        NgSimpleToken.identifier(1, 'div'),
-        NgSimpleToken.whitespace(4, ' '),
-        NgSimpleToken.openBracket(5),
-        NgSimpleToken.identifier(6, 'style'),
-        NgSimpleToken.period(11),
-        NgSimpleToken.identifier(12, 'he'),
-        NgSimpleToken.backSlash(14),
-        NgSimpleToken.identifier(15, 'ight'),
-        NgSimpleToken.period(19),
-        NgSimpleToken.percent(20),
-        NgSimpleToken.tagEnd(21),
-        NgSimpleToken.eof(22),
-      ]);
-    },
-  );
+  test('should tokenize an HTML element with bracket, period, percentage, and backSlash', () {
+    expect(tokenize(r'''<div [style.he\ight.%>'''), [
+      NgSimpleToken.openTagStart(0),
+      NgSimpleToken.identifier(1, 'div'),
+      NgSimpleToken.whitespace(4, ' '),
+      NgSimpleToken.openBracket(5),
+      NgSimpleToken.identifier(6, 'style'),
+      NgSimpleToken.period(11),
+      NgSimpleToken.identifier(12, 'he'),
+      NgSimpleToken.backSlash(14),
+      NgSimpleToken.identifier(15, 'ight'),
+      NgSimpleToken.period(19),
+      NgSimpleToken.percent(20),
+      NgSimpleToken.tagEnd(21),
+      NgSimpleToken.eof(22),
+    ]);
+  });
 
   test('should tokenize an HTML element with banana open and close', () {
     expect(tokenize('''<my-tag [(banana)]>'''), [

@@ -1135,12 +1135,10 @@ class _ParseContext {
     CssSelector elementCssSelector,
   ) {
     var matchedDirectives = <CompileDirectiveMetadata>{};
-    _selectorMatcher(directives).match(elementCssSelector, (
-      selector,
-      directive,
-    ) {
-      matchedDirectives.add(directive);
-    });
+    _selectorMatcher(directives)
+        .match(elementCssSelector, (selector, directive) {
+          matchedDirectives.add(directive);
+        });
     // We return the directives in the same order that they are present in the
     // Component, not the order that they match in the html.
     return directives.where(matchedDirectives.contains);

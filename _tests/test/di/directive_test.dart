@@ -12,9 +12,8 @@ void main() {
   tearDown(disposeAnyRunningTest);
 
   test('should use the proper provider bindings in a hierarchy', () async {
-    final fixture = await NgTestBed<TestParent>(
-      ng.createTestParentFactory(),
-    ).create();
+    final fixture = await NgTestBed<TestParent>(ng.createTestParentFactory())
+        .create();
     late final B serviceB;
     late final A serviceA;
     await fixture.update((comp) {

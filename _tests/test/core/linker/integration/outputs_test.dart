@@ -1,12 +1,12 @@
 import 'dart:async';
+
 import 'package:web/web.dart';
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'outputs_test.template.dart'
-    as ng;
+import 'outputs_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);
@@ -79,25 +79,21 @@ void main() {
     expect(inputNoPrevent.checked, true);
   });
 
-  test(
-    'should provide helpful error for incorrectly typed handler',
-    () async {
-      final testBed = NgTestBed<TestMismatchedHandler>(
-        ng.createTestMismatchedHandlerFactory(),
-      );
-      expect(
-        testBed.create,
-        throwsA(
-          const TypeMatcher<AssertionError>().having(
-            (a) => a.message,
-            'message',
-            contains("isn't assignable to expected type"),
-          ),
+  test('should provide helpful error for incorrectly typed handler', () async {
+    final testBed = NgTestBed<TestMismatchedHandler>(
+      ng.createTestMismatchedHandlerFactory(),
+    );
+    expect(
+      testBed.create,
+      throwsA(
+        const TypeMatcher<AssertionError>().having(
+          (a) => a.message,
+          'message',
+          contains("isn't assignable to expected type"),
         ),
-      );
-    },
-    skip: 'https://github.com/dart-lang/sdk/issues/36832',
-  );
+      ),
+    );
+  }, skip: 'https://github.com/dart-lang/sdk/issues/36832');
 }
 
 @Directive(selector: '[emitter]')

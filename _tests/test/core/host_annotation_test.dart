@@ -20,20 +20,16 @@ void main() {
 
   group('@HostBinding', () {
     test('should assign "title" based on a static', () async {
-      final element =
-          await rootElementOf<HostBindingStaticTitle>(
-                ng.createHostBindingStaticTitleFactory(),
-              )
-              as HTMLDivElement;
+      final element = await rootElementOf<HostBindingStaticTitle>(
+        ng.createHostBindingStaticTitleFactory(),
+      ) as HTMLDivElement;
       expect(element.title, 'Hello World');
     });
 
     test('should assign "title" based on an instance member', () async {
-      final element =
-          await rootElementOf<HostBindingInstanceTitle>(
-                ng.createHostBindingInstanceTitleFactory(),
-              )
-              as HTMLDivElement;
+      final element = await rootElementOf<HostBindingInstanceTitle>(
+        ng.createHostBindingInstanceTitleFactory(),
+      ) as HTMLDivElement;
       expect(element.title, 'Hello World');
     });
 
@@ -46,38 +42,30 @@ void main() {
       // instance getter or field and everything would work exactly as intended.
       //
       // https://github.com/angulardart/angular/issues/1272
-      final element =
-          await rootElementOf<HostBindingStaticTitleNotInherited>(
-                ng.createHostBindingStaticTitleNotInheritedFactory(),
-              )
-              as HTMLDivElement;
+      final element = await rootElementOf<HostBindingStaticTitleNotInherited>(
+        ng.createHostBindingStaticTitleNotInheritedFactory(),
+      ) as HTMLDivElement;
       expect(element.title, isEmpty);
     });
 
     test('should assign "title" based on an inherited instance', () async {
-      final element =
-          await rootElementOf<HostBindingInstanceTitleInherited>(
-                ng.createHostBindingInstanceTitleInheritedFactory(),
-              )
-              as HTMLDivElement;
+      final element = await rootElementOf<HostBindingInstanceTitleInherited>(
+        ng.createHostBindingInstanceTitleInheritedFactory(),
+      ) as HTMLDivElement;
       expect(element.title, 'Hello World');
     });
 
     test('should support tabIndex of 0', () async {
-      final element =
-          await rootElementOf<HostBindingTabIndex0>(
-                ng.createHostBindingTabIndex0Factory(),
-              )
-              as HTMLDivElement;
+      final element = await rootElementOf<HostBindingTabIndex0>(
+        ng.createHostBindingTabIndex0Factory(),
+      ) as HTMLDivElement;
       expect(element.tabIndex, 0);
     });
 
     test('should support tabIndex of 0', () async {
-      final element =
-          await rootElementOf<HostBindingTabIndexNegative1>(
-                ng.createHostBindingTabIndexNegative1Factory(),
-              )
-              as HTMLDivElement;
+      final element = await rootElementOf<HostBindingTabIndexNegative1>(
+        ng.createHostBindingTabIndexNegative1Factory(),
+      ) as HTMLDivElement;
       expect(element.tabIndex, -1);
     });
 
@@ -139,11 +127,9 @@ void main() {
     });
 
     test('should support multiple annotations on a single field', () async {
-      final element =
-          await rootElementOf<HostBindingMulti>(
-                ng.createHostBindingMultiFactory(),
-              )
-              as HTMLElement;
+      final element = await rootElementOf<HostBindingMulti>(
+        ng.createHostBindingMultiFactory(),
+      ) as HTMLElement;
       expect(element.className, 'hello');
       expect(element.title, 'hello');
     });

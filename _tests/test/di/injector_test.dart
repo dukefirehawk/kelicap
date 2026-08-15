@@ -7,6 +7,7 @@ import 'package:kelicap/src/di/injector.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
 import 'package:_tests/matchers.dart';
+
 import 'injector_test.template.dart' as ng;
 
 void main() {

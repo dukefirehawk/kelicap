@@ -551,8 +551,7 @@ class Empty {}
 
 @Component(
   selector: 'multiple-content-tags',
-  template:
-      '(<ng-content select=".left"></ng-content>,&ngsp;<ng-content></ng-content>)',
+  template: '(<ng-content select=".left"></ng-content>,&ngsp;<ng-content></ng-content>)',
   directives: [],
 )
 class MultipleContentTagsComponent {}

@@ -23,7 +23,7 @@ void main() {
     List<ChangeRecord>? changes;
 
     setUp(() {
-      map = toObservable({'a': 1, 'b': 2, 'c': 3});
+      map = toObservableMap<String, int>({'a': 1, 'b': 2, 'c': 3});
       changes = null;
       sub = map.changes.listen((records) {
         changes = getPropertyChangeRecords(records, #length);
@@ -88,7 +88,7 @@ void main() {
     List<ChangeRecord>? changes;
 
     setUp(() {
-      map = toObservable(<String, int?>{'a': 1, 'b': 2, 'c': 3});
+      map = toObservableMap<String, int?>({'a': 1, 'b': 2, 'c': 3});
       changes = null;
       sub = map.changes.listen((records) {
         changes = records
@@ -218,7 +218,7 @@ void main() {
   });
 
   test('toString', () {
-    var map = toObservable({'a': 1, 'b': 2});
+    var map = toObservableMap<String, int>({'a': 1, 'b': 2});
     expect(map.toString(), '{a: 1, b: 2}');
   });
 
@@ -228,7 +228,7 @@ void main() {
     late int valuesChanged;
 
     setUp(() {
-      map = toObservable({'a': 1, 'b': 2, 'c': 3});
+      map = toObservableMap<String, int>({'a': 1, 'b': 2, 'c': 3});
       keysChanged = 0;
       valuesChanged = 0;
       sub = map.changes.listen((records) {
@@ -298,7 +298,7 @@ void main() {
     late ObservableMap map;
 
     setUp(() {
-      map = toObservable({'a': 1, 'b': 2});
+      map = toObservableMap<String, int>({'a': 1, 'b': 2});
       records = null;
       map.changes.first.then((r) => records = r);
     });

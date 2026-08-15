@@ -11,8 +11,10 @@ typedef NgTestStabilizerFactory = NgTestStabilizer Function(Injector);
 ///
 /// In the future we can consider opening up visibility, but for now we should
 /// ensure that only our own stabilizers have access to this specific zone hook.
-typedef AllowTimerHookZoneAccess =
-    NgTestStabilizer Function(Injector, [TimerHookZone?]);
+typedef AllowTimerHookZoneAccess = NgTestStabilizer Function(
+  Injector, [
+  TimerHookZone?,
+]);
 
 /// Returns a composed sequence of [factories] as a single stabilizer.
 NgTestStabilizerFactory composeStabilizers(
@@ -185,7 +187,7 @@ class _DelegatingNgTestStabilizer extends NgTestStabilizer {
   Future<void> stabilizeWithThreshold(int threshold) async {
     try {
       _updatedAtLeastOnce = false;
-      return super.stabilizeWithThreshold(threshold);
+      await super.stabilizeWithThreshold(threshold);
     } finally {
       _updatedAtLeastOnce = false;
     }

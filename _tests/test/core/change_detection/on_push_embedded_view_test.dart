@@ -4,16 +4,14 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
-import 'on_push_embedded_view_test.template.dart'
-    as ng;
+import 'on_push_embedded_view_test.template.dart' as ng;
 
 void main() {
   late NgTestFixture<TestComponent> fixture;
 
   setUp(() async {
-    fixture = await NgTestBed<TestComponent>(
-      ng.createTestComponentFactory(),
-    ).create();
+    fixture = await NgTestBed<TestComponent>(ng.createTestComponentFactory())
+        .create();
   });
 
   tearDown(disposeAnyRunningTest);

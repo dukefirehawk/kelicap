@@ -225,8 +225,7 @@ class HasMatchNgProjectAs {}
 
 @Component(
   selector: 'ng-project-as',
-  template:
-      '<has-content-api><ng-content select=".foo" ngProjectAs=".foo"></ng-content></has-content-api>',
+  template: '<has-content-api><ng-content select=".foo" ngProjectAs=".foo"></ng-content></has-content-api>',
   directives: [HasContentApiComponent],
 )
 class NgProjectAsComponent {}
@@ -243,8 +242,7 @@ class NgIfComponent {
 
 @Component(
   selector: 'ng-for-comp',
-  template:
-      '<no-select-has-content><div *ngFor="let item of items"></div></no-select-has-content>',
+  template: '<no-select-has-content><div *ngFor="let item of items"></div></no-select-has-content>',
   directives: [NoSelectorHasContentComponent, NgFor],
 )
 class NgForComponent {

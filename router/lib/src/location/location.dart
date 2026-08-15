@@ -3,6 +3,7 @@ import 'dart:js_interop';
 
 import 'package:kelicap/kelicap.dart' show Injectable, Optional;
 import 'package:web/web.dart';
+
 import 'location_strategy.dart' show LocationStrategy;
 
 /// `Location` is a service that applications can use to interact with a
