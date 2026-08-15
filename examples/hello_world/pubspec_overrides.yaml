@@ -5,6 +5,8 @@ dependency_overrides:
     path: ../../ast
   kelicap_common:
     path: ../../common
+  kelicap_observable:
+    path: ../../observable
   kelicap_compiler:
     path: ../../compiler
   kelicap_forms:
