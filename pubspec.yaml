@@ -13,11 +13,12 @@ workspace:
   - forms
   - router
   - _tests
+  - kelicap_cli
   #- examples/hello_world
   #- _tests
 
 dev_dependencies:
-  melos: ^8.0.0
+  melos: ^8.5.0
   lints: ^6.0.0
 
 melos:
