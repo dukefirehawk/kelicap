@@ -16,14 +16,17 @@ Kelicap is structured into the following core packages:
 * **`kelicap_observable`**: Contains code for observables, the reactive primitive of Kelicap, providing change detection and state management.
 * **`kelicap_compiler`**: Build-time tooling that compiles Kelicap applications into native HTML, CSS, and JavaScript.
 * **`kelicap`**: The core runtime library powering Kelicap applications.
+* **`kelicap_test`**: Testing utilities for Kelicap framework.
 * **`kelicap_forms`**: Forms components for Kelicap framework.
 * **`kelicap_router`**: Router components for Kelicap framework.
+* **`kelicap_components`**: Component library for Kelicap framework.
+* **`kelicap_cli`**: Command-line tool for creating and managing Kelicap projects.
 
 ## Getting Started
 
 ### Pre-requisite
 
-Dart 3.12 or later
+Dart 3.13.0 or later
 
 ### Installation
 
@@ -31,6 +34,7 @@ Dart 3.12 or later
     dependencies:
         kelicap: ^1.0.0
         kelicap_router: ^1.0.0
+        kelicap_forms: ^1.0.0
         web: ^1.0.0
 
     dev_dependencies:
