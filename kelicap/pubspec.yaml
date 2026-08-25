@@ -4,6 +4,7 @@ description: >
   A fast and productive web framework that is a derivative of AngularDart which is syntatically similar to Angular 16.
 version: 1.1.0
 repository: https://github.com/dukefirehawk/kelicap
+issue_tracker: https://github.com/dukefirehawk/kelicap/issues
 
 environment:
   sdk: ">=3.13.0 <4.0.0"

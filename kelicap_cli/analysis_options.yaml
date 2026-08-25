@@ -1,0 +1,9 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  errors:
+    implementation_imports: ignore
+    uri_has_not_been_generated: ignore
+  exclude:
+    - templates/**
+ 

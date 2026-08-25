@@ -29,16 +29,16 @@ final Future<PackageAssetReader> _packageAssets = (() async {
   }
   final root = Platform.environment['PKG_ANGULAR_ROOT'];
   final path = '$runfiles/$root';
-  if (!FileSystemEntity.isFileSync('$path/ngdart/lib/angular.dart')) {
-    throw StateError('Could not find $path/ngdart/lib/angular.dart');
+  if (!FileSystemEntity.isFileSync('$path/kelicap/lib/angular.dart')) {
+    throw StateError('Could not find $path/kelicap/lib/angular.dart');
   }
-  final pathToMeta = '$path/ngdart/lib/src/meta.dart';
+  final pathToMeta = '$path/kelicap/lib/src/meta.dart';
   if (!FileSystemEntity.isFileSync(pathToMeta)) {
     throw StateError('Could not find $pathToMeta');
   }
-  print('file://$path/ngdart/lib');
+  print('file://$path/kelicap/lib');
   return PackageAssetReader.forPackages({
-    ngPackage: '$path/ngdart/',
+    ngPackage: '$path/kelicap/',
     ngCompiler: '$path/ngcompiler/',
   });
 })();
@@ -48,9 +48,9 @@ final Future<PackageAssetReader> _packageAssets = (() async {
 // **NOTE**: Be very careful changing this, there are hard-coded transformation
 // rules as part of open sourcing process to make sure this works both
 // externally and internally.
-const ngPackage = 'ngdart';
-const ngCompiler = 'ngcompiler';
-const ngImport = 'package:$ngPackage/angular.dart';
+const ngPackage = 'kelicap';
+const ngCompiler = 'kelicap_compiler';
+const ngImport = 'package:$ngPackage/kelicap.dart';
 final _ngFiles = Glob('lib/**.dart');
 
 /// Modeled after `package:build_test/build_test.dart#testBuilders`.
@@ -63,7 +63,7 @@ Future<void> _testBuilder(
 }) async {
   // Sanity check that the framework itself is readable.
   final packages = await _packageAssets;
-  if (!await packages.canRead(AssetId(ngPackage, 'lib/angular.dart'))) {
+  if (!await packages.canRead(AssetId(ngPackage, 'lib/kelicap.dart'))) {
     throw StateError('Unable to read "$ngImport".');
   }
 

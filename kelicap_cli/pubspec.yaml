@@ -1,0 +1,37 @@
+name: kelicap_cli
+description: A command-line tool for creating and managing Kelicap projects.
+version: 1.0.0
+repository: https://github.com/dukefirehawk/kelicap
+issue_tracker: https://github.com/dukefirehawk/kelicap/issues
+
+executables:
+  kelicap: kelicap
+  kc: kelicap
+
+environment:
+  sdk: ">=3.13.0 <4.0.0"
+
+resolution: workspace
+
+dependencies: 
+  ansicolor: ^2.0.0
+  args: ^2.3.0
+  build: ^4.0.0
+  cli_util: ^0.5.0
+  dart_style: ^3.1.0
+  glob: ^2.0.0
+  path: ^1.8.0
+  pub_semver: ^2.2.0
+  yaml: ^3.1.0
+
+dev_dependencies: 
+  build_config: ^1.0.0
+  build_runner: ^2.16.0
+  build_version: ^2.1.0
+  lints: ^6.0.0
+  test: ^1.31.0
+
+platforms:
+  linux:
+  macos:
+  windows:
