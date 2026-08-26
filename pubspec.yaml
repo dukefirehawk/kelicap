@@ -4,10 +4,10 @@ environment:
   sdk: ">=3.13.0 <4.0.0"
 
 workspace:
-  - ast
-  - common
+  - packages/kelicap_ast
+  - packages/kelicap_common
   - observable
-  - compiler
+  - packages/kelicap_compiler
   - kelicap
   - kelicap_test
   - forms

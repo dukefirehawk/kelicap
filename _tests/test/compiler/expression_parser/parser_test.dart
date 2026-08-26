@@ -3,13 +3,13 @@ import 'package:test/test.dart';
 // ignore: avoid_relative_lib_imports
 import '../../../lib/test_util.dart';
 
-import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart'
+import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/compile_metadata.dart'
     show CompileIdentifierMetadata;
-import 'package:kelicap_compiler/v1/src/compiler/expression_parser/ast.dart'
+import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/expression_parser/ast.dart'
     show ASTWithSource, Interpolation, PropertyRead;
-import 'package:kelicap_compiler/v1/src/compiler/expression_parser/parser.dart'
+import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/expression_parser/parser.dart'
     show ParseException, ExpressionParser;
-import 'package:kelicap_compiler/v2/context.dart';
+import '../../../../packages/kelicap_compiler/lib/v2/context.dart';
 
 import 'unparser.dart' show Unparser;
 

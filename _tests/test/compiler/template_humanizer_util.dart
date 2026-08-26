@@ -1,5 +1,5 @@
-import 'package:kelicap_compiler/v1/src/compiler/output/dart_emitter.dart';
-import 'package:kelicap_compiler/v1/src/compiler/template_ast.dart';
+import '../../../packages/kelicap_compiler/lib/v1/src/compiler/output/dart_emitter.dart';
+import '../../../packages/kelicap_compiler/lib/v1/src/compiler/template_ast.dart';
 
 import 'expression_parser/unparser.dart' show Unparser;
 

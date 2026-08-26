@@ -1,5 +1,7 @@
 import 'package:kelicap/di.dart';
-import 'package:kelicap_common/kelicap_common.dart';
+
+import '../../../../packages/common/lib/kelicap_common.dart';
+
 import 'package:meta/meta.dart';
 
 import '../utilities/unsafe_cast.dart';

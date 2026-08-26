@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
-import 'package:kelicap_compiler/v1/src/compiler/stylesheet_compiler/shadow_css.dart';
+
+import '../../../packages/kelicap_compiler/lib/v1/src/compiler/stylesheet_compiler/shadow_css.dart';
 
 const content = 'content';
 const host = 'host';

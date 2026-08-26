@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
-import 'package:kelicap_compiler/v1/src/compiler/output/abstract_emitter.dart'
+
+import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/output/abstract_emitter.dart'
     show escapeSingleQuoteString;
 
 void main() {

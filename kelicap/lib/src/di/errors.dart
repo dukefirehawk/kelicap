@@ -1,4 +1,5 @@
-import 'package:kelicap_common/kelicap_common.dart';
+import '../../../../packages/common/lib/kelicap_common.dart';
+
 import 'package:meta/dart2js.dart' as dart2js;
 
 /// Current stack of tokens being requested for an injection.

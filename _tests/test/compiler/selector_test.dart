@@ -3,8 +3,8 @@ import 'package:test/test.dart';
 // ignore: avoid_relative_lib_imports
 import '../../lib/test_util.dart';
 
-import 'package:kelicap_compiler/v1/src/compiler/attribute_matcher.dart';
-import 'package:kelicap_compiler/v1/src/compiler/selector.dart'
+import '../../../packages/kelicap_compiler/lib/v1/src/compiler/attribute_matcher.dart';
+import '../../../packages/kelicap_compiler/lib/v1/src/compiler/selector.dart'
     show CssSelector, SelectorMatcher;
 
 void main() {

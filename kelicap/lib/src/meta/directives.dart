@@ -1,5 +1,6 @@
 import 'package:meta/meta_meta.dart';
-import 'package:kelicap_common/kelicap_common.dart';
+
+import '../../../../packages/common/lib/kelicap_common.dart';
 import 'typed.dart';
 
 /// An annotation that marks a class as an Kelicap directive, allowing you to

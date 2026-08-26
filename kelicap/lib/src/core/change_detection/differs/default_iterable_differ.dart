@@ -1,5 +1,6 @@
 import 'package:kelicap/src/utilities/unsafe_cast.dart';
-import 'package:kelicap_common/kelicap_common.dart';
+
+import '../../../../../../packages/common/lib/kelicap_common.dart';
 
 /// A function that can be used to return a unique key for [item] at [index].
 ///

@@ -1,7 +1,9 @@
-import 'package:kelicap_common/kelicap_common.dart';
+import '../../../../../packages/common/lib/kelicap_common.dart';
+
 import 'package:web/web.dart';
 
 import 'package:meta/meta.dart';
+
 import '../../core/change_detection/change_detector_ref.dart';
 import '../../core/zone/ng_zone.dart';
 import '../../di/injector.dart';

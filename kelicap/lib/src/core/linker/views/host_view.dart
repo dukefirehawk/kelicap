@@ -1,8 +1,10 @@
-import 'package:kelicap_common/kelicap_common.dart';
+import '../../../../../../packages/common/lib/kelicap_common.dart';
+
 import 'package:web/web.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
 import 'package:meta/meta.dart';
+
 import '../../../core/change_detection/host.dart';
 import '../../../core/linker/component_factory.dart';
 import '../../../core/linker/view_container.dart';

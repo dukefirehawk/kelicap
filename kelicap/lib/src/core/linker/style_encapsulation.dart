@@ -1,7 +1,9 @@
-import 'package:kelicap_common/kelicap_common.dart';
+import '../../../../../packages/common/lib/kelicap_common.dart';
+
 import 'package:web/web.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
+
 import '../../core/linker/app_view_utils.dart';
 import '../../runtime/dom_helpers.dart';
 import '../../utilities/unsafe_cast.dart';

@@ -4,7 +4,9 @@ library;
 //import 'dart:html' as html;
 //import 'dart:js_interop';
 import 'dart:js_interop';
-import 'package:kelicap_common/kelicap_common.dart';
+
+import '../../../packages/common/lib/kelicap_common.dart';
+
 import 'package:web/web.dart' as html;
 
 import 'devtools/inspector.dart';

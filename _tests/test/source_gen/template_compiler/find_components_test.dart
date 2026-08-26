@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
-import 'package:kelicap_compiler/v2/context.dart';
+
+import '../../../../packages/kelicap_compiler/lib/v2/context.dart';
 
 import '../../resolve_util.dart';
 

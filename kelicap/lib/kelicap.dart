@@ -91,4 +91,4 @@ export 'src/runtime/check_binding.dart' show debugCheckBindings;
 export 'src/testability.dart'
     show testabilityProvider, Testability, TestabilityRegistry;
 
-export 'package:kelicap_common/kelicap_common.dart';
+export '../../packages/common/lib/kelicap_common.dart';

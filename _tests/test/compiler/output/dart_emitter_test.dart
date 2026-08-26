@@ -1,9 +1,11 @@
 import 'package:test/test.dart';
-import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart'
+
+import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/compile_metadata.dart'
     show CompileIdentifierMetadata;
-import 'package:kelicap_compiler/v1/src/compiler/output/dart_emitter.dart'
+import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/output/dart_emitter.dart'
     show DartEmitter;
-import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart' as o;
+import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/output/output_ast.dart'
+    as o;
 
 var someModuleUrl = 'asset:somePackage/lib/somePath';
 var anotherModuleUrl = 'asset:somePackage/lib/someOtherPath';
