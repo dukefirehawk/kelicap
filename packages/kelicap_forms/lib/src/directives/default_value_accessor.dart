@@ -5,8 +5,8 @@ import 'package:web/web.dart';
 //import 'dart:js_util' as js_util;
 
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_forms/src/directives/shared.dart'
-    show setElementDisabled;
+
+import 'shared.dart' show setElementDisabled;
 
 import 'control_value_accessor.dart';
 

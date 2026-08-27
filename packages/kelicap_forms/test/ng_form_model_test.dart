@@ -1,10 +1,11 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_forms/kelicap_forms.dart';
 
-import '../../packages/kelicap_test/lib/kelicap_test.dart';
+import '../lib/kelicap_forms.dart';
 
-import 'ng_form_model_test.template.dart' as ng;
+import '../../kelicap_test/lib/kelicap_test.dart';
+
+import '../../../forms/test/ng_form_model_test.template.dart' as ng;
 
 Matcher throwsWith(String s) =>
     throwsA(predicate((e) => e.toString().contains(s)));
