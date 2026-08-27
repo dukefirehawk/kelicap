@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import '../lib/kelicap_forms.dart';
+import 'package:kelicap_forms/kelicap_forms.dart';
 
 Map<String, dynamic>? _syncValidator(AbstractControl c) {
   return null;

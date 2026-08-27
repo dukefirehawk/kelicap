@@ -1,4 +1,4 @@
-import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/expression_parser/ast.dart';
+import 'package:kelicap_compiler/v1/src/compiler/expression_parser/ast.dart';
 
 class Unparser implements AstVisitor<void, String> {
   static final _quoteRegExp = RegExp(r'"');

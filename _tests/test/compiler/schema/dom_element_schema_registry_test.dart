@@ -1,8 +1,8 @@
 import 'package:test/test.dart';
 
-import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/schema/dom_element_schema_registry.dart'
+import 'package:kelicap_compiler/v1/src/compiler/schema/dom_element_schema_registry.dart'
     show DomElementSchemaRegistry;
-import '../../../../packages/kelicap_compiler/lib/v1/src/compiler/security.dart';
+import 'package:kelicap_compiler/v1/src/compiler/security.dart';
 
 void main() {
   group('DOMElementSchema', () {

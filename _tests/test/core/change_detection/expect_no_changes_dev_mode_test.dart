@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../../../../packages/kelicap_test/lib/kelicap_test.dart';
+import 'package:kelicap_test/kelicap_test.dart';
 
 import 'expect_no_changes_dev_mode_test.template.dart' as ng;
 

@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 // ignore: avoid_relative_lib_imports
 import '../../lib/compiler.dart';
 
-import '../../../packages/kelicap_compiler/lib/v2/context.dart';
+import 'package:kelicap_compiler/v2/context.dart';
 
 void main() {
   setUpAll(() {

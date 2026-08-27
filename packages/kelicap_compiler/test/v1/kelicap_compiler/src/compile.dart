@@ -2,7 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
-import '../../../../lib/v2/context.dart';
+import 'package:kelicap_compiler/v2/context.dart';
 
 import 'resolve.dart';
 

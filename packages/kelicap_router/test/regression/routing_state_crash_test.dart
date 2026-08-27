@@ -6,8 +6,8 @@ import 'package:web/web.dart';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../../lib/kelicap_router.dart';
-import '../../lib/testing.dart';
+import 'package:kelicap_router/kelicap_router.dart';
+import 'package:kelicap_router/testing.dart';
 
 import '../../../../router/test/regression/routing_state_crash_test.template.dart'
     as ng;

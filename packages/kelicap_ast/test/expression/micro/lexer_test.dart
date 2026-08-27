@@ -1,5 +1,5 @@
-import '../../../lib/src/expression/micro/lexer.dart';
-import '../../../lib/src/expression/micro/token.dart';
+import 'package:kelicap_ast/src/expression/micro/lexer.dart';
+import 'package:kelicap_ast/src/expression/micro/token.dart';
 
 import 'package:test/test.dart';
 

@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../lib/kelicap_router.dart';
+import 'package:kelicap_router/kelicap_router.dart';
 
 import '../../../router/test/route_path_test.template.dart' as ng;
 

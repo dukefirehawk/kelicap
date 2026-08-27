@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../../lib/src/frontend/ng_zone/fake_time_stabilizer.dart';
-import '../../lib/src/frontend/ng_zone/real_time_stabilizer.dart';
-import '../../lib/src/frontend/ng_zone/timer_hook_zone.dart';
+import 'package:kelicap_test/src/frontend/ng_zone/fake_time_stabilizer.dart';
+import 'package:kelicap_test/src/frontend/ng_zone/real_time_stabilizer.dart';
+import 'package:kelicap_test/src/frontend/ng_zone/timer_hook_zone.dart';
 
 void main() {
   group('FakeTimeNgZoneStabilizer', () {

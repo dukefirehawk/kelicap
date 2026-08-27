@@ -2,11 +2,11 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:math';
 
-import '../../lib/src/token/tokens.dart';
+import 'package:kelicap_ast/src/token/tokens.dart';
 
 import 'package:path/path.dart' as p;
 
-import '../../lib/kelicap_ast.dart';
+import 'package:kelicap_ast/kelicap_ast.dart';
 
 final int generationCount = 10000;
 final int iterationCount = 100;

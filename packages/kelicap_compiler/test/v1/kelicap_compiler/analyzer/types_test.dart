@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 
-import '../../../../lib/v1/src/kelicap_compiler/analyzer/types.dart';
+import 'package:kelicap_compiler/v1/src/kelicap_compiler/analyzer/types.dart';
 
 import 'package:test/test.dart';
 

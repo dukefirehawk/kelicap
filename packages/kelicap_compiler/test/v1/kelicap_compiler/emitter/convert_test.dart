@@ -3,8 +3,8 @@ library;
 
 import 'package:analyzer/dart/element/type.dart';
 
-import '../../../../lib/v1/src/compiler/output/convert.dart';
-import '../../../../lib/v1/src/compiler/output/output_ast.dart' as o;
+import 'package:kelicap_compiler/v1/src/compiler/output/convert.dart';
+import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart' as o;
 
 import 'package:test/test.dart';
 

@@ -4,8 +4,8 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:test/test.dart';
 
-import '../../../../../lib/v1/compiler.dart';
-import '../../../../../lib/v2/context.dart';
+import 'package:kelicap_compiler/v1/compiler.dart';
+import 'package:kelicap_compiler/v2/context.dart';
 
 import '../../src/resolve.dart';
 

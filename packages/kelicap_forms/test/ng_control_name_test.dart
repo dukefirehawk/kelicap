@@ -3,9 +3,9 @@ import 'package:web/web.dart';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../lib/kelicap_forms.dart';
+import 'package:kelicap_forms/kelicap_forms.dart';
 
-import '../../kelicap_test/lib/kelicap_test.dart';
+import 'package:kelicap_test/kelicap_test.dart';
 
 import '../../../forms/test/ng_control_name_test.template.dart' as ng;
 

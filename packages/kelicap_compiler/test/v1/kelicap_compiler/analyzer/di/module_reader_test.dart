@@ -2,7 +2,7 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:test/test.dart';
 
-import '../../../../../lib/v1/compiler.dart';
+import 'package:kelicap_compiler/v1/compiler.dart';
 
 import '../../src/resolve.dart';
 

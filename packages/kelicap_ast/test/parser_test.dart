@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import '../lib/kelicap_ast.dart';
+import 'package:kelicap_ast/kelicap_ast.dart';
 
 void main() {
   List<StandaloneTemplateAst> parse(String template) {

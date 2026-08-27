@@ -3,8 +3,8 @@ import 'package:analyzer/dart/element/visitor2.dart';
 //import 'package:analyzer/dart/element/visitor.dart';
 import 'package:test/test.dart';
 
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/analyzed_class.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/expression_parser/ast.dart';
+import 'package:kelicap_compiler/v1/src/compiler/analyzed_class.dart';
+import 'package:kelicap_compiler/v1/src/compiler/expression_parser/ast.dart';
 
 import '../resolve_util.dart';
 

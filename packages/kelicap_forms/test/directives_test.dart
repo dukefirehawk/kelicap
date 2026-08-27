@@ -2,8 +2,8 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:web/web.dart' as web;
 
-import '../lib/kelicap_forms.dart';
-import '../lib/src/directives/shared.dart';
+import 'package:kelicap_forms/kelicap_forms.dart';
+import 'package:kelicap_forms/src/directives/shared.dart';
 
 class DummyControlValueAccessor implements ControlValueAccessor<dynamic> {
   dynamic writtenValue;

@@ -1,8 +1,8 @@
 import 'package:test/test.dart';
 
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/output/output_ast.dart'
+import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart'
     as o;
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/view_compiler/provider_forest.dart';
+import 'package:kelicap_compiler/v1/src/compiler/view_compiler/provider_forest.dart';
 
 void main() {
   final a = ProviderInstance([], o.nullExpr);

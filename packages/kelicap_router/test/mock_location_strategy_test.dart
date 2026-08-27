@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import '../lib/src/location/testing/mock_location_strategy.dart';
+import 'package:kelicap_router/src/location/testing/mock_location_strategy.dart';
 
 void main() {
   group('$MockLocationStrategy', () {

@@ -2,8 +2,8 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:test/test.dart';
 
-import '../../../../lib/v1/compiler.dart';
-import '../../../../lib/v2/context.dart';
+import 'package:kelicap_compiler/v1/compiler.dart';
+import 'package:kelicap_compiler/v2/context.dart';
 
 import '../src/resolve.dart';
 

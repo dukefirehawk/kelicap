@@ -1,7 +1,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import '../../lib/kelicap_router.dart';
+import 'package:kelicap_router/kelicap_router.dart';
 
 class MockPlatformLocation extends Mock implements PlatformLocation {
   @override

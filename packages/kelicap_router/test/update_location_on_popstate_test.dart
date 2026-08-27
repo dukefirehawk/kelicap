@@ -1,10 +1,10 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../lib/kelicap_router.dart';
-import '../lib/testing.dart';
+import 'package:kelicap_router/kelicap_router.dart';
+import 'package:kelicap_router/testing.dart';
 
-import '../../kelicap_test/lib/kelicap_test.dart';
+import 'package:kelicap_test/kelicap_test.dart';
 
 import '../../../router/test/update_location_on_popstate_test.template.dart'
     as ng;

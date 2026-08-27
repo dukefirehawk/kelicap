@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
-import '../../../packages/kelicap_compiler/lib/v1/compiler.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/style_url_resolver.dart'
+import 'package:kelicap_compiler/v1/compiler.dart';
+import 'package:kelicap_compiler/v1/src/compiler/style_url_resolver.dart'
     show extractStyleUrls, isStyleUrlResolvable;
 
 void main() {

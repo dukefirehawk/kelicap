@@ -1,6 +1,6 @@
-import '../../../lib/kelicap_ast.dart';
-import '../../../lib/src/expression/micro/ast.dart';
-import '../../../lib/src/expression/micro/parser.dart';
+import 'package:kelicap_ast/kelicap_ast.dart';
+import 'package:kelicap_ast/src/expression/micro/ast.dart';
+import 'package:kelicap_ast/src/expression/micro/parser.dart';
 
 import 'package:test/test.dart';
 

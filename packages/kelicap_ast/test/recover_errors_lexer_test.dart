@@ -1,10 +1,10 @@
-import '../lib/src/parser/reader.dart';
-import '../lib/src/scanner.dart';
-import '../lib/src/token/tokens.dart';
+import 'package:kelicap_ast/src/parser/reader.dart';
+import 'package:kelicap_ast/src/scanner.dart';
+import 'package:kelicap_ast/src/token/tokens.dart';
 
 import 'package:test/test.dart';
 
-import '../lib/kelicap_ast.dart';
+import 'package:kelicap_ast/kelicap_ast.dart';
 
 const ThrowingExceptionHandler throwingException = ThrowingExceptionHandler();
 RecoveringExceptionHandler recoveringException = RecoveringExceptionHandler();

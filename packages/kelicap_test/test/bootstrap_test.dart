@@ -3,7 +3,7 @@ import 'package:web/web.dart';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../lib/src/bootstrap.dart';
+import 'package:kelicap_test/src/bootstrap.dart';
 
 import '../../../kelicap_test/test/bootstrap_test.template.dart'
     as ng_generated;

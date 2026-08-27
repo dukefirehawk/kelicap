@@ -3,10 +3,10 @@ import 'package:kelicap/kelicap.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
-import '../../../packages/kelicap_compiler/lib/v1/compiler.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/ast_directive_normalizer.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/compile_metadata.dart';
-import '../../../packages/kelicap_compiler/lib/v2/context.dart';
+import 'package:kelicap_compiler/v1/compiler.dart';
+import 'package:kelicap_compiler/v1/src/compiler/ast_directive_normalizer.dart';
+import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
+import 'package:kelicap_compiler/v2/context.dart';
 
 void main() {
   CompileDirectiveMetadata metadata;

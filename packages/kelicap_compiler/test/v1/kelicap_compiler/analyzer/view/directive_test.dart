@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import '../../../../../lib/v1/compiler.dart';
+import 'package:kelicap_compiler/v1/compiler.dart';
 
 import '../../src/compile.dart';
 

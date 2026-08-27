@@ -1,6 +1,5 @@
 import 'package:kelicap_ast/kelicap_ast.dart';
 import 'package:kelicap_compiler/v2/context.dart';
-import 'package:kelicap_compiler/v2/src/context/build_error.dart';
 
 import 'message.dart';
 import 'metadata.dart';

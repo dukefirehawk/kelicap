@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../../lib/kelicap_test.dart';
-import '../../lib/src/errors/will_never_stabilize.dart';
+import 'package:kelicap_test/kelicap_test.dart';
+import 'package:kelicap_test/src/errors/will_never_stabilize.dart';
 
 import '../../../../kelicap_test/test/frontend/stabilizer_test.template.dart'
     as template;

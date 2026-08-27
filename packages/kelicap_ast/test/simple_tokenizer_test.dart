@@ -1,5 +1,5 @@
-import '../lib/src/simple_tokenizer.dart';
-import '../lib/src/token/tokens.dart';
+import 'package:kelicap_ast/src/simple_tokenizer.dart';
+import 'package:kelicap_ast/src/token/tokens.dart';
 
 import 'package:test/test.dart';
 

@@ -1,7 +1,7 @@
 import 'package:build/build.dart';
 import 'package:test/test.dart';
 
-import '../../../lib/v2/testing.dart';
+import 'package:kelicap_compiler/v2/testing.dart';
 
 void main() {
   test('should resolve a component', () async {

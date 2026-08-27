@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import '../lib/kelicap_forms.dart';
+import 'package:kelicap_forms/kelicap_forms.dart';
 
 void main() {
   group('Form Model', () {

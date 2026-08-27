@@ -4,20 +4,20 @@ import 'package:logging/logging.dart';
 import 'package:term_glyph/term_glyph.dart' as term_glyph;
 import 'package:test/test.dart';
 
-import '../../../packages/kelicap_compiler/lib/v1/cli.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/compile_metadata.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/expression_parser/parser.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/identifiers.dart'
+import 'package:kelicap_compiler/v1/cli.dart';
+import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
+import 'package:kelicap_compiler/v1/src/compiler/expression_parser/parser.dart';
+import 'package:kelicap_compiler/v1/src/compiler/identifiers.dart'
     show identifierToken, Identifiers;
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/js_split_facade.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/output/output_ast.dart'
+import 'package:kelicap_compiler/v1/src/compiler/js_split_facade.dart';
+import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart'
     as o;
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/schema/dom_element_schema_registry.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/schema/element_schema_registry.dart'
+import 'package:kelicap_compiler/v1/src/compiler/schema/dom_element_schema_registry.dart';
+import 'package:kelicap_compiler/v1/src/compiler/schema/element_schema_registry.dart'
     show ElementSchemaRegistry;
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/template_ast.dart';
-import '../../../packages/kelicap_compiler/lib/v1/src/compiler/template_parser/ast_template_parser.dart';
-import '../../../packages/kelicap_compiler/lib/v2/context.dart';
+import 'package:kelicap_compiler/v1/src/compiler/template_ast.dart';
+import 'package:kelicap_compiler/v1/src/compiler/template_parser/ast_template_parser.dart';
+import 'package:kelicap_compiler/v2/context.dart';
 
 // ignore: avoid_relative_lib_imports
 import '../../lib/test_util.dart';

@@ -6,9 +6,9 @@ import 'package:build/build.dart';
 import 'package:build/experiments.dart';
 import 'package:build_test/build_test.dart';
 
-import '../../packages/kelicap_compiler/lib/v1/src/compiler/template_compiler.dart';
-import '../../packages/kelicap_compiler/lib/v1/src/source_gen/template_compiler/component_visitor_exceptions.dart';
-import '../../packages/kelicap_compiler/lib/v1/src/source_gen/template_compiler/find_components.dart';
+import 'package:kelicap_compiler/v1/src/compiler/template_compiler.dart';
+import 'package:kelicap_compiler/v1/src/source_gen/template_compiler/component_visitor_exceptions.dart';
+import 'package:kelicap_compiler/v1/src/source_gen/template_compiler/find_components.dart';
 
 import 'package:package_config/package_config.dart';
 import 'package:source_gen/source_gen.dart';

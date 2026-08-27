@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../lib/kelicap_ast.dart';
+import 'package:kelicap_ast/kelicap_ast.dart';
 
 RecoveringExceptionHandler exceptionHandler = RecoveringExceptionHandler();
 Iterable<NgToken> tokenize(String html) {

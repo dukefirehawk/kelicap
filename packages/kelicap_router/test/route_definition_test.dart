@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
-import '../lib/src/route_definition.dart';
+import 'package:kelicap_router/src/route_definition.dart';
 
 import '../../../router/test/route_definition_test.template.dart'
     as ng; // ignore: uri_has_not_been_generated

@@ -2,8 +2,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:test/test.dart';
 
-import '../../lib/v2/analyzer.dart';
-import '../../lib/v2/testing.dart';
+import 'package:kelicap_compiler/v2/analyzer.dart';
+import 'package:kelicap_compiler/v2/testing.dart';
 
 void main() {
   group('NullableDartType', () {

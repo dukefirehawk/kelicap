@@ -1,4 +1,4 @@
-import '../lib/src/token/tokens.dart';
+import 'package:kelicap_ast/src/token/tokens.dart';
 
 import 'package:test/test.dart';
 
