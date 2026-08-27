@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
-import 'package:kelicap_router/src/url.dart';
+
+import '../lib/src/url.dart';
 
 void main() {
   group('$Url', () {

@@ -5,8 +5,8 @@ import 'dart:js_interop';
 import 'package:web/web.dart' show EventListener, PopStateEvent;
 
 import 'package:kelicap/kelicap.dart' show Injectable;
-import 'package:kelicap_router/src/location/location_strategy.dart'
-    show LocationStrategy;
+
+import '../location_strategy.dart' show LocationStrategy;
 
 /// A mock implementation of [LocationStrategy] that allows tests to fire
 /// simulated location events.

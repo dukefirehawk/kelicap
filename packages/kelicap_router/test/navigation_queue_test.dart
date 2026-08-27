@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_router/kelicap_router.dart';
-import 'package:kelicap_router/testing.dart';
 
-import '../../packages/kelicap_test/lib/kelicap_test.dart';
+import '../lib/kelicap_router.dart';
+import '../lib/testing.dart';
+
+import '../../kelicap_test/lib/kelicap_test.dart';
 
 // ignore: uri_has_not_been_generated
-import 'navigation_queue_test.template.dart' as ng;
+import '../../../router/test/navigation_queue_test.template.dart' as ng;
 
 const firstToken = OpaqueToken<Future<void>>('first');
 const secondToken = OpaqueToken<Future<void>>('second');

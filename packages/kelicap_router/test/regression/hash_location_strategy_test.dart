@@ -3,11 +3,13 @@ import 'package:web/web.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_router/kelicap_router.dart';
 
-import '../../../packages/kelicap_test/lib/kelicap_test.dart';
+import '../../lib/kelicap_router.dart';
 
-import 'hash_location_strategy_test.template.dart' as ng;
+import '../../../kelicap_test/lib/kelicap_test.dart';
+
+import '../../../../router/test/regression/hash_location_strategy_test.template.dart'
+    as ng;
 
 final platformLocation = MockPlatformLocation();
 

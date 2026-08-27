@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_router/kelicap_router.dart';
-import 'package:kelicap_router/testing.dart';
-import 'package:kelicap_router/src/location/testing/mock_location_strategy.dart'; // by some cause it is not visilble by kelicap_router/testing.dart above
 
-import '../../../packages/kelicap_test/lib/kelicap_test.dart';
+import '../../lib/kelicap_router.dart';
+import '../../lib/testing.dart';
+import '../../lib/src/location/testing/mock_location_strategy.dart'; // by some cause it is not visilble by kelicap_router/testing.dart above
 
-import 'router_link_active_directive_test.template.dart' as ng;
+import '../../../kelicap_test/lib/kelicap_test.dart';
+
+import '../../../../router/test/directives/router_link_active_directive_test.template.dart'
+    as ng;
 
 void main() {
   late FakeRouter fakeRouter;

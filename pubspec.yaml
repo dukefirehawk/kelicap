@@ -11,7 +11,7 @@ workspace:
   - packages/kelicap
   - packages/kelicap_test
   - packages/kelicap_forms
-  - router
+  - packages/kelicap_router
   - _tests
   - kelicap_cli
   #- examples/hello_world

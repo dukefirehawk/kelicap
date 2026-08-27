@@ -1,11 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
-import 'package:kelicap_router/kelicap_router.dart';
-import 'package:kelicap_router/src/router/router_impl.dart';
-import 'package:kelicap_router/testing.dart';
 
-import '../../packages/kelicap_test/lib/kelicap_test.dart';
+import '../lib/kelicap_router.dart';
+import '../lib/src/router/router_impl.dart';
+import '../lib/testing.dart';
+
+import '../../kelicap_test/lib/kelicap_test.dart';
 
 void main() {
   tearDown(disposeAnyRunningTest);

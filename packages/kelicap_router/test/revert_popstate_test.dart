@@ -2,11 +2,12 @@ import 'package:web/web.dart' show WindowEventGetters, window;
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_router/kelicap_router.dart';
 
-import '../../packages/kelicap_test/lib/kelicap_test.dart';
+import '../lib/kelicap_router.dart';
 
-import 'revert_popstate_test.template.dart' as ng;
+import '../../kelicap_test/lib/kelicap_test.dart';
+
+import '../../../router/test/revert_popstate_test.template.dart' as ng;
 
 void main() {
   late Location location;
