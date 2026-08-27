@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:kelicap/src/utilities.dart';
 
-import '../../../../packages/common/lib/kelicap_common.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
 

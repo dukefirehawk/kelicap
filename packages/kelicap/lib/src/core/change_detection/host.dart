@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../../../packages/common/lib/kelicap_common.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
 import 'package:meta/meta.dart';

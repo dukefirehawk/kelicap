@@ -1,6 +1,6 @@
 import 'package:kelicap/di.dart';
 
-import '../../../../packages/common/lib/kelicap_common.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 
 import 'package:meta/meta.dart';
 

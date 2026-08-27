@@ -8,7 +8,7 @@ workspace:
   - packages/kelicap_common
   - packages/kelicap_observable
   - packages/kelicap_compiler
-  - kelicap
+  - packages/kelicap
   - kelicap_test
   - forms
   - router
