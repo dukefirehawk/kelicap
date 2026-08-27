@@ -4,7 +4,8 @@
 
 library;
 
-import 'package:kelicap_observable/kelicap_observable.dart';
+import '../lib/kelicap_observable.dart';
+
 import 'package:test/test.dart';
 
 /// A small method to help readability. Used to cause the next "then" in a chain

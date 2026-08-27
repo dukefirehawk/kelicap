@@ -11,11 +11,11 @@ library;
 
 import 'package:build/build.dart';
 
-import '../../../packages/compiler/lib/v1/src/kelicap_compiler/cli/builder.dart';
-import '../../../packages/compiler/lib/v1/src/kelicap_compiler/cli/flags.dart';
-import '../../../packages/compiler/lib/v1/src/kelicap_compiler/outliner.dart';
-import '../../../packages/compiler/lib/v1/src/compiler/stylesheet_compiler/builder.dart';
-import '../../../packages/compiler/lib/v1/src/source_gen/template_compiler/generator.dart';
+import 'package:kelicap_compiler/v1/src/kelicap_compiler/cli/builder.dart';
+import 'package:kelicap_compiler/v1/src/kelicap_compiler/cli/flags.dart';
+import 'package:kelicap_compiler/v1/src/kelicap_compiler/outliner.dart';
+import 'package:kelicap_compiler/v1/src/compiler/stylesheet_compiler/builder.dart';
+import 'package:kelicap_compiler/v1/src/source_gen/template_compiler/generator.dart';
 
 /// An option to generate a lighter-weight output for complex build systems.
 ///

@@ -6,7 +6,7 @@ environment:
 workspace:
   - packages/kelicap_ast
   - packages/kelicap_common
-  - observable
+  - packages/kelicap_observable
   - packages/kelicap_compiler
   - kelicap
   - kelicap_test

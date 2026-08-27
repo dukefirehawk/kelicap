@@ -4,7 +4,8 @@
 
 import 'dart:async';
 
-import 'package:kelicap_observable/kelicap_observable.dart';
+import '../lib/kelicap_observable.dart';
+
 import 'package:test/test.dart';
 
 import 'observable_test_utils.dart';

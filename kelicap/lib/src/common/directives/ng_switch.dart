@@ -1,4 +1,4 @@
-import '../../../../../packages/common/lib/kelicap_common.dart';
+import 'package:kelicap_common/kelicap_common.dart';
 
 import '../../core/linker.dart';
 import '../../meta/di_arguments.dart';
