@@ -12,10 +12,8 @@ workspace:
   - packages/kelicap_test
   - packages/kelicap_forms
   - packages/kelicap_router
+  - packages/kelicap_cli
   - _tests
-  - kelicap_cli
-  #- examples/hello_world
-  #- _tests
 
 dev_dependencies:
   melos: ^8.5.0
