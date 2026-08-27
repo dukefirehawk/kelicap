@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+
 import '../meta.dart';
 
 import '../core/application_ref.dart';

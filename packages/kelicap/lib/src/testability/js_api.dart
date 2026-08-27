@@ -2,6 +2,7 @@
 library;
 
 import 'dart:js_interop';
+
 import 'package:web/web.dart';
 
 /// A JavaScript interface for interacting with Kelicap's `Testability` API.

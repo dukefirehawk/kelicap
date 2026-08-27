@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:web/web.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
+
 import '../devtools.dart';
 import '../di/injector.dart';
 import '../testability.dart';

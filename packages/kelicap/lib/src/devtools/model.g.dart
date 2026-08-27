@@ -159,17 +159,16 @@ class _$InspectorDirectiveSerializer
       final Object? value = iterator.current;
       switch (key) {
         case 'name':
-          result.name =
-              serializers.deserialize(
-                    value,
-                    specifiedType: const FullType(String),
-                  )
-                  as String;
+          result.name = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
           break;
         case 'id':
-          result.id =
-              serializers.deserialize(value, specifiedType: const FullType(int))
-                  as int;
+          result.id = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
           break;
       }
     }

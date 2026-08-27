@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:js_interop';
+
 import 'package:web/web.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
+
 import '../../../core/linker/app_view_utils.dart';
 import '../../../core/linker/style_encapsulation.dart';
 import '../../../core/linker/view_container.dart';
