@@ -7,8 +7,7 @@ import 'package:glob/glob.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
-import '../../packages/compiler/lib/v2/context.dart';
-
+import 'package:kelicap_compiler/v2/context.dart';
 import 'package:kelicap/src/build.dart';
 
 /// A 'test' build process (similar to the normal one).
