@@ -1,6 +1,8 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../../../packages/kelicap_test/lib/kelicap_test.dart';
+
 import 'package:web/web.dart';
 
 import 'order_test.template.dart' as ng;

@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../lib/kelicap_test.dart';
+
 import 'package:web/web.dart';
 
-import 'bed_error_test.template.dart' as ng;
+import '../../../../kelicap_test/test/frontend/bed_error_test.template.dart'
+    as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

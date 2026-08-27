@@ -5,7 +5,8 @@ import 'package:web/web.dart';
 import 'package:_tests/matchers.dart';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../../packages/kelicap_test/lib/kelicap_test.dart';
 
 import 'directive_inheritance_test.template.dart' as ng;
 

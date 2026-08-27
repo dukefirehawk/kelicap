@@ -5,7 +5,8 @@ import 'dart:js_interop';
 
 import 'package:web/web.dart';
 
-import 'package:kelicap_test/kelicap_test.dart';
+import '../../../../packages/kelicap_test/lib/kelicap_test.dart';
+
 import 'package:kelicap/src/security/dom_sanitization_service.dart';
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';

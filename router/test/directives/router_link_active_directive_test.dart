@@ -5,7 +5,8 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_router/kelicap_router.dart';
 import 'package:kelicap_router/testing.dart';
 import 'package:kelicap_router/src/location/testing/mock_location_strategy.dart'; // by some cause it is not visilble by kelicap_router/testing.dart above
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../../packages/kelicap_test/lib/kelicap_test.dart';
 
 import 'router_link_active_directive_test.template.dart' as ng;
 

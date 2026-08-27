@@ -2,10 +2,12 @@ import 'package:web/web.dart';
 
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_test/kelicap_test.dart';
-import 'package:kelicap_test/compatibility.dart';
 
-import 'compatibility_test.template.dart' as ng;
+import '../../lib/kelicap_test.dart';
+import '../../lib/compatibility.dart';
+
+import '../../../../kelicap_test/test/frontend/compatibility_test.template.dart'
+    as ng;
 
 void main() {
   late Element docRoot;

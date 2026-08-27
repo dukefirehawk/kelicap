@@ -4,7 +4,8 @@ import 'package:test/test.dart';
 import 'package:kelicap_router/kelicap_router.dart';
 import 'package:kelicap_router/src/router/router_impl.dart';
 import 'package:kelicap_router/testing.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../packages/kelicap_test/lib/kelicap_test.dart';
 
 void main() {
   tearDown(disposeAnyRunningTest);

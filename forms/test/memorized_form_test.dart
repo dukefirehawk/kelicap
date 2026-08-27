@@ -1,7 +1,8 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_forms/kelicap_forms.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../packages/kelicap_test/lib/kelicap_test.dart';
 
 import 'memorized_form_test.template.dart' as ng;
 

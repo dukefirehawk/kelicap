@@ -8,7 +8,8 @@ import 'dart:js_interop_unsafe' as js_util;
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_forms/kelicap_forms.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../packages/kelicap_test/lib/kelicap_test.dart';
 
 import 'accessor_test.template.dart' as ng;
 

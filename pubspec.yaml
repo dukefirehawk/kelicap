@@ -9,7 +9,7 @@ workspace:
   - packages/kelicap_observable
   - packages/kelicap_compiler
   - packages/kelicap
-  - kelicap_test
+  - packages/kelicap_test
   - forms
   - router
   - _tests

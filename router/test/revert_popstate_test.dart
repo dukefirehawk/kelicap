@@ -3,7 +3,8 @@ import 'package:web/web.dart' show WindowEventGetters, window;
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_router/kelicap_router.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../packages/kelicap_test/lib/kelicap_test.dart';
 
 import 'revert_popstate_test.template.dart' as ng;
 

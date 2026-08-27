@@ -2,7 +2,8 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_router/kelicap_router.dart';
 import 'package:kelicap_router/testing.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../packages/kelicap_test/lib/kelicap_test.dart';
 
 // ignore: uri_has_not_been_generated
 import 'lifecycle_test.template.dart' as ng;

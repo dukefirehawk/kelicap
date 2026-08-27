@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:web/web.dart';
 
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../../packages/kelicap_test/lib/kelicap_test.dart';
+
 import 'package:test/test.dart';
 
 import 'event_handler_test.template.dart' as ng;

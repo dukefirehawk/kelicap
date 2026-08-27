@@ -1,8 +1,10 @@
 import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
-import 'package:kelicap_test/kelicap_test.dart';
 
-import 'bed_static_test.template.dart' as ng_generated;
+import '../../lib/kelicap_test.dart';
+
+import '../../../../kelicap_test/test/frontend/bed_static_test.template.dart'
+    as ng_generated;
 
 void main() {
   test('should create a component with a ComponentFactory', () async {

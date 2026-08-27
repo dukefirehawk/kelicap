@@ -4,7 +4,8 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 import 'package:kelicap/experimental.dart';
 import 'package:kelicap/src/di/injector.dart';
-import 'package:kelicap_test/kelicap_test.dart';
+
+import '../../../packages/kelicap_test/lib/kelicap_test.dart';
 
 import 'package:_tests/matchers.dart';
 
