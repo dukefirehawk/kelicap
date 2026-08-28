@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:term_glyph/term_glyph.dart' as term_glyph;
 import 'package:test/test.dart';
+
 import 'package:kelicap_compiler/v1/cli.dart';
 import 'package:kelicap_compiler/v1/src/compiler/compile_metadata.dart';
 import 'package:kelicap_compiler/v1/src/compiler/expression_parser/parser.dart';

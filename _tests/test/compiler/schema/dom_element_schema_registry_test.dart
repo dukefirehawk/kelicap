@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+
 import 'package:kelicap_compiler/v1/src/compiler/schema/dom_element_schema_registry.dart'
     show DomElementSchemaRegistry;
 import 'package:kelicap_compiler/v1/src/compiler/security.dart';

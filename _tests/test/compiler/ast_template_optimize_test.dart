@@ -1,5 +1,7 @@
 import 'package:kelicap_compiler/v1/cli.dart';
+
 import 'package:test/test.dart';
+
 import 'package:kelicap_compiler/v1/src/compiler/expression_parser/parser.dart';
 import 'package:kelicap_compiler/v1/src/compiler/schema/dom_element_schema_registry.dart';
 import 'package:kelicap_compiler/v1/src/compiler/template_ast.dart';

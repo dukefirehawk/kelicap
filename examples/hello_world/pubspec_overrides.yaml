@@ -1,15 +1,15 @@
 dependency_overrides:
   kelicap:
-    path: ../../kelicap
+    path: ../../packages/kelicap
   kelicap_ast:
-    path: ../../ast
+    path: ../../packages/kelicap_ast
   kelicap_common:
-    path: ../../common
+    path: ../../packages/kelicap_common
   kelicap_observable:
-    path: ../../observable
+    path: ../../packages/kelicap_observable
   kelicap_compiler:
-    path: ../../compiler
+    path: ../../packages/kelicap_compiler
   kelicap_forms:
-    path: ../../forms
+    path: ../../packages/kelicap_forms
   kelicap_router:
-    path: ../../router
+    path: ../../packages/kelicap_router

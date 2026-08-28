@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 import 'package:_tests/query_tests.dart';
 import 'package:kelicap/kelicap.dart';
+
 import 'package:kelicap_test/kelicap_test.dart';
 
 import 'query_content_test.template.dart' as ng;

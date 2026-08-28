@@ -4,18 +4,16 @@ environment:
   sdk: ">=3.13.0 <4.0.0"
 
 workspace:
-  - ast
-  - common
-  - observable
-  - compiler
-  - kelicap
-  - kelicap_test
-  - forms
-  - router
+  - packages/kelicap_ast
+  - packages/kelicap_common
+  - packages/kelicap_observable
+  - packages/kelicap_compiler
+  - packages/kelicap
+  - packages/kelicap_test
+  - packages/kelicap_forms
+  - packages/kelicap_router
+  - packages/kelicap_cli
   - _tests
-  - kelicap_cli
-  #- examples/hello_world
-  #- _tests
 
 dev_dependencies:
   melos: ^8.5.0
