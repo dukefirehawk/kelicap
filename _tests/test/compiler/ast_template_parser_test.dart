@@ -10,8 +10,7 @@ import 'package:kelicap_compiler/v1/src/compiler/expression_parser/parser.dart';
 import 'package:kelicap_compiler/v1/src/compiler/identifiers.dart'
     show identifierToken, Identifiers;
 import 'package:kelicap_compiler/v1/src/compiler/js_split_facade.dart';
-import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart'
-    as o;
+import 'package:kelicap_compiler/v1/src/compiler/output/output_ast.dart' as o;
 import 'package:kelicap_compiler/v1/src/compiler/schema/dom_element_schema_registry.dart';
 import 'package:kelicap_compiler/v1/src/compiler/schema/element_schema_registry.dart'
     show ElementSchemaRegistry;
