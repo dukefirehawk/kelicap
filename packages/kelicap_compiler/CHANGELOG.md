@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.1
+
+- fix: deprecated method usage in di module
+
 ## 1.1.0
 
 - chore: Upgrade min sdk to 3.13.0 and other dependency upgrades

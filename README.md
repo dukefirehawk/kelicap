@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/dukefirehawk/kelicap)](https://github.com/dukefirehawk/kelicap/LICENSE)
 [![melos](https://img.shields.io/badge/maintained%20with-melos-f700ff.svg?style=flat-square)](https://github.com/invertase/melos)
 
-Kelicap is a lightweight, native-HTML web framework for Dart, built as a modernized derivative fork of AngularDart (ngdart) with support for Dart 3.12+. While its syntax remains close to AngularDart and stays compatible up to Angular 16. Kelicap follows its own development path rather than strictly following Angular features development. It will remain as a pure Dart web solution with no intent to mimic or bridge with Flutter.
+Kelicap is a lightweight, native-HTML web framework for Dart, built as a modernized derivative fork of AngularDart (ngdart) with support for Dart 3.13+. While its syntax remains close to AngularDart and stays compatible up to Angular 16. Kelicap follows its own development path rather than strictly following Angular features development. It will remain as a pure Dart web solution with no intent to mimic or bridge with Flutter.
 
 ## Architecture
 
