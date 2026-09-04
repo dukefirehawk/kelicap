@@ -13,6 +13,7 @@ Welcome to the **Kelicap User Guide**. This document explains the different part
    * [Structural Directives](structural-directives.md)
    * [Attribute Directives](attribute-directives.md)
    * [Pipes](pipes.md)
+   * [Lifecycle Hooks](lifecycle-hooks.md)
 6. [Templates](templates.md)
 7. [Forms (`kelicap_forms`)](forms.md)
 8. [Routing (`kelicap_router`)](routing.md)
