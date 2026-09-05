@@ -49,3 +49,7 @@ Dart 3.13.0 or later
     dart pub upgrade
     dart run build_runner serve
 ```
+
+### Documentation
+
+The Kelicap documentation is located at [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs).

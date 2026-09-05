@@ -3,6 +3,8 @@
 ## 1.1.1
 
 - fix: deprecated method usage in di module
+- chore: Add documentation link
+- chore: Update README
 
 ## 1.1.0
 

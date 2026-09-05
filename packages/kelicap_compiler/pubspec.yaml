@@ -6,6 +6,7 @@ description: >
 version: 1.1.1
 repository: https://github.com/dukefirehawk/kelicap
 report_issues: https://github.com/dukefirehawk/kelicap/issues
+documentation: https://github.com/dukefirehawk/kelicap-docs
 
 environment:
   sdk: ">=3.13.0 <4.0.0"

@@ -2,8 +2,10 @@ name: kelicap_router
 description: >
   Router components for Kelicap framework.
   Offering declarative routing, dynamic route matching, and etc.
-version: 1.1.0
+version: 1.1.1
 repository: https://github.com/dukefirehawk/kelicap
+issue_tracker: https://github.com/dukefirehawk/kelicap/issues
+documentation: https://github.com/dukefirehawk/kelicap-docs
 
 environment:
   sdk: ">=3.13.0 <4.0.0"

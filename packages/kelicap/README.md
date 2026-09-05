@@ -1,6 +1,6 @@
 # Kelicap Web Framework
 
-[![Kelicap Web Framework](../assets/branding/kelicap_1_banner.jpeg)](https://github.com/dukefirehawk/kelicap)
+[![Kelicap Web Framework](../../assets/branding/kelicap_1_banner.jpeg)](https://github.com/dukefirehawk/kelicap)
 
 ![Pub Version (including pre-releases)](https://img.shields.io/pub/v/kelicap?include_prereleases)
 [![Null Safety](https://img.shields.io/badge/null-safety-brightgreen)](https://dart.dev/null-safety)
@@ -50,3 +50,7 @@ Dart 3.13.0 or later
     dart pub upgrade
     dart run build_runner serve
 ```
+
+### Documentation
+
+The Kelicap documentation is located at [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs).
