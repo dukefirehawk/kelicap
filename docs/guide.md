@@ -9,7 +9,7 @@ Welcome to the **Kelicap User Guide**. This document explains the different part
 3. [Quick Start](quick-start.md)
 4. [Architecture](architecture.md)
 5. Core Components
-   * [Dependency Injection](dependency_injection.md)
+   * [Dependency Injection](dependency-injection.md)
    * [Structural Directives](structural-directives.md)
    * [Attribute Directives](attribute-directives.md)
    * [Pipes](pipes.md)
