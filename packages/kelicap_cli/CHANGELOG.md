@@ -1,8 +1,12 @@
 # Changelog
 
+## 1.0.3
+
+- chore: Update template
+
 ## 1.0.2
 
-- fix: templates
+- chore: Update template
 
 ## 1.0.1
 
