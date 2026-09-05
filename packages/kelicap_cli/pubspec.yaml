@@ -1,6 +1,6 @@
 name: kelicap_cli
 description: A command-line tool for creating and managing Kelicap projects.
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/dukefirehawk/kelicap
 issue_tracker: https://github.com/dukefirehawk/kelicap/issues
 documentation: https://github.com/dukefirehawk/kelicap-docs
