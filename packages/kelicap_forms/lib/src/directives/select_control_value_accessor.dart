@@ -48,8 +48,12 @@ class SelectControlValueAccessor extends Object
   SelectControlValueAccessor(@Optional() Element? element)
     : _element = element as HTMLSelectElement;
 
-  @HostListener('change', ['\$event.target.value'])
-  void handleChange(String value) {
+  // The event, not `$event.target.value`: a member of `$event` is read
+  // dynamically, which a DOM object of `package:web` does not allow once
+  // compiled with dart2js. Its value is read here, in typed Dart.
+  @HostListener('change', [r'$event'])
+  void handleChange(Event event) {
+    var value = (event.target as HTMLSelectElement).value;
     onChange(_getOptionValue(value), rawValue: value);
   }
 

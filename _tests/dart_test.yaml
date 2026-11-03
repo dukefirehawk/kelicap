@@ -26,4 +26,7 @@ presets:
     paths:
       - test/compiler
       - test/compiler_integration
+      # Tests of kelicap_compiler that resolve code importing package:kelicap,
+      # kept here so that kelicap_compiler does not depend on kelicap.
+      - test/compiler_resolved
     add_presets: [ci]

@@ -8,6 +8,7 @@ targets:
           exclude:
           - test/compiler/**
           - test/compiler_integration/**
+          - test/compiler_resolved/**
           - test/source_gen/**
           - test/regression/vm/**
           - test/core/di/provider_test.dart*

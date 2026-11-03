@@ -4,34 +4,45 @@
 
 ![Pub Version (including pre-releases)](https://img.shields.io/pub/v/kelicap_cli?include_prereleases)
 [![Null Safety](https://img.shields.io/badge/null-safety-brightgreen)](https://dart.dev/null-safety)
-[![License](https://img.shields.io/github/license/dukefirehawk/kelicap)](https://github.com/dukefirehawk/kelicap/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/dukefirehawk/kelicap)](https://github.com/dukefirehawk/kelicap/blob/main/LICENSE)
 
-A command-line tool for creating and managing Kelicap projects.
+A command-line tool to create Kelicap projects. Its command is `kelicap`.
 
-## Usage
+## Installation
 
-`kelicap_cli` is not meant to be used as a dependency but a command-line tool. Hence, you have to "activate" it:
+`kelicap_cli` is a tool, not a dependency of your project. Activate it globally:
 
 ```bash
 dart pub global activate kelicap_cli
 ```
 
-Dart will detect automatically if you have added the Pub executables path to your environment variables. Follow its instructions if you haven't.
+If `kelicap` is not found afterwards, add Pub's executables directory to your `PATH`, as `dart pub global activate` explains.
 
-To create a new Kelicap project (note that the actual command is `kelicap`, not `kelicap_cli`):
+## Usage
+
+Create a project, a to-do list app with a component, a service and styles, and get its packages:
 
 ```bash
-kelicap create <package_name>
+kelicap create my_app
+cd my_app
+dart run build_runner serve web:8080
 ```
 
-To remove the `build/` and `.dart_tool/` directory (similar to `flutter clean`), run in your project directory:
+| Option | What it does |
+| --- | --- |
+| `--path`, `-p` | The directory to create the project in (default: the current one) |
+| `--force`, `-f` | Create it in a directory that is not empty, overwriting files |
+| `--no-pub` | Don't run `dart pub get` after creating it |
+
+Delete a project's `build/` and `.dart_tool/` directories, as `flutter clean` does:
 
 ```bash
 kelicap clean
 ```
 
-## Future Plans
+`kelicap --version` prints the version, and `kelicap help <command>` the options of a command.
 
-* [ ] Run `dart pub get` (or prompt the user to run) after creating a project.
-* [ ] Add `kelicap build` and `kelicap serve` command
-* [ ] Generate skeleton code for custom component
+## Future plans
+
+* [ ] `kelicap build` and `kelicap serve` commands
+* [ ] Generating the skeleton of a component

@@ -5,7 +5,7 @@ import 'package:kelicap_forms/kelicap_forms.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../forms/test/memorized_form_test.template.dart' as ng;
+import 'memorized_form_test.template.dart' as ng;
 
 void main() {
   group(MemorizedForm, () {

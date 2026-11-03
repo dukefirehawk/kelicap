@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.1.2
+
+### Fixes in 1.1.2
+
+* **Value accessors:** `[(ngModel)]`, `ngControl` and the other form directives update their control from text, number, checkbox and select inputs in a release build (dart2js), where reading the input's value threw `NoSuchMethodError: get$target`. The accessors read the value from a typed `Event`
+* Requires `kelicap` 1.1.2, for form controls inside `*ngIf` and `*ngFor`
+
 ## 1.1.1
 
 - chore: Add documentation link

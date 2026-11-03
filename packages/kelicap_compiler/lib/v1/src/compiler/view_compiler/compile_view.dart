@@ -822,11 +822,17 @@ class CompileView {
           );
       _createMethod.addStmt(elementRef.toWriteStmt(createExpr));
     } else {
-      // No parent node, just create element and assign.
+      // No parent node, just create element and assign. Typed, as methods
+      // called on a dynamic element fail in dart2js.
       final createRenderNodeExpr = o.ReadVarExpr(docVarName)
           .callMethod('createElement', [o.literal(tagName)]);
       _createMethod.addStmt(
-        elementRef.toWriteStmt(unsafeCast(createRenderNodeExpr)),
+        elementRef.toWriteStmt(
+          unsafeCast(
+            createRenderNodeExpr,
+            o.importType(identifierFromTagName(tagName)),
+          ),
+        ),
       );
     }
 

@@ -8,7 +8,7 @@ import 'package:kelicap_test/kelicap_test.dart';
 
 import 'package:test/test.dart';
 
-import '../../../forms/test/ng_control_repeated_test.template.dart' as ng;
+import 'ng_control_repeated_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

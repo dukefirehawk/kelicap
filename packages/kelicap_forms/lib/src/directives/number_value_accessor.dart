@@ -31,9 +31,13 @@ class NumberValueAccessor extends Object
   NumberValueAccessor(@Optional() Element? element)
     : _element = element as HTMLInputElement?;
 
-  @HostListener('change', ['\$event.target.value'])
-  @HostListener('input', ['\$event.target.value'])
-  void handleChange(String value) {
+  // The event, not `$event.target.value`: a member of `$event` is read
+  // dynamically, which a DOM object of `package:web` does not allow once
+  // compiled with dart2js. Its value is read here, in typed Dart.
+  @HostListener('change', [r'$event'])
+  @HostListener('input', [r'$event'])
+  void handleChange(Event event) {
+    var value = (event.target as HTMLInputElement).value;
     onChange(value == '' ? null : double.parse(value), rawValue: value);
   }
 

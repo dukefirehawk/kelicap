@@ -24,7 +24,9 @@ dev_dependencies:
   analyzer: ^14.0.0
   build_runner: ^2.3.3
   build_web_compilers: ^4.8.0
+  code_builder: ^4.4.0
   csslib: ^1.0.0
+  dart_style: ^3.0.1
   lints: ^6.0.0
   meta: ^1.8.0
   mockito: ^5.3.2

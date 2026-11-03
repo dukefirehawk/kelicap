@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.2
+
+### Fixes in 1.1.2
+
+* **Compiler:** Requires `kelicap_compiler` 1.1.2, whose views work in a release build (dart2js) when an element with events, children or directives is the top one of a `*ngFor` or `*ngIf`
+
 ## 1.1.1
 
 - chore: Add documentation link to pubspec.yaml
