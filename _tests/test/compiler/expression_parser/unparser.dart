@@ -79,7 +79,7 @@ class Unparser implements AstVisitor<void, String> {
   }
 
   @override
-  void visitNamedExpr(NamedExpr ast, _) {
+  void visitNamedExpr(NamedExpr ast, void _) {
     sb.write('${ast.name}: ');
     ast.expression?.visit(this);
   }

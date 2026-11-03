@@ -20,6 +20,11 @@ class OptimizeTemplateAstVisitor
     CompileDirectiveMetadata? context,
   ) {
     context!;
+    final analyzedClass = context.analyzedClass;
+    if (analyzedClass == null) {
+      // No class to type the locals from, as for a directive without one.
+      return super.visitEmbeddedTemplate(ast, context);
+    }
     _typeNgForLocals(context, ast.directives, ast.variables);
 
     // Add the local variables to the [CompileDirectiveMetadata] used in
@@ -27,7 +32,7 @@ class OptimizeTemplateAstVisitor
     var scoped = CompileDirectiveMetadata.from(
       context,
       analyzedClass: AnalyzedClass.from(
-        context.analyzedClass!,
+        analyzedClass,
         additionalLocals: {
           for (var v in ast.variables)
             if (v.dartType != null) v.name: v.dartType!,

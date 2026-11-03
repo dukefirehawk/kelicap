@@ -29,8 +29,10 @@ Future<T> _recordLogs<T>(
   return scopeLogAsync(() async {
     try {
       return await runWithContext(CompileContext.forTesting(), run);
-    } on BuildError catch (_) {
-      // TODO: Revisit
+    } on BuildError catch (e) {
+      // The compiler fails with a BuildError, which build_runner reports as an
+      // error, rather than logging it; record it as build_runner would.
+      records.add(LogRecord(Level.SEVERE, '$e', logger.fullName));
       return null as T;
     } finally {
       await subscription.cancel();

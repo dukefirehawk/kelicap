@@ -42,6 +42,9 @@ Future<LibraryElement> resolve(
       (resolver) => resolver.libraryFor(testAssetId),
       inputId: testAssetId,
       packageConfig: packageConfig,
+      // build_test 3 reads only the given sources by default, which leaves
+      // `package:kelicap` unresolved.
+      readAllSourcesFromFilesystem: true,
     ),
     ['non-nullable'],
   );

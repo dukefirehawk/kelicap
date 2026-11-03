@@ -40,12 +40,19 @@ The project is set up as a Dart monorepo using the native Dart `workspace` featu
   ```bash
   dart format --output=none --set-exit-if-changed .
   dart analyze
-  # Browser tests, compiled with DDC into a directory outside the repo
-  dart run build_runner build -o /tmp/<package>_ddc
-  dart test --precompiled /tmp/<package>_ddc -P ci
   ```
 
-  Browser tests run in Chrome (`platforms: [chrome]` in each `dart_test.yaml`). Don't use `dart run build_runner test`: with build_runner 2.16 every test fails to load (`Failed to load script at .../*.browser_test.dart.js`), although the build succeeds. Build the whole package with `-o <dir>`, not `-o test:<dir>`, which leaves out the `test/` level the runner looks for.
+  Then run the tests, whose platform the package's `dart_test.yaml` sets:
+
+  - **VM tests** (`kelicap_ast`, `kelicap_compiler`): `dart run build_runner test`, or `dart test`.
+  - **Browser tests**, in Chrome (`kelicap_forms`, `kelicap_router`, `kelicap_test`, and `kelicap_observable`, which runs on both): build them with DDC into a directory outside the repo, and run them from it:
+
+    ```bash
+    dart run build_runner build -o /tmp/<package>_ddc
+    dart test --precompiled /tmp/<package>_ddc -P ci
+    ```
+
+    Don't use `dart run build_runner test` for them: with build_runner 2.16 every browser test fails to load (`Failed to load script at .../*.browser_test.dart.js`), although the build succeeds. Build the whole package with `-o <dir>`, not `-o test:<dir>`, which leaves out the `test/` level the runner looks for.
 
   `_tests/` holds the end-to-end tests of the framework, in two presets, which must be given, as without one its browser tests are loaded on the VM and fail (`'JSObject' isn't a type`):
 

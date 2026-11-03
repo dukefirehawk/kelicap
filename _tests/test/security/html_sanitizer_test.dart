@@ -68,8 +68,9 @@ void main() {
       String testInput = '<!-- comments? -->no.';
       String expected = 'no.';
       expect(sanitizeHtmlInternal(testInput), expected);
+      // HTML parses a processing instruction as a comment, so it is dropped too.
       testInput = '<?pi nodes?>no.';
-      expected = '<?pi nodes?>no.';
+      expected = 'no.';
       expect(sanitizeHtmlInternal(testInput), expected);
     });
     test('escaped entities', () {

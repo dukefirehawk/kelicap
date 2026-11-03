@@ -1387,6 +1387,7 @@ void main() {
 
         test('should internationalize directive property', () {
           final directive = createCompileDirectiveMetadata(
+            type: CompileTypeMetadata(moduleUrl: someModuleUrl, name: 'Test'),
             selector: 'test',
             inputs: ['input'],
           );
@@ -2454,6 +2455,7 @@ void main() {
 
       test('should report error for invalid internationalized expression', () {
         final directive = createCompileDirectiveMetadata(
+          type: CompileTypeMetadata(moduleUrl: someModuleUrl, name: 'Test'),
           selector: 'test',
           inputs: ['input'],
         );

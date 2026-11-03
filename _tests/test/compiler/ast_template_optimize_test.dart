@@ -33,7 +33,8 @@ void main() {
       component.directives,
       [],
       '',
-      componentMetadata.template!.templateUrl!,
+      // Set by the normalizer, which this test does not run.
+      componentMetadata.template!.templateUrl ?? '',
     );
     return humanizeTplAst(templateAsts);
   }

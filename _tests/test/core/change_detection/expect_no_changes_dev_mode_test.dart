@@ -46,8 +46,7 @@ void main() {
         testBed.create(),
         throwsA(
           predicate(
-            (e) =>
-                '$e'.contains('An expression bound in an AngularDart template'),
+            (e) => '$e'.contains('An expression bound in a Kelicap template'),
           ),
         ),
       );
@@ -61,8 +60,7 @@ void main() {
         testBed.create(),
         throwsA(
           predicate(
-            (e) =>
-                '$e'.contains('An expression bound in an AngularDart template'),
+            (e) => '$e'.contains('An expression bound in a Kelicap template'),
           ),
         ),
       );

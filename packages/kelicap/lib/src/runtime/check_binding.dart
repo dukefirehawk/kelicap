@@ -181,7 +181,7 @@ class UnstableExpressionError extends Error {
   String toString() {
     final message =
         ''
-        'An expression bound in an Kelicap template returned a different '
+        'An expression bound in a Kelicap template returned a different '
         'value the second time it was evaluated.\n';
     return '$message\n$details\n$_goLink\n';
   }
