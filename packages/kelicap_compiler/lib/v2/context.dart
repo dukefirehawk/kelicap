@@ -55,16 +55,15 @@ Future<T> runWithContext<T>(CompileContext instance, Future<T> Function() run) {
         e = convert;
       }
       if (e is BuildError) {
-        var errorMsg = 'An error occurred compiling ${instance.path}:\n$e';
-        log.severe(
-          errorMsg,
-          // TODO(b/170758093): Add conditional stack traces, perhaps behind a
-          // --define flag for developers of the compiler to get information on
-          // the exact location of a failure.
-        );
-
+        // An error in the code being compiled. build_runner reports the error
+        // a builder fails with, so it is not logged here too, and its stack
+        // trace, of the compiler, is left out, as it would only be noise.
+        //
+        // TODO(b/170758093): Add conditional stack traces, perhaps behind a
+        // --define flag for developers of the compiler to get information on
+        // the exact location of a failure.
         if (!buildCompletedOrFailed.isCompleted) {
-          buildCompletedOrFailed.completeError(e, s);
+          buildCompletedOrFailed.completeError(e, StackTrace.empty);
         }
       } else {
         var errorMsg = 'Unhandled exception in the Kelicap compiler!';

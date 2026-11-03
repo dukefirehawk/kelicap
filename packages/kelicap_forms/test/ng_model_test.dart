@@ -6,7 +6,7 @@ import 'package:kelicap_forms/kelicap_forms.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../forms/test/ng_model_test.template.dart' as ng;
+import 'ng_model_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

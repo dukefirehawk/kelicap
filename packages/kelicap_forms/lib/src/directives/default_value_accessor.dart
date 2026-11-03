@@ -37,9 +37,28 @@ class DefaultValueAccessor extends Object
 
   DefaultValueAccessor(@Optional() this._element);
 
-  @HostListener('input', ['\$event.target.value'])
-  void handleChange(String value) {
+  // The event, not `$event.target.value`: a member of `$event` is read
+  // dynamically, which a DOM object of `package:web` does not allow once
+  // compiled with dart2js. Its value is read here, in typed Dart.
+  @HostListener('input', [r'$event'])
+  void handleChange(Event event) {
+    var value = _valueOf(event.target);
     onChange(value, rawValue: value);
+  }
+
+  /// The value of [target]: of an input, a textarea or a select, or else its
+  /// `value` property, as of a custom element with `ngDefaultControl`.
+  static String _valueOf(EventTarget? target) {
+    if (target == null) return '';
+    if (target.isA<HTMLInputElement>()) {
+      return (target as HTMLInputElement).value;
+    } else if (target.isA<HTMLTextAreaElement>()) {
+      return (target as HTMLTextAreaElement).value;
+    } else if (target.isA<HTMLSelectElement>()) {
+      return (target as HTMLSelectElement).value;
+    }
+    var value = (target as JSObject).getProperty<JSAny?>('value'.toJS);
+    return value.dartify()?.toString() ?? '';
   }
 
   @override

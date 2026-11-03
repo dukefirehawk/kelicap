@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.2
+
+No changes. Released with the other Kelicap packages, which share its version.
+
 ## 1.1.1
 
 - chore: Add documentation link

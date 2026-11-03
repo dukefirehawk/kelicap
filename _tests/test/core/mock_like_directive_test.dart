@@ -10,14 +10,18 @@ import 'mock_like_directive_test.template.dart' as ng;
 void main() {
   tearDown(disposeAnyRunningTest);
 
-  test('should support null @Output if mock-like', () async {
+  // Under sound null safety, an @Output getter of a non-nullable type that
+  // returns null throws a TypeError itself, before the view can listen to it:
+  // for a mock-like directive, in its noSuchMethod forwarder. The null check
+  // the compiler adds for mock-like directives cannot prevent it.
+  test("doesn't support null @Output, even if mock-like", () async {
     final testBed = NgTestBed(ng.createTestMockNotificationComponentFactory());
-    await testBed.create();
+    expect(testBed.create(), throwsA(isA<TypeError>()));
   });
 
-  test("shouldn't support null @Output if not mock-like", () async {
+  test("doesn't support null @Output if not mock-like", () async {
     final testBed = NgTestBed(ng.createTestFakeNotificationComponentFactory());
-    expect(testBed.create(), throwsA(const TypeMatcher<NoSuchMethodError>()));
+    expect(testBed.create(), throwsA(isA<TypeError>()));
   });
 }
 

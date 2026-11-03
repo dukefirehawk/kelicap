@@ -9,7 +9,7 @@ import 'package:kelicap_forms/kelicap_forms.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../forms/test/integration_test.template.dart' as ng;
+import 'integration_test.template.dart' as ng;
 
 void dispatchEvent(Element element, String eventType) {
   // TODO: Migrate to 3.6 (Need review)
@@ -947,8 +947,9 @@ class WrappedAccessor implements ControlValueAccessor<dynamic> {
   @override
   void registerOnTouched(fn) {}
 
-  @HostListener('input', [r'$event.target.value'])
-  void handleOnInput(String value) {
+  @HostListener('input', [r'$event'])
+  void handleOnInput(Event event) {
+    var value = (event.target as HTMLInputElement).value;
     onChange(value.substring(1, value.length - 1));
   }
 

@@ -32,8 +32,12 @@ class CheckboxControlValueAccessor extends Object
   CheckboxControlValueAccessor(@Optional() Element? element)
     : _element = element as HTMLInputElement;
 
-  @HostListener('change', ['\$event.target.checked'])
-  void handleChange(bool checked) {
+  // The event, not `$event.target.value`: a member of `$event` is read
+  // dynamically, which a DOM object of `package:web` does not allow once
+  // compiled with dart2js. Its state is read here, in typed Dart.
+  @HostListener('change', [r'$event'])
+  void handleChange(Event event) {
+    var checked = (event.target as HTMLInputElement).checked;
     onChange(checked, rawValue: '$checked');
   }
 

@@ -562,12 +562,21 @@ class _ComponentVisitor
     return [
       CompileTokenMetadata(
         identifier: CompileIdentifierMetadata(
-          name: selectorType.getDisplayString(),
+          name: _typeName(selectorType),
           moduleUrl: moduleUrl(selectorType.element!),
         ),
       ),
     ];
   }
+
+  /// The name of the class of [type] in a query, which matches the tokens of
+  /// the directives of that class.
+  ///
+  /// Not its display string: the analyzer displays a type literal of a generic
+  /// class, such as `GenericComponent`, with its type arguments instantiated to
+  /// bounds (`GenericComponent<dynamic>`), which matches no directive.
+  static String _typeName(DartType type) =>
+      type.element?.name ?? type.getDisplayString();
 
   static final _coreIterable = TypeChecker.fromUrl('dart:core#Iterable');
   static final _htmlElement = TypeChecker.fromUrl('dart:html#Element');
@@ -592,7 +601,7 @@ class _ComponentVisitor
     if (readType != null) {
       readMetadata = CompileTokenMetadata(
         identifier: CompileIdentifierMetadata(
-          name: readType.getDisplayString(),
+          name: _typeName(readType),
           moduleUrl: moduleUrl(readType.element!),
         ),
       );

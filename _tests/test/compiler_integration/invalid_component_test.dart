@@ -215,15 +215,16 @@ void main() {
     class HiddenGoldComponenet {}
     ''',
       warnings: [
-        allOf([
+        // build_test puts a line naming the builder and input before it.
+        endsWith(
           'line 1, column 9 of asset:pkg/lib/input.dart: Dead code in template: '
-              'Non-empty text node (Dropped) is a child of a non-projecting '
-              'component (opaque) and will not be added to the DOM.\n'
-              '  ,\n'
-              '1 | <opaque>Dropped</opaque>\n'
-              '  |         ^^^^^^^\n'
-              "  '",
-        ]),
+          'Non-empty text node (Dropped) is a child of a non-projecting '
+          'component (opaque) and will not be added to the DOM.\n'
+          '  ,\n'
+          '1 | <opaque>Dropped</opaque>\n'
+          '  |         ^^^^^^^\n'
+          "  '",
+        ),
       ],
     );
   });
@@ -445,12 +446,13 @@ void main() {
       )
       class BadComponent {}
     ''',
+        // With analyzer 14, the error is of the annotation (line 5), where it
+        // was of `tokenRef` (line 8, column 21), with "Evaluation of this
+        // constant expression throws an exception".
         errors: [
           allOf(
-            contains(
-              'Evaluation of this constant expression throws an exception',
-            ),
-            containsSourceLocation(8, 21),
+            contains("A provider's token field failed to compile"),
+            containsSourceLocation(5, 7),
           ),
         ],
       );
@@ -517,7 +519,15 @@ void main() {
       )
       class BadComponent {}
     ''',
-        errors: [allOf(contains('ToProvide'), containsSourceLocation(8, 48))],
+        // With analyzer 14, the error is of the class (line 10), where it was
+        // of the second `ToProvide` (line 8, column 48).
+        errors: [
+          allOf(
+            contains('Could not resolve'),
+            contains('FactoryProvider(ToProvide, ToProvide)'),
+            containsSourceLocation(10, 13),
+          ),
+        ],
       );
     });
 

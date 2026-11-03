@@ -1,5 +1,6 @@
 //import 'package:build_test/build_test.dart';
-import 'package:kelicap/kelicap.dart';
+// Not package:kelicap, whose browser-only code does not load on the VM.
+import 'package:kelicap_common/kelicap_common.dart' show ViewEncapsulation;
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 

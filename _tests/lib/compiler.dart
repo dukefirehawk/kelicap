@@ -54,6 +54,34 @@ const ngCompiler = 'kelicap_compiler';
 const ngImport = 'package:$ngPackage/kelicap.dart';
 final _ngFiles = Glob('lib/**.dart');
 
+/// The sources of `package:kelicap` and of the packages it, and they, import
+/// or export, such as `kelicap_common` and `web`, read once for all tests.
+///
+/// Without them, a name the framework re-exports, such as
+/// `ChangeDetectionStrategy`, or a type of `package:web`, such as `Element`,
+/// does not resolve, and the compiler reports that instead of the diagnostic
+/// under test.
+final Future<Map<AssetId, String>> _ngSources = (() async {
+  final packages = await _packageAssets;
+  final sources = <AssetId, String>{};
+  final seen = <String>{};
+  final pending = [ngPackage];
+  final packageImport = RegExp(r'''^(?:import|export)\s+['"]package:(\w+)/''');
+  while (pending.isNotEmpty) {
+    final package = pending.removeLast();
+    if (!seen.add(package)) continue;
+    await for (final file in packages.findAssets(_ngFiles, package: package)) {
+      final content = await packages.readAsString(file);
+      sources[file] = content;
+      for (final line in content.split('\n')) {
+        final match = packageImport.firstMatch(line.trimLeft());
+        if (match != null) pending.add(match.group(1)!);
+      }
+    }
+  }
+  return sources;
+})();
+
 /// Modeled after `package:build_test/build_test.dart#testBuilders`.
 Future<void> _testBuilder(
   List<Builder> builders,
@@ -79,10 +107,9 @@ Future<void> _testBuilder(
   // producing the diagnostic under test -- but it must not be *built*.
   // `testBuilders` derives the packages it builds from `sourceAssets` and reads
   // everything else from `readerWriter`, so the framework goes in the latter.
-  // TODO: Can we cache and re-use this once per test suite?
   final readerWriter = TestReaderWriter(rootPackage: rootPackage);
-  await for (final file in packages.findAssets(_ngFiles, package: ngPackage)) {
-    readerWriter.testing.writeString(file, await packages.readAsString(file));
+  for (final MapEntry(key: file, value: content) in (await _ngSources).entries) {
+    readerWriter.testing.writeString(file, content);
   }
 
   await runWithContext(

@@ -35,14 +35,26 @@ void main() {
       expect(bounded, isA<TypeParameterType>(), reason: 'Sanity check');
       expect(
         fromDartType(bounded),
-        isA<o.ExternalType>().having((t) => t.value.name, 'name', 'num?'),
+        isA<o.ExternalType>()
+            .having((t) => t.value.name, 'name', 'num')
+            .having(
+              (t) => t.hasModifier(o.TypeModifier.nullableModifier),
+              'nullable',
+              isTrue,
+            ),
       );
     });
 
     test('the bound of its bound', () {
       expect(
         fromDartType(transitivelyBounded),
-        isA<o.ExternalType>().having((t) => t.value.name, 'name', 'num?'),
+        isA<o.ExternalType>()
+            .having((t) => t.value.name, 'name', 'num')
+            .having(
+              (t) => t.hasModifier(o.TypeModifier.nullableModifier),
+              'nullable',
+              isTrue,
+            ),
       );
     });
 
@@ -53,7 +65,13 @@ void main() {
     test('nothing, when resolveBounds is false', () {
       expect(
         fromDartType(bounded, resolveBounds: false),
-        isA<o.ExternalType>().having((t) => t.value.name, 'name', 'T?'),
+        isA<o.ExternalType>()
+            .having((t) => t.value.name, 'name', 'T')
+            .having(
+              (t) => t.hasModifier(o.TypeModifier.nullableModifier),
+              'nullable',
+              isTrue,
+            ),
       );
     });
   });

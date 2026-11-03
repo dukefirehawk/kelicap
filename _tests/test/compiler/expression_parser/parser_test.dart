@@ -27,16 +27,16 @@ void main() {
 }
 
 void _runTests(ExpressionParser Function() createParser) {
-  ASTWithSource parseAction(String text, [String? location]) {
-    return createParser().parseAction(text, location!, []);
+  ASTWithSource parseAction(String? text, [String location = '']) {
+    return createParser().parseAction(text, location, []);
   }
 
-  ASTWithSource parseBinding(String text, [String? location]) {
-    return createParser().parseBinding(text, location!, []);
+  ASTWithSource parseBinding(String text, [String location = '']) {
+    return createParser().parseBinding(text, location, []);
   }
 
-  ASTWithSource parseInterpolation(String text, [String? location]) {
-    return createParser().parseInterpolation(text, location!, [])!;
+  ASTWithSource parseInterpolation(String text, [String location = '']) {
+    return createParser().parseInterpolation(text, location, [])!;
   }
 
   String unparse(ASTWithSource ast) {
@@ -65,7 +65,7 @@ void _runTests(ExpressionParser Function() createParser) {
     expect(() => parseInterpolation(text), matcher);
   }
 
-  void expectActionError(String text, Object matcher) {
+  void expectActionError(String? text, Object matcher) {
     expect(() => parseAction(text), matcher);
   }
 
@@ -239,7 +239,7 @@ void _runTests(ExpressionParser Function() createParser) {
       test('should not crash when encountering an invalid event', () {
         // Template validator should prevent from ever getting here, but just
         // in case lets avoid an NPE error that is impossible to debug.
-        expectActionError('', throwsWith('Blank expressions are not'));
+        expectActionError(null, throwsWith('Blank expressions are not'));
       });
       test('should throw on a lexer error', () {
         expectActionError('a = 1E-', _throwsParseException);
@@ -296,7 +296,7 @@ void _runTests(ExpressionParser Function() createParser) {
     });
     group('parseInterpolation', () {
       test('should return null if no interpolation', () {
-        expect(parseInterpolation('nothing'), isNull);
+        expect(createParser().parseInterpolation('nothing', '', []), isNull);
       });
       test('should parse no prefix/suffix interpolation', () {
         var ast = parseInterpolation('{{a}}').ast as Interpolation;

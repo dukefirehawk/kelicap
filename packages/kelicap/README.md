@@ -4,53 +4,97 @@
 
 ![Pub Version (including pre-releases)](https://img.shields.io/pub/v/kelicap?include_prereleases)
 [![Null Safety](https://img.shields.io/badge/null-safety-brightgreen)](https://dart.dev/null-safety)
-[![License](https://img.shields.io/github/license/dukefirehawk/kelicap)](https://github.com/dukefirehawk/kelicap/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/dukefirehawk/kelicap)](https://github.com/dukefirehawk/kelicap/blob/main/LICENSE)
 
-Kelicap is a lightweight, native-HTML web framework for Dart, built as a modernized derivative fork of AngularDart (ngdart) with support for Dart 3.12+. While its syntax remains close to AngularDart and stays compatible up to Angular 16. Kelicap follows its own development path rather than strictly following Angular features development. It will remain as a pure Dart web solution with no intent to mimic or bridge with Flutter.
+Kelicap is a lightweight web framework for Dart that renders native HTML. It is a modernized fork of AngularDart (ngdart) for Dart 3.13 and later, built on [`package:web`](https://pub.dev/packages/web). Its template syntax stays close to AngularDart and to Angular up to version 16, but Kelicap follows its own path rather than Angular's newer features. It is a pure Dart web framework, with no aim to mimic or bridge to Flutter.
 
-## Architecture
+This package is the runtime: components, directives, pipes, dependency injection, change detection and bootstrapping. Its builder runs the Kelicap compiler on your project when you build it.
 
-Kelicap is structured into the following core packages:
+## Packages
 
-* **`kelicap_ast`**: Defines the Abstract Syntax Tree (AST) used internally by the framework.
-* **`kelicap_common`**: Contains shared internal utilities and core helper classes.
-* **`kelicap_observable`**: Contains code for observables, the reactive primitive of Kelicap, providing change detection and state management.
-* **`kelicap_compiler`**: Build-time tooling that compiles Kelicap applications into native HTML, CSS, and JavaScript.
-* **`kelicap`**: The core runtime library powering Kelicap applications.
-* * **`kelicap_test`**: Testing utilities for Kelicap framework.
-* **`kelicap_forms`**: Forms components for Kelicap framework.
-* **`kelicap_router`**: Router components for Kelicap framework.
-* **`kelicap_components`**: Component library for Kelicap framework.
-* **`kelicap_cli`**: Command-line tool for creating and managing Kelicap projects.
+| Package | What it is |
+| --- | --- |
+| [`kelicap`](https://pub.dev/packages/kelicap) | The runtime, and the builder that compiles your templates |
+| [`kelicap_forms`](https://pub.dev/packages/kelicap_forms) | Template-driven and reactive forms, with validators |
+| [`kelicap_router`](https://pub.dev/packages/kelicap_router) | Routing for single-page applications |
+| [`kelicap_test`](https://pub.dev/packages/kelicap_test) | Testing components in a browser |
+| [`kelicap_observable`](https://pub.dev/packages/kelicap_observable) | Observable objects, lists and maps |
+| [`kelicap_cli`](https://pub.dev/packages/kelicap_cli) | A command-line tool to create Kelicap projects |
+| [`kelicap_compiler`](https://pub.dev/packages/kelicap_compiler), [`kelicap_ast`](https://pub.dev/packages/kelicap_ast), [`kelicap_common`](https://pub.dev/packages/kelicap_common) | Used by the packages above; you don't depend on them directly |
 
-## Getting Started
+A library of UI components, [`kelicap_components`](https://github.com/dukefirehawk/kelicap_components), is developed in its own repository.
 
-### Pre-requisite
+## Getting started
 
-Dart 3.13.0 or later
-
-### Installation
+Kelicap needs Dart 3.13 or later. The quickest start is `kelicap create <name>`, of [`kelicap_cli`](https://pub.dev/packages/kelicap_cli). To set up a project by hand, add to `pubspec.yaml`:
 
 ```yaml
-    dependencies:
-        kelicap: ^1.0.0
-        kelicap_router: ^1.0.0
-        kelicap_forms: ^1.0.0
-        web: ^1.0.0
+dependencies:
+  kelicap: ^1.1.2
+  web: ^1.1.1
 
-    dev_dependencies:
-        build_runner: ^2.4.0
-        build_web_compilers: ^4.6.0
-        lints: ^6.1.0
+dev_dependencies:
+  build_runner: ^2.4.0
+  build_web_compilers: ^4.8.0
 ```
 
-### Build and run
+A component, in `lib/app.dart`:
+
+```dart
+import 'package:kelicap/kelicap.dart';
+
+@Component(
+  selector: 'my-app',
+  template: '<h1>Hello {{name}}</h1>',
+)
+class AppComponent {
+  var name = 'Kelicap';
+}
+```
+
+Its entry point, `web/main.dart`, runs the factory the compiler generates in `app.template.dart`:
+
+```dart
+import 'package:kelicap/kelicap.dart';
+import 'package:my_app/app.template.dart' as ng;
+
+void main() {
+  runApp(ng.AppComponentNgFactory);
+}
+```
+
+And `web/index.html` loads it:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script defer src="main.dart.js"></script>
+</head>
+<body>
+  <my-app></my-app>
+</body>
+</html>
+```
+
+## Build and run
+
+During development, build and serve the app, rebuilding it as files change, at <http://localhost:8080>:
 
 ```bash
-    dart pub upgrade
-    dart run build_runner serve
+dart pub get
+dart run build_runner serve web:8080
 ```
 
-### Documentation
+For production, build it with dart2js into `build/`, and serve that directory as static files:
 
-The Kelicap documentation is located at [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs).
+```bash
+dart run build_runner build --release -o web:build
+```
+
+The development build (DDC) tolerates dynamic access to JavaScript objects, and the release build (dart2js) does not, so test a release build before deploying. In templates and `@HostListener`s, pass `$event` to a method that takes a typed `Event`, rather than reading members such as `$event.target.value`.
+
+## Documentation
+
+The Kelicap documentation is at [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs), and runnable examples are in the [examples](https://github.com/dukefirehawk/kelicap/tree/main/examples) directory.
