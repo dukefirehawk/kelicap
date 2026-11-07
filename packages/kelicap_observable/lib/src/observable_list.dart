@@ -162,7 +162,7 @@ class ObservableList<E> extends ListBase<E> with Observable {
       _notifyListChange(
         index,
         addedCount: length,
-        removed: _list.sublist(index, length),
+        removed: _list.sublist(index, index + length),
       );
     }
     _list.setAll(index, iterable);

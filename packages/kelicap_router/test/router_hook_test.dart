@@ -6,7 +6,7 @@ import 'package:kelicap_router/testing.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../router/test/router_hook_test.template.dart' as ng;
+import 'router_hook_test.template.dart' as ng;
 
 void main() {
   tearDown(() {

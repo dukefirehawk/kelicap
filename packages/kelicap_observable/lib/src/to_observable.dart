@@ -44,12 +44,16 @@ dynamic toObservable(dynamic value, {bool deep = true}) =>
 /// for a shallow conversion. This does not handle circular data structures.
 /// If a conversion is peformed, mutations are only observed to the result of
 /// this function. Changing the original collection will not affect it.
+///
+/// A deep conversion creates nested collections of `dynamic`, so a nested
+/// collection stays as it is, and is not observable, if [T] cannot hold one: it
+/// is converted when [T] is `dynamic` or `List<dynamic>`, not `List<int>`.
 ObservableList<T> toObservableList<T>(Iterable<T> value, {bool deep = true}) {
   if (value is ObservableList<T>) return value;
   if (deep) {
     var result = ObservableList<T>();
     for (var element in value) {
-      result.add(_toObservableDeep(element) as T);
+      result.add(_toObservableDeepAs<T>(element));
     }
     return result;
   } else {
@@ -68,12 +72,17 @@ ObservableList<T> toObservableList<T>(Iterable<T> value, {bool deep = true}) {
 /// for a shallow conversion. This does not handle circular data structures.
 /// If a conversion is peformed, mutations are only observed to the result of
 /// this function. Changing the original collection will not affect it.
+///
+/// A deep conversion creates nested collections of `dynamic`, so a nested
+/// collection stays as it is, and is not observable, if [K] or [V] cannot hold
+/// one: it is converted when [V] is `dynamic` or `List<dynamic>`, not
+/// `List<int>`.
 ObservableMap<K, V> toObservableMap<K, V>(Map<K, V> value, {bool deep = true}) {
   if (value is ObservableMap<K, V>) return value;
   if (deep) {
-    var result = ObservableMap<K, V>();
+    var result = ObservableMap<K, V>.createFromType(value);
     value.forEach((k, v) {
-      result[_toObservableDeep(k) as K] = _toObservableDeep(v) as V;
+      result[_toObservableDeepAs<K>(k)] = _toObservableDeepAs<V>(v);
     });
     return result;
   } else {
@@ -95,6 +104,15 @@ dynamic _toObservableShallow(dynamic value) {
   return value;
 }
 
+/// Deeply converts [value], unless [T] cannot hold the converted collection.
+///
+/// The element type of a nested collection is not available at runtime, so it
+/// cannot be converted to, for example, an `ObservableList<int>`.
+T _toObservableDeepAs<T>(T value) {
+  final converted = _toObservableDeep(value);
+  return converted is T ? converted : value;
+}
+
 dynamic _toObservableDeep(dynamic value) {
   if (value is Observable) return value;
 
@@ -106,7 +124,7 @@ dynamic _toObservableDeep(dynamic value) {
 }
 
 ObservableMap _toObservableDeepMap(Map<dynamic, dynamic> value) {
-  var result = ObservableMap<dynamic, dynamic>();
+  var result = ObservableMap<dynamic, dynamic>.createFromType(value);
   value.forEach((k, v) {
     result[_toObservableDeep(k)] = _toObservableDeep(v);
   });

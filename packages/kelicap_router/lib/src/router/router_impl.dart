@@ -111,6 +111,8 @@ class RouterImpl extends Router {
     if (_rootOutlet == routerOutlet) {
       _rootOutlet = null;
       _activeState = null;
+      // The outlet destroyed these, so they must not get lifecycle calls.
+      _activeComponentRefs = const [];
     }
   }
 

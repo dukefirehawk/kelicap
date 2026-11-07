@@ -64,12 +64,15 @@ class Validators {
   }
 
   ///  Validator that requires a control to match a regex to its value.
+  ///
+  ///  The regex must match the entire value, so it is grouped: otherwise, the
+  ///  anchors of `cat|dog` would only apply to one alternative each.
   static ValidatorFn pattern(String pattern) {
+    final regex = RegExp('^(?:$pattern)\$');
     return /* Map < String , dynamic >? */ (
       model_module.AbstractControl control,
     ) {
       if (Validators.required(control) != null) return null;
-      var regex = RegExp('^$pattern\$');
       final v = control.value as String;
       return regex.hasMatch(v)
           ? null

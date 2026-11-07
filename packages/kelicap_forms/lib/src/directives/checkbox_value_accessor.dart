@@ -42,8 +42,9 @@ class CheckboxControlValueAccessor extends Object
   }
 
   @override
-  void writeValue(bool value) {
-    _element.checked = value;
+  void writeValue(bool? value) {
+    // A control has a null value until it is given one, and after a reset.
+    _element.checked = value ?? false;
   }
 
   @override

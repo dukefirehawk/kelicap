@@ -165,7 +165,7 @@ class NgFor implements DoCheck {
     });
 
     for (var i = 0; i < insertTuples.length; i++) {
-      _perViewChange(insertTuples[i].view, insertTuples[i].record);
+      insertTuples[i].view.setLocal('\$implicit', insertTuples[i].record.item);
     }
     for (var i = 0, len = _viewContainer?.length ?? 0; i < len; i++) {
       var viewRef = _getEmbeddedViewRef(i);
@@ -173,6 +173,8 @@ class NgFor implements DoCheck {
       viewRef.setLocal('last', identical(i, len - 1));
       viewRef.setLocal('index', i);
       viewRef.setLocal('count', len);
+      viewRef.setLocal('even', i.isEven);
+      viewRef.setLocal('odd', i.isOdd);
     }
     changes.forEachIdentityChange((record) {
       var viewRef = _getEmbeddedViewRef(record.currentIndex!);
@@ -190,13 +192,6 @@ class NgFor implements DoCheck {
   /// assume that the returned [ViewRef]s are all [EmbeddedViewRef]s.
   EmbeddedViewRef _getEmbeddedViewRef(int index) =>
       unsafeCast(_viewContainer?.get(index));
-
-  void _perViewChange(EmbeddedViewRef view, CollectionChangeRecord record) {
-    view.setLocal('\$implicit', record.item);
-    var currentIndex = record.currentIndex!;
-    view.setLocal('even', currentIndex.isEven);
-    view.setLocal('odd', currentIndex.isOdd);
-  }
 }
 
 class _RecordViewTuple {

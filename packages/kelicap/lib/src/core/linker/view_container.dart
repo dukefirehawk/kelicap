@@ -130,7 +130,9 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
   @override
   void move(ViewRef viewRef, [int index = -1]) {
     if (index == -1) {
-      index = length;
+      // The view is already in this container, so the last index is one less
+      // than the index a new view would be appended at.
+      index = length - 1;
     }
     _moveView(unsafeCast(viewRef), index);
   }
@@ -211,6 +213,8 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     if (previousIndex == -1) {
       throw StateError('View is not a member of this container');
     }
+    // The view would be inserted relative to its own nodes, which reorders them.
+    if (previousIndex == newIndex) return;
 
     nestedViews
       ..removeAt(previousIndex)

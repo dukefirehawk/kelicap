@@ -9,8 +9,7 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap_router/kelicap_router.dart';
 import 'package:kelicap_router/testing.dart';
 
-import '../../../../router/test/regression/routing_state_crash_test.template.dart'
-    as ng;
+import 'routing_state_crash_test.template.dart' as ng;
 
 void main() {
   test('should not crash entire app when a routed component throws', () async {

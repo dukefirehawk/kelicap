@@ -7,7 +7,7 @@ import 'package:kelicap_router/kelicap_router.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../router/test/revert_popstate_test.template.dart' as ng;
+import 'revert_popstate_test.template.dart' as ng;
 
 void main() {
   late Location location;

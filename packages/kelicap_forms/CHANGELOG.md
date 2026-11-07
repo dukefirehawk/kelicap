@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.1.3
+
+### Fixes in 1.1.3
+
+* **Checkbox:** A checkbox accepts a null value, which it shows as unchecked. A checkbox bound to a control without a value, such as with `ngControl` in a template-driven form, no longer throws, nor does resetting its control
+* **Select:** An `<option [ngValue]>` whose value changes to null no longer throws, and selecting it sets the model to null, not to the text of the option's value
+* **Radio:** Selecting a radio button unchecks only those with the same `name`. Groups in the same form no longer uncheck each other, and standalone `[(ngModel)]` radio buttons with the same name, in the same form element or in none, now do. Radio buttons without a name are not in a group, as in the browser
+* **Validators:** `Validators.pattern` and the `pattern` attribute match the entire value when the pattern has alternatives: `cat|dog` no longer accepts `catfish`. The regular expression is compiled once, rather than on every validation
+
 ## 1.1.2
 
 ### Fixes in 1.1.2

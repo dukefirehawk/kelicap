@@ -42,7 +42,7 @@ import 'location_strategy.dart' show LocationStrategy;
 @Injectable()
 class Location {
   final LocationStrategy? locationStrategy;
-  final _subject = StreamController<Object>();
+  final _subject = StreamController<Object>.broadcast();
   final String _baseHref;
 
   Location(@Optional() this.locationStrategy)

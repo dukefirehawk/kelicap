@@ -16,7 +16,7 @@ The project is set up as a Dart monorepo using the native Dart `workspace` featu
 - `forms/` (`kelicap_forms`): The forms library that provides form handling and validation capabilities.
 - `router/` (`kelicap_router`): The routing library that provides navigation and route management capabilities.
 
-## Tech Stac
+## Tech Stack
 
 - **Language**: Dart `>=3.13.0 <4.0.0`
 - **DOM Interop**: Uses `package:web` (`^1.1.1`)

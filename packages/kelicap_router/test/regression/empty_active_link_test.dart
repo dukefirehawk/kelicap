@@ -6,8 +6,7 @@ import 'package:kelicap_router/testing.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../../router/test/regression/empty_active_link_test.template.dart'
-    as ng;
+import 'empty_active_link_test.template.dart' as ng;
 
 @GenerateInjector(routerProvidersTest)
 final injector = ng.injector$Injector;

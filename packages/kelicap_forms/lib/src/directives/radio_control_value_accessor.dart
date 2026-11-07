@@ -38,11 +38,30 @@ class RadioControlRegistry {
 
   void select(RadioControlValueAccessor accessor) {
     for (var c in _accessors) {
-      if (identical(c[0].control.root, accessor._control?.control?.root) &&
-          !identical(c[1], accessor)) {
+      if (!identical(c[1], accessor) && _isSameGroup(c[0], c[1], accessor)) {
         c[1].fireUncheck();
       }
     }
+  }
+
+  /// Whether selecting [selected] unchecks [other], whose control is [control].
+  ///
+  /// As in the browser, radio buttons without a name are never in a group.
+  /// Radio buttons with a name are in one if they share it and either belong to
+  /// the same form model, or have no form model and share a form element.
+  bool _isSameGroup(
+    NgControl control,
+    RadioControlValueAccessor other,
+    RadioControlValueAccessor selected,
+  ) {
+    if (selected.name == null || other.name != selected.name) return false;
+    final a = control.control;
+    final b = selected._control?.control;
+    if (a == null || b == null) return false;
+    if (identical(a.root, b.root)) return true;
+    return identical(a, a.root) &&
+        identical(b, b.root) &&
+        other._form == selected._form;
   }
 }
 
@@ -96,6 +115,8 @@ class RadioControlValueAccessor extends Object
     @Optional() this._injector,
   );
 
+  HTMLFormElement? get _form => (_element as HTMLInputElement?)?.form;
+
   @HostListener('change')
   void changeHandler() {
     onChange(RadioButtonState(true, _state!.value), rawValue: _state!.value);
@@ -126,7 +147,10 @@ class RadioControlValueAccessor extends Object
   }
 
   void fireUncheck() {
-    onChange(RadioButtonState(false, _state!.value), rawValue: _state!.value);
+    // A radio button whose model has no state has nothing to uncheck.
+    final state = _state;
+    if (state == null) return;
+    onChange(RadioButtonState(false, state.value), rawValue: state.value);
   }
 
   @override
