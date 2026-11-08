@@ -14,6 +14,7 @@
 
 ### Fixes in 1.1.3
 
+* **Components:** A component, directive or provider class whose unnamed constructor is not declared first is created with its unnamed constructor. A class that declared a private constructor first, such as `Foo._()` before `factory Foo()`, failed to compile with "No constructors found", and one that declared a public named constructor first had that constructor's parameters injected
 * **Templates:** Requires `kelicap_ast` 1.1.3 for micro-syntax whose expressions have a `;` or `:` in a string or brackets, such as `*ngFor="let x of m['a;b']"`, or a conditional, such as `a?b:c; context: ctx`, or whitespace before a `;`
 * **Templates:** Requires `kelicap_ast` 1.1.3, which parses `*`-bindings such as `*ngIf="letter != null"` and `*ngIf="a?b:c"`, and reports invalid decorators where it threw
 * **Templates:** The whitespace in a `<textarea>`, which is its value, is kept, as in a `<pre>`, except a newline at the start of either, which the browser drops as well. A `<pre>` no longer starts with a blank line, and a `<textarea>` that holds only indentation has it as its value, as it would in HTML
