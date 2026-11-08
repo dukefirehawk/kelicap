@@ -18,6 +18,16 @@ void main() {
     expect(fixture.assertOnlyInstance.recorder!.values, [null]);
   });
 
+  test('an input bound to null calls ngAfterChanges once', () async {
+    final fixture = await NgTestBed<NullLiteralAfterChangesTest>(
+      ng.createNullLiteralAfterChangesTestFactory(),
+    ).create();
+    final directive = fixture.assertOnlyInstance.directive!;
+    expect(directive.afterChanges, 1);
+    await fixture.update();
+    expect(directive.afterChanges, 1, reason: 'null does not change again');
+  });
+
   test('an element property bound to null sets nothing', () async {
     final fixture = await NgTestBed<NullLiteralInputTest>(
       ng.createNullLiteralInputTestFactory(),
@@ -45,4 +55,27 @@ class RecorderDirective {
 class NullLiteralInputTest {
   @ViewChild(RecorderDirective)
   RecorderDirective? recorder;
+}
+
+@Directive(selector: '[after-changes]')
+class AfterChangesDirective implements AfterChanges {
+  var afterChanges = 0;
+
+  @Input()
+  Object? value;
+
+  @override
+  void ngAfterChanges() {
+    afterChanges++;
+  }
+}
+
+@Component(
+  selector: 'null-literal-after-changes-test',
+  directives: [AfterChangesDirective],
+  template: '<div after-changes [value]="null"></div>',
+)
+class NullLiteralAfterChangesTest {
+  @ViewChild(AfterChangesDirective)
+  AfterChangesDirective? directive;
 }

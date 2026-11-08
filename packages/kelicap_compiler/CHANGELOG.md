@@ -5,7 +5,7 @@
 ### Breaking changes in 1.1.3
 
 * **Breaking:** An event binding of only whitespace, such as `(click)="  "`, fails to compile with "events must have a bound expression", as an empty one does, where it compiled to a handler that does nothing
-* **Breaking:** An input of a directive bound to `null`, such as `[value]="null"`, is set to `null` once, as any other value is, where the binding was dropped. On an input whose type is not nullable, it fails to compile with "Input "name" of Directive is not nullable, so it cannot be bound to null", reported at the binding in the template
+* **Breaking:** An input of a directive bound to `null`, such as `[value]="null"`, is set to `null` once, as any other value is, where the binding was dropped. As for any other value, this is a change, so the directive's `ngAfterChanges` runs, and an OnPush component is marked to be checked, on the first change detection. On an input whose type is not nullable, it fails to compile with "Input "name" of Directive is not nullable, so it cannot be bound to null", reported at the binding in the template
 * **Breaking:** A two-way binding without an expression, such as `[(value)]` or `[(value)]=""`, fails to compile with "Two-way binding '[(name)]' requires an expression", where it was dropped. Give it an expression, or remove it
 
 ### New in 1.1.3
