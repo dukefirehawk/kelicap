@@ -78,7 +78,8 @@ class _RecursiveMicroAstParser {
         _tokens.current.type != NgMicroTokenType.bindExpression) {
       throw _unexpected();
     }
-    var value = _tokens.current.lexeme;
+    // An expression may end with the whitespace before a `;`.
+    var value = _tokens.current.lexeme.trimRight();
     properties.add(
       PropertyAst.from(
         _origin,
@@ -93,7 +94,7 @@ class _RecursiveMicroAstParser {
   // was assigned.
   void _parseImplicitBind() {
     properties.add(
-      PropertyAst.from(_origin, _directive, _tokens.current.lexeme),
+      PropertyAst.from(_origin, _directive, _tokens.current.lexeme.trimRight()),
     );
   }
 
@@ -133,7 +134,7 @@ class _RecursiveMicroAstParser {
           _tokens.current.type != NgMicroTokenType.bindExpression) {
         throw _unexpected();
       }
-      var expression = _tokens.current.lexeme;
+      var expression = _tokens.current.lexeme.trimRight();
       properties.add(
         PropertyAst.from(
           _origin,

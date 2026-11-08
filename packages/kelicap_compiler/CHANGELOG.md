@@ -1,5 +1,26 @@
 # Change Log
 
+## 1.1.3
+
+### Breaking changes in 1.1.3
+
+* **Breaking:** An event binding of only whitespace, such as `(click)="  "`, fails to compile with "events must have a bound expression", as an empty one does, where it compiled to a handler that does nothing
+* **Breaking:** An input of a directive bound to `null`, such as `[value]="null"`, is set to `null` once, as any other value is, where the binding was dropped. As for any other value, this is a change, so the directive's `ngAfterChanges` runs, and an OnPush component is marked to be checked, on the first change detection. On an input whose type is not nullable, it fails to compile with "Input "name" of Directive is not nullable, so it cannot be bound to null", reported at the binding in the template
+* **Breaking:** A two-way binding without an expression, such as `[(value)]` or `[(value)]=""`, fails to compile with "Two-way binding '[(name)]' requires an expression", where it was dropped. Give it an expression, or remove it
+
+### New in 1.1.3
+
+* **Templates:** A handler of a DOM event that reads a member of `$event`, such as `(click)="onClick($event.target)"`, `$event!.target` or `$event['target']`, gets a warning: `$event` is read dynamically, which fails in a release build (dart2js). Pass `$event` to a method that takes a typed `Event` instead. The event of an `@Output()` is a Dart object, so it is not warned about, unless the output is a `Stream` of a JavaScript type, such as `Stream<UIEvent>` of `package:web`, which re-emits a DOM event. A `@HostListener` argument such as `$event.target`, of a directive or a component, is warned about once, at the method, when its library is compiled, rather than for each element the directive matches
+
+### Fixes in 1.1.3
+
+* **Components:** A component, directive or provider class whose unnamed constructor is not declared first is created with its unnamed constructor. A class that declared a private constructor first, such as `Foo._()` before `factory Foo()`, failed to compile with "No constructors found", and one that declared a public named constructor first had that constructor's parameters injected
+* **Templates:** Requires `kelicap_ast` 1.1.3 for micro-syntax whose expressions have a `;` or `:` in a string or brackets, such as `*ngFor="let x of m['a;b']"`, or a conditional, such as `a?b:c; context: ctx`, or whitespace before a `;`
+* **Templates:** Requires `kelicap_ast` 1.1.3, which parses `*`-bindings such as `*ngIf="letter != null"` and `*ngIf="a?b:c"`, and reports invalid decorators where it threw
+* **Templates:** The whitespace in a `<textarea>`, which is its value, is kept, as in a `<pre>`, except a newline at the start of either, which the browser drops as well. A `<pre>` no longer starts with a blank line, and a `<textarea>` that holds only indentation has it as its value, as it would in HTML
+* **Templates:** Whitespace between inline elements such as `<u>`, `<s>`, `<mark>`, `<ins>` and `<del>` is kept, so `<u>a</u> <u>b</u>` shows a space
+* **Templates:** An unknown named entity, such as `&foo;`, is left as written, where its `&` and `;` were removed. A numeric entity of any length is decoded, such as `&#x1F600;` and `&#9;`, which were left as text
+
 ## 1.1.2
 
 ### Breaking changes in 1.1.2

@@ -6,8 +6,7 @@ import 'package:kelicap_router/testing.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../router/test/update_location_on_popstate_test.template.dart'
-    as ng;
+import 'update_location_on_popstate_test.template.dart' as ng;
 
 void main() {
   late Location location;

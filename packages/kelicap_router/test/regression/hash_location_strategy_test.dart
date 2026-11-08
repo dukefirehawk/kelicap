@@ -8,8 +8,7 @@ import 'package:kelicap_router/kelicap_router.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../../router/test/regression/hash_location_strategy_test.template.dart'
-    as ng;
+import 'hash_location_strategy_test.template.dart' as ng;
 
 final platformLocation = MockPlatformLocation();
 

@@ -648,6 +648,7 @@ class NgScanner {
       innerValueToken = NgToken.elementDecoratorValue(
         current.contentOffset,
         innerValue,
+        sourceLength: rightQuoteOffset - current.contentOffset,
       );
 
       _state = NgScannerState.scanAfterElementDecoratorValue;
@@ -888,7 +889,9 @@ class NgScanner {
         type == NgSimpleTokenType.dash ||
         type == NgSimpleTokenType.forwardSlash ||
         type == NgSimpleTokenType.period ||
-        type == NgSimpleTokenType.unexpectedChar) {
+        type == NgSimpleTokenType.unexpectedChar ||
+        type == NgSimpleTokenType.percent ||
+        type == NgSimpleTokenType.backSlash) {
       return handleError(
         ParserErrorCode.expectedToken,
         current.offset,
@@ -897,11 +900,12 @@ class NgScanner {
     }
 
     var lastToken = _lastToken!;
+    // Recovery may skip the token, in which case there is none to return.
     return handleError(
       ParserErrorCode.elementDecorator,
       lastToken.offset,
       lastToken.length,
-    )!;
+    );
   }
 
   @protected
@@ -1151,7 +1155,11 @@ class NgScanner {
         sb.write(_moveNext()!.lexeme);
       }
       _state = NgScannerState.scanStart;
-      return NgToken.text(offset, sb.toString());
+      return NgToken.text(
+        offset,
+        sb.toString(),
+        sourceLength: _current!.end - offset,
+      );
     }
     // No real errors in scanText state, but just in case.
     return handleError(

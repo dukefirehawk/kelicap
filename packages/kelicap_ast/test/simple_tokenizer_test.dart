@@ -126,7 +126,14 @@ void main() {
       NgSimpleToken.whitespace(7, ' '),
       NgSimpleToken.identifier(8, 'title'),
       NgSimpleToken.equalSign(13),
-      NgSimpleQuoteToken.doubleQuotedText(14, '"Submit "quoted text""', true),
+      // The source has 2 more characters than the lexeme, whose quotes are
+      // not escaped.
+      NgSimpleQuoteToken.doubleQuotedText(
+        14,
+        '"Submit "quoted text""',
+        true,
+        sourceLength: 24,
+      ),
       NgSimpleToken.tagEnd(38),
       NgSimpleToken.closeTagStart(39),
       NgSimpleToken.identifier(41, 'button'),

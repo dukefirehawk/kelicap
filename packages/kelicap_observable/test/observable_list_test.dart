@@ -189,6 +189,21 @@ void main() {
     expect(list.toString(), '[1, 2, 3]');
   });
 
+  test('setAll reports the replaced elements from a non-zero index', () {
+    final list = ObservableList<int>.from([1, 2, 3, 4]);
+    final records = <ListChangeRecord<int>>[];
+    final subscription = list.listChanges.listen(records.addAll);
+    addTearDown(subscription.cancel);
+
+    list.setAll(2, [8, 9]);
+    list.deliverListChanges();
+
+    expect(list, [1, 2, 8, 9]);
+    expect(records.single.index, 2);
+    expect(records.single.removed, [3, 4]);
+    expect(records.single.addedCount, 2);
+  });
+
   group('change records', () {
     List<ChangeRecord>? propRecords;
     List<ListChangeRecord>? listRecords;

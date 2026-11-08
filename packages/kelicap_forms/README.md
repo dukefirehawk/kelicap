@@ -17,8 +17,8 @@ Both track each control's value, validity and state (`pristine`, `dirty`, `touch
 
 ```yaml
 dependencies:
-  kelicap: ^1.1.2
-  kelicap_forms: ^1.1.2
+  kelicap: ^1.1.3
+  kelicap_forms: ^1.1.3
 ```
 
 ## Template-driven forms

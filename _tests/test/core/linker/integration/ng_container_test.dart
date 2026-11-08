@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
+import 'package:_tests/matchers.dart';
 
 // ignore: uri_has_not_been_generated
 import 'ng_container_test.template.dart' as ng;
@@ -12,7 +13,7 @@ void main() {
   test('renders nothing', () async {
     final testBed = NgTestBed<RendersNothing>(ng.createRendersNothingFactory());
     final testFixture = await testBed.create();
-    expect(testFixture.rootElement.childNodes, isEmpty);
+    expect(testFixture.rootElement.childNodes.asList, isEmpty);
   });
 
   test('renders children in place of self', () async {

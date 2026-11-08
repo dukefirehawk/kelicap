@@ -294,6 +294,36 @@ void main() {
       expect(testFixture.rootElement, hasTextContent('truefalse'));
     });
 
+    test('should update even items that shift without moving', () async {
+      var testBed = NgTestBed<NgForEvenTest>(ng.createNgForEvenTestFactory());
+      var testFixture = await testBed.create();
+      await testFixture.update((NgForEvenTest component) {
+        component.items = [1, 2, 3];
+      });
+      expect(testFixture.rootElement, hasTextContent('truefalsetrue'));
+      await testFixture.update((NgForEvenTest component) {
+        component.items = [0, 1, 2, 3];
+      });
+      expect(testFixture.rootElement, hasTextContent('truefalsetruefalse'));
+      await testFixture.update((NgForEvenTest component) {
+        component.items = [1, 2, 3];
+      });
+      expect(testFixture.rootElement, hasTextContent('truefalsetrue'));
+    });
+
+    test('should update odd items that shift without moving', () async {
+      var testBed = NgTestBed<NgForOddTest>(ng.createNgForOddTestFactory());
+      var testFixture = await testBed.create();
+      await testFixture.update((NgForOddTest component) {
+        component.items = [1, 2, 3];
+      });
+      expect(testFixture.rootElement, hasTextContent('falsetruefalse'));
+      await testFixture.update((NgForOddTest component) {
+        component.items = [0, 1, 2, 3];
+      });
+      expect(testFixture.rootElement, hasTextContent('falsetruefalsetrue'));
+    });
+
     test('should display odd items correctly', () async {
       var testBed = NgTestBed<NgForOddTest>(ng.createNgForOddTestFactory());
       var testFixture = await testBed.create();

@@ -12,8 +12,8 @@ Routing for Kelicap single-page applications. It maps URLs to components, and sh
 
 ```yaml
 dependencies:
-  kelicap: ^1.1.2
-  kelicap_router: ^1.1.2
+  kelicap: ^1.1.3
+  kelicap_router: ^1.1.3
 ```
 
 ## Usage

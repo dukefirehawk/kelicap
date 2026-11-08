@@ -3,7 +3,7 @@ import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_router/kelicap_router.dart';
 
-import '../../../router/test/route_path_test.template.dart' as ng;
+import 'route_path_test.template.dart' as ng;
 
 void main() {
   group('$RoutePath', () {

@@ -8,6 +8,9 @@ class HumanizingTemplateAstVisitor
 
   @override
   String visitAnnotation(AnnotationAst astNode, [StringBuffer? context]) {
+    if (astNode.value != null) {
+      return '@${astNode.name}="${astNode.value}"';
+    }
     return '@${astNode.name}';
   }
 
@@ -128,12 +131,17 @@ class HumanizingTemplateAstVisitor
     StringBuffer? context,
   ]) {
     context ??= StringBuffer();
+    context.write('<ng-content');
     if (astNode.selector != null) {
-      context.write('<ng-content select="${astNode.selector}">');
-    } else {
-      context.write('<ng-content>');
+      context.write(' select="${astNode.selector}"');
     }
-    context.write('</ng-content>');
+    if (astNode.ngProjectAs != null) {
+      context.write(' ngProjectAs="${astNode.ngProjectAs}"');
+    }
+    if (astNode.reference != null) {
+      context.write(' ${visitReference(astNode.reference!)}');
+    }
+    context.write('></ng-content>');
     return context.toString();
   }
 
@@ -153,6 +161,11 @@ class HumanizingTemplateAstVisitor
       context
         ..write(' ')
         ..writeAll(astNode.attributes.map(visitAttribute), ' ');
+    }
+    if (astNode.events.isNotEmpty) {
+      context
+        ..write(' ')
+        ..writeAll(astNode.events.map(visitEvent), ' ');
     }
     if (astNode.properties.isNotEmpty) {
       context

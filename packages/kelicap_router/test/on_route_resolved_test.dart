@@ -8,7 +8,7 @@ import 'package:kelicap_router/testing.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
 // ingore: uri_has_not_been_generated
-import '../../../router/test/on_route_resolved_test.template.dart' as ng;
+import 'on_route_resolved_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

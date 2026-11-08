@@ -55,12 +55,12 @@ class NgSimpleScanner {
   static final _mustaches = RegExp(r'({{)|(}})');
   static final _newline = RegExp('\n');
   static final _escape = RegExp(
-    r'&#([0-9]{2,4});|' // 1 decimal
-    '&#x([0-9A-Fa-f]{2,4});|' // 2 hex
-    '&([a-zA-Z]+);',
+    r'&#([0-9]+);|' // 1 decimal
+    '&#[xX]([0-9A-Fa-f]+);|' // 2 hex
+    '&([a-zA-Z][a-zA-Z0-9]*);',
   ); // 3 named
 
-  static final _doctypeBegin = RegExp(r'(<!DOCTYPE)|(>)');
+  static final _doctypeBegin = RegExp('<!DOCTYPE', caseSensitive: false);
   static final _gt = RegExp(r'>');
 
   final StringScanner _scanner;
@@ -195,14 +195,22 @@ class NgSimpleScanner {
         return NgSimpleToken.identifier(offset, s);
       }
       if (matchesGroup(match, 12)) {
-        var lexeme = _scanner.substring(offset).replaceAll(r'\"', '"');
-        var isClosed = (lexeme.length > 1) && lexeme[lexeme.length - 1] == '"';
-        return NgSimpleQuoteToken.doubleQuotedText(offset, lexeme, isClosed);
+        var source = _scanner.substring(offset);
+        return NgSimpleQuoteToken.doubleQuotedText(
+          offset,
+          source.replaceAll(r'\"', '"'),
+          _isClosedQuote(source),
+          sourceLength: source.length,
+        );
       }
       if (matchesGroup(match, 14)) {
-        var lexeme = _scanner.substring(offset).replaceAll(r"\'", "'");
-        var isClosed = (lexeme.length > 1) && lexeme[lexeme.length - 1] == "'";
-        return NgSimpleQuoteToken.singleQuotedText(offset, lexeme, isClosed);
+        var source = _scanner.substring(offset);
+        return NgSimpleQuoteToken.singleQuotedText(
+          offset,
+          source.replaceAll(r"\'", "'"),
+          _isClosedQuote(source),
+          sourceLength: source.length,
+        );
       }
       if (matchesGroup(match, 16)) {
         if (_scanner.peekChar() == $exclamation &&
@@ -374,19 +382,44 @@ class NgSimpleScanner {
     return string.replaceAllMapped(_escape, (match) {
       // decimal
       if (matchesGroup(match, 1)) {
-        return String.fromCharCode(int.parse(match.group(1)!));
+        return _fromCodePoint(int.tryParse(match.group(1)!));
       }
       // hex
       if (matchesGroup(match, 2)) {
-        return String.fromCharCode(int.parse(match.group(2)!, radix: 16));
+        return _fromCodePoint(int.tryParse(match.group(2)!, radix: 16));
       }
-      // named
+      // named; an unknown one is left as it is, as in the browser.
       if (matchesGroup(match, 3)) {
-        return namedEntities[match.group(3)] ?? match.group(3)!;
+        return namedEntities[match.group(3)] ?? match.group(0)!;
       }
 
       return '';
     });
+  }
+
+  /// Whether the quoted [source] ends with its quote, which an odd number of
+  /// backslashes before it would escape instead.
+  static bool _isClosedQuote(String source) {
+    if (source.length < 2 || source[source.length - 1] != source[0]) {
+      return false;
+    }
+    var backslashes = 0;
+    for (var i = source.length - 2; i > 0 && source[i] == r'\'; i--) {
+      backslashes++;
+    }
+    return backslashes.isEven;
+  }
+
+  /// Returns the character of [codePoint], or the replacement character for
+  /// one that is not a character, as the browser does.
+  static String _fromCodePoint(int? codePoint) {
+    if (codePoint == null ||
+        codePoint == 0 ||
+        codePoint > 0x10FFFF ||
+        (codePoint >= 0xD800 && codePoint <= 0xDFFF)) {
+      return '�';
+    }
+    return String.fromCharCode(codePoint);
   }
 }
 

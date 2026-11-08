@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
+import 'package:_tests/matchers.dart';
 
 import 'query_integration_test.template.dart' as ng;
 
@@ -125,11 +126,13 @@ void main() {
       );
       final testFixture = await testBed.create();
       expect(
-        testFixture.rootElement.querySelectorAll('.embedded-from-content'),
+        testFixture.rootElement
+            .querySelectorAll('.embedded-from-content')
+            .asList,
         hasLength(2),
       );
       expect(
-        testFixture.rootElement.querySelectorAll('.embedded-from-view'),
+        testFixture.rootElement.querySelectorAll('.embedded-from-view').asList,
         hasLength(2),
       );
     });
@@ -140,11 +143,13 @@ void main() {
       );
       final testFixture = await testBed.create();
       expect(
-        testFixture.rootElement.querySelectorAll('.embedded-from-content'),
+        testFixture.rootElement
+            .querySelectorAll('.embedded-from-content')
+            .asList,
         hasLength(1),
       );
       expect(
-        testFixture.rootElement.querySelectorAll('.embedded-from-view'),
+        testFixture.rootElement.querySelectorAll('.embedded-from-view').asList,
         hasLength(1),
       );
     });

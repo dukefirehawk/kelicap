@@ -7,6 +7,24 @@ import 'package:test/test.dart';
 import 'observable_test_utils.dart';
 
 void main() {
+  test('ChangeNotifier delivers changes to a later observer when an earlier '
+      'one cancelled with a delivery scheduled', () async {
+    final notifier = ChangeNotifier<A>();
+    final first = notifier.changes.listen((_) {});
+    notifier.notifyChange(A());
+    await first.cancel();
+    // Let the scheduled delivery run, with no one to deliver to.
+    await Future<void>(() {});
+
+    final delivered = <List<A>>[];
+    final second = notifier.changes.listen(delivered.add);
+    addTearDown(second.cancel);
+    notifier.notifyChange(A());
+    await Future<void>(() {});
+
+    expect(delivered, hasLength(1));
+  });
+
   group(ChangeRecords, () {
     test('any changes', () {
       expectChanges(const ChangeRecords<A>.any(), const ChangeRecords<A>.any());

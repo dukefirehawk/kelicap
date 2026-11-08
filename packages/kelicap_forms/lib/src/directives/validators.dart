@@ -180,11 +180,19 @@ class MaxLengthValidator implements Validator {
   providers: [ExistingProvider.forToken(ngValidators, PatternValidator)],
 )
 class PatternValidator implements Validator {
+  late String _pattern;
+  ValidatorFn? _validator;
+
   @HostBinding('attr.pattern')
+  String get pattern => _pattern;
+
   @Input()
-  late String pattern;
+  set pattern(String value) {
+    _pattern = value;
+    _validator = null;
+  }
 
   @override
   Map<String, dynamic>? validate(AbstractControl c) =>
-      Validators.pattern(pattern)(c);
+      (_validator ??= Validators.pattern(_pattern))(c);
 }

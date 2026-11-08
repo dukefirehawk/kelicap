@@ -13,7 +13,7 @@ const selectValueAccessor = ExistingProvider.forToken(
 
 String _buildValueString(String? id, Object? value) {
   if (id == null) return '$value';
-  if (!value!.isPrimitive) value = 'Object';
+  if (!value.isPrimitive) value = 'Object';
   var s = '$id: $value';
   // TODO: Fix this magic maximum 50 characters (from TS-transpile).
   if (s.length > 50) {
@@ -79,8 +79,9 @@ class SelectControlValueAccessor extends Object
   }
 
   dynamic _getOptionValue(String valueString) {
-    var value = _optionMap[_extractId(valueString)];
-    return value ?? valueString;
+    // An option's value may be null, so look for the option, not its value.
+    var id = _extractId(valueString);
+    return _optionMap.containsKey(id) ? _optionMap[id] : valueString;
   }
 }
 
@@ -101,6 +102,11 @@ class NgSelectOption implements OnDestroy {
     if (_select != null) id = _select._registerOption();
   }
 
+  /// The value of this option, which can be any object.
+  ///
+  /// `[ngValue]="null"` calls this setter with `null`. A binding to a variable
+  /// that is null from the start does not, as it has not changed, so such an
+  /// option is treated as if it had no `ngValue` until the value changes.
   @Input('ngValue')
   set ngValue(Object? value) {
     var select = _select;

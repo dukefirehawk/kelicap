@@ -42,6 +42,9 @@ class ChangeNotifier<C extends ChangeRecord> implements Observable<C> {
   @mustCallSuper
   void unobserved() {
     _changes = _queue = null;
+    // A delivery that is still scheduled will do nothing, as there is no one to
+    // deliver to. If this stayed set, a new observer would never get changes.
+    _scheduled = false;
   }
 
   /// If [hasObservers], synchronously emits [changes] that have been queued.

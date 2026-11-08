@@ -21,6 +21,8 @@ import '../template_optimize.dart';
 import '../template_parser.dart';
 import '../../../../v2/context.dart';
 
+import '../view_compiler/parse_utils.dart'
+    show eventMemberWarning, findEventMember;
 import 'missing_directives_validator.dart';
 import 'recursive_template_visitor.dart';
 
@@ -525,8 +527,14 @@ class _BindDirectivesVisitor
         astNode.sourceSpan,
         handler,
       )) {
+        // The event of an output is a Dart object, unless the output emits
+        // JavaScript objects, such as a `Stream<UIEvent>`.
+        if (context.isJsEventOutput(astNode.name)) {
+          _warnOnEventMemberRead(value, astNode.sourceSpan);
+        }
         return null;
       }
+      _warnOnEventMemberRead(value, astNode.sourceSpan);
       return ng.BoundEventAst(
         _getEventName(astNode),
         handler,
@@ -538,6 +546,18 @@ class _BindDirectivesVisitor
       );
       return null;
     }
+  }
+
+  /// Warns if [handler], for an event of the DOM, uses a member of `$event`.
+  ///
+  /// `$event` is `dynamic` in the generated code, so its members are read
+  /// dynamically. A DOM event is a JavaScript object, from which a release
+  /// build (dart2js) cannot read them, unlike the event of an `@Output()`,
+  /// which is a Dart object.
+  void _warnOnEventMemberRead(ASTWithSource handler, SourceSpan sourceSpan) {
+    final member = findEventMember(handler.ast);
+    if (member == null) return;
+    logWarning(sourceSpan.message(eventMemberWarning(member)));
   }
 
   List<ng.BoundEventAst> _visitHostListeners(
@@ -572,6 +592,8 @@ class _BindDirectivesVisitor
       )) {
         return null;
       }
+      // A `$event` member in a host listener is warned about once, where the
+      // directive is analyzed, rather than for each element it matches.
       return ng.BoundEventAst(
         hostListener.eventName,
         handler,
@@ -995,6 +1017,13 @@ class _ParseContext {
       for (var directiveName in directive.directive.inputs.keys) {
         var templateName = directive.directive.inputs[directiveName];
         if (templateName == name) {
+          _reportNullOnNonNullableInput(
+            directive.directive,
+            directiveName,
+            name,
+            value,
+            sourceSpan,
+          );
           _removeExisting(directive.inputs, templateName);
           directive.inputs.add(
             ng.BoundDirectivePropertyAst(
@@ -1010,6 +1039,30 @@ class _ParseContext {
       }
     }
     return foundMatch;
+  }
+
+  /// Reports a literal `null` bound to an input whose type is not nullable.
+  ///
+  /// Otherwise the generated code would assign `null` to it, which fails to
+  /// compile there, far from the template.
+  static void _reportNullOnNonNullableInput(
+    CompileDirectiveMetadata directive,
+    String memberName,
+    String templateName,
+    ng.BoundValue value,
+    SourceSpan sourceSpan,
+  ) {
+    if (!directive.nonNullableInputs.contains(memberName)) return;
+    if (value is! ng.BoundExpression) return;
+    var expression = value.expression.ast;
+    if (expression is! LiteralPrimitive || expression.value != null) return;
+    CompileContext.current.reportAndRecover(
+      BuildError.forSourceSpan(
+        sourceSpan,
+        'Input "$templateName" of ${directive.type.name} is not nullable, so '
+        'it cannot be bound to null',
+      ),
+    );
   }
 
   /// Binds an event handler to all Directives that have a corresponding
@@ -1045,6 +1098,16 @@ class _ParseContext {
     }
     return foundMatch;
   }
+
+  /// Whether an output named [name] of a directive of this element emits
+  /// JavaScript objects.
+  bool isJsEventOutput(String name) => boundDirectives.any(
+    (directive) => directive.directive.outputs.entries.any(
+      (output) =>
+          output.value == name &&
+          directive.directive.jsEventOutputs.contains(output.key),
+    ),
+  );
 
   /// May return null if the value is internationalized but not a literal.
   ng.BoundValue? createBoundValue(
@@ -1611,11 +1674,12 @@ class _TemplateValidator extends ast.RecursiveTemplateAstVisitor<void> {
         ),
       );
     }
-    if (astNode.value == null || astNode.value!.isEmpty) {
+    // As for annotations, a value of only whitespace is no expression either.
+    if (astNode.value == null || astNode.value!.trim().isEmpty) {
       CompileContext.current.reportAndRecover(
         BuildError.forSourceSpan(
           astNode.sourceSpan,
-          'events must have a bound expresssion: ${_getEventName(astNode)}',
+          'events must have a bound expression: ${_getEventName(astNode)}',
         ),
       );
     }

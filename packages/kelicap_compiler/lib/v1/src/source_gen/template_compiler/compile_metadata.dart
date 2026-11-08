@@ -48,16 +48,15 @@ class CompileTypeMetadataVisitor
   ///
   /// Otherwise, use the first encountered.
   ConstructorElement? unnamedConstructor(ClassElement element) {
-    ConstructorElement constructor;
-    final constructors = element.constructors.cast<ConstructorElement>();
+    final constructors = element.constructors;
     if (constructors.isEmpty) {
       throw BuildError.forElement(element, 'No constructors found');
     }
 
-    constructor = constructors.firstWhere(
-      (constructor) => constructor.displayName.isEmpty,
-      orElse: () => constructors.first,
-    );
+    // The analyzer names the unnamed constructor `new`, and its display name
+    // is `ClassName.new`, so neither is empty: ask for it instead.
+    final unnamed = element.unnamedConstructor;
+    final constructor = unnamed ?? constructors.first;
 
     if (constructor.isPrivate) {
       throw BuildError.forElement(element, 'No constructors found');
@@ -70,7 +69,7 @@ class CompileTypeMetadataVisitor
       );
       return null;
     }
-    if (element.constructors.length > 1 && constructor.displayName.isEmpty) {
+    if (constructors.length > 1 && constructor == unnamed) {
       // No use in being a warning, as it's not something they need to fix
       // until we add a way to be able to "pick" the constructor to use.
       logFine(

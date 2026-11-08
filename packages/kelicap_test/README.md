@@ -15,7 +15,7 @@ dev_dependencies:
   build_runner: ^2.4.0
   build_test: ^3.0.0
   build_web_compilers: ^4.8.0
-  kelicap_test: ^1.1.2
+  kelicap_test: ^1.1.3
   test: ^1.22.0
 ```
 

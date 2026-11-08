@@ -246,6 +246,9 @@ void _checkBinding(
     constantMethod,
     fieldType: binding.target.type,
     isHostComponent: isHostComponent,
+    // A directive's input setter, such as `ngValue` of `<option>`, can tell a
+    // value of `null` from none, so it is called with one.
+    bindNullLiteral: binding.target is ir.InputBinding,
   );
 }
 
@@ -331,6 +334,7 @@ void _bind(
   CompileMethod literalMethod, {
   o.OutputType? fieldType,
   bool isHostComponent = false,
+  bool bindNullLiteral = false,
 }) {
   if (isImmutable) {
     // If the expression is immutable, it will never change, so we can run it
@@ -343,6 +347,7 @@ void _bind(
         fieldExpr.name,
         literalMethod,
         isNullable,
+        bindNullLiteral: bindNullLiteral,
       );
     }
     return;
@@ -376,6 +381,9 @@ void _bind(
 /// has changed. We know for sure that there will only be one transition from
 /// [null] to whatever the value of [checkExpression] is. So we can just output
 /// the [actions] and run them once on the first change detection run.
+///
+/// A literal `null` is no transition, so it has no [actions], unless
+/// [bindNullLiteral], when they run once with `null`.
 // TODO(alorenzen): Replace usages with _directBinding().
 void _bindLiteral(
   o.Expression checkExpression,
@@ -383,10 +391,13 @@ void _bindLiteral(
   String currValName,
   String fieldName,
   CompileMethod method,
-  bool isNullable,
-) {
-  if (checkExpression == o.nullExpr ||
-      (checkExpression is o.LiteralExpr && checkExpression.value == null)) {
+  bool isNullable, {
+  bool bindNullLiteral = false,
+}) {
+  final isNullLiteral =
+      checkExpression == o.nullExpr ||
+      (checkExpression is o.LiteralExpr && checkExpression.value == null);
+  if (isNullLiteral && !bindNullLiteral) {
     // In this case, there is no transition, since change detection variables
     // are initialized to null.
     return;
@@ -399,7 +410,7 @@ void _bindLiteral(
       )
       // Replace all 'expr_X' with 'null'
       .map((stmt) => o.replaceVarInStatement(fieldName, o.nullExpr, stmt));
-  if (isNullable) {
+  if (isNullable && !isNullLiteral) {
     method.addStmt(
       o.IfStmt(checkExpression.notEquals(o.nullExpr), mappedActions.toList()),
     );

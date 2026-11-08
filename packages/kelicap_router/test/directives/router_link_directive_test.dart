@@ -12,8 +12,7 @@ import 'package:kelicap_router/testing.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../../router/test/directives/router_link_directive_test.template.dart'
-    as ng;
+import 'router_link_directive_test.template.dart' as ng;
 
 void main() {
   late FakeRouter fakeRouter;

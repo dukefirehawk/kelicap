@@ -40,12 +40,13 @@ abstract mixin class PropertyAst implements TemplateAst {
   bool operator ==(Object other) {
     return other is PropertyAst &&
         name == other.name &&
+        value == other.value &&
         postfix == other.postfix &&
         unit == other.unit;
   }
 
   @override
-  int get hashCode => Object.hash(name, postfix, unit);
+  int get hashCode => Object.hash(name, value, postfix, unit);
 
   @override
   R accept<R, C>(TemplateAstVisitor<R, C?> visitor, [C? context]) {
@@ -125,7 +126,8 @@ class ParsedPropertyAst extends TemplateAst
     this.equalSignToken,
   ]) : super.parsed(
          prefixToken,
-         valueToken == null ? suffixToken : valueToken.rightQuote,
+         // `bind-name` has no suffix, so without a value it ends at its name.
+         valueToken?.rightQuote ?? suffixToken ?? nameToken,
          sourceFile,
        ) {
     if (_nameWithoutBrackets.split('.').length > 3) {}

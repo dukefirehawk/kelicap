@@ -117,7 +117,7 @@ class ParsedReferenceAst extends TemplateAst
 
   /// Offset of `#` in `#variable`.
   @override
-  int get prefixOffset => nameToken.offset;
+  int get prefixOffset => prefixToken.offset;
 
   /// Always returns `null` since `#ref` has no suffix.
   @override

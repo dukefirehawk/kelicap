@@ -180,9 +180,11 @@ class TwoWayBindingComponent {
 class DomEventListenerDirective {
   List<String> eventTypes = [];
 
-  @HostListener('click', [r'$event.type'])
-  void onClick(String eventType) {
-    eventTypes.add(eventType);
+  // The event, not `$event.type`, which a release build (dart2js) cannot read
+  // from a DOM object, as it is read dynamically.
+  @HostListener('click', [r'$event'])
+  void onClick(Event event) {
+    eventTypes.add(event.type);
   }
 }
 

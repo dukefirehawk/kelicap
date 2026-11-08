@@ -44,7 +44,26 @@ final RegExp _safeStyleValue = RegExp(
 /// Given the common use case, low likelihood of attack vector, and low impact
 /// of an attack, this code is permissive and allows URLs that sanitize
 /// otherwise.
-final RegExp _urlRe = RegExp(r'^url\([^)]+\)$');
+///
+/// CSS function names are case-insensitive, so `URL(...)` matches as well.
+final RegExp _urlRe = RegExp(r'^url\(([^)]+)\)$', caseSensitive: false);
+
+/// Quotes could end the string of a `url(...)` value, and a backslash starts a
+/// CSS escape, which could hide a colon, and so a scheme, from the URL sanitizer.
+final RegExp _unsafeUrlCharacters = RegExp(r'''["'\\]''');
+
+/// Whether [argument], what is inside the parentheses of a `url(...)` value, is
+/// a URL that sanitizes cleanly, optionally in quotes.
+bool _isSafeUrlArgument(String argument) {
+  var url = argument.trim();
+  if (url.length >= 2 &&
+      (url.startsWith('"') || url.startsWith("'")) &&
+      url.endsWith(url[0])) {
+    url = url.substring(1, url.length - 1).trim();
+  }
+  if (url.contains(_unsafeUrlCharacters)) return false;
+  return internalSanitizeUrl(url) == url;
+}
 
 /// Checks that quotes (" and ') are properly balanced inside a string. Assumes
 /// that neither escape (\) nor any other character that could result in
@@ -76,11 +95,8 @@ String internalSanitizeStyle(String value) {
   // cleanly. See above for reasoning behind this.
   Match? urlMatch = _urlRe.firstMatch(value);
   if (urlMatch != null) {
-    var input = urlMatch.group(0);
-    if (input != null) {
-      if (internalSanitizeUrl(input) == input) {
-        return value; // Safe style values.
-      }
+    if (_isSafeUrlArgument(urlMatch.group(1)!)) {
+      return value; // Safe style values.
     }
   } else if (_safeStyleValue.hasMatch(value) && _hasBalancedQuotes(value)) {
     return value;
@@ -89,14 +105,14 @@ String internalSanitizeStyle(String value) {
     var parts = value.split(';');
     var failed = false;
     for (var part in parts) {
+      // The parts of `a; url(b);` are `a`, ` url(b)` and an empty one.
+      part = part.trim();
+      if (part.isEmpty) continue;
       Match? urlMatch = _urlRe.firstMatch(part);
       if (urlMatch != null) {
-        var input = urlMatch.group(0);
-        if (input != null) {
-          if (internalSanitizeUrl(input) != input) {
-            failed = true;
-            break;
-          }
+        if (!_isSafeUrlArgument(urlMatch.group(1)!)) {
+          failed = true;
+          break;
         }
       } else if (!(_safeStyleValue.hasMatch(part) == true &&
           _hasBalancedQuotes(part))) {

@@ -1,3 +1,6 @@
+# Include common configuration.
+include: ../../tool/dart_test_repo.yaml
+
 presets:
   # When run with -P travis, we have different settings/options.
   #

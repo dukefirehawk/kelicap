@@ -9,8 +9,7 @@ import 'package:kelicap_router/src/location/testing/mock_location_strategy.dart'
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../../router/test/directives/router_link_active_directive_test.template.dart'
-    as ng;
+import 'router_link_active_directive_test.template.dart' as ng;
 
 void main() {
   late FakeRouter fakeRouter;

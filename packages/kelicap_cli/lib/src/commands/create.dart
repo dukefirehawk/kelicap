@@ -40,7 +40,12 @@ class CreateCommand extends Command<int> {
     return arg;
   }
 
-  CreateCommand() {
+  final Future<ProcessResult> Function(String workingDirectory) _runPubGet;
+
+  /// Creates the command, where [runPubGet] replaces running `dart pub get`.
+  CreateCommand({
+    Future<ProcessResult> Function(String workingDirectory)? runPubGet,
+  }) : _runPubGet = runPubGet ?? _dartPubGet {
     argParser.addFlag(
       'force',
       abbr: 'f',
@@ -71,7 +76,7 @@ class CreateCommand extends Command<int> {
     );
     // var progress = AppLogger.logger.progress('Creating project');
     info('Creating project...');
-    await createNewProject(argResults!, projectName);
+    final projectDir = await createNewProject(argResults!, projectName);
     // progress.finish(showTiming: true);
     success('Created project "$projectName"');
     // print(successLog + 'Created project \"$projectName\"');
@@ -80,15 +85,24 @@ class CreateCommand extends Command<int> {
       final progress = logger.progress(
         "\nRunning 'pub get' in the project folder",
       );
-      await Process.run(
-        'dart',
-        ['pub', 'get'],
-        runInShell: true,
-        workingDirectory: '$projectName/',
-      ).onError((error, stackTrace) => throw Exception(error));
+      final result = await _runPubGet(projectDir);
       progress.finish(showTiming: true);
+      if (result.exitCode != 0) {
+        error(
+          "'pub get' failed with exit code ${result.exitCode} in $projectDir:\n"
+          '${result.stderr}',
+        );
+        return result.exitCode;
+      }
       success('Completed!');
     }
     return 0;
   }
 }
+
+Future<ProcessResult> _dartPubGet(String workingDirectory) => Process.run(
+  'dart',
+  ['pub', 'get'],
+  runInShell: true,
+  workingDirectory: workingDirectory,
+);

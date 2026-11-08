@@ -10,11 +10,15 @@ import '../../../compiler.dart';
 import '../../compiler/analyzed_class.dart';
 import '../../compiler/compile_metadata.dart';
 import '../../compiler/expression_parser/ast.dart' as ast;
+import '../../compiler/expression_parser/parser.dart'
+    show ExpressionParser, ParseException;
 import '../../compiler/output/convert.dart';
 import '../../compiler/output/output_ast.dart' as o;
 import '../../compiler/template_compiler.dart';
 import '../../compiler/view_compiler/property_binder.dart'
     show isPrimitiveTypeName;
+import '../../compiler/view_compiler/parse_utils.dart'
+    show eventMemberWarning, findEventMember;
 import '../common/annotation_matcher.dart';
 import '../common/url_resolver.dart';
 import '../../../../v2/analyzer.dart';
@@ -55,10 +59,16 @@ class _NormalizedComponentVisitor extends RecursiveElementVisitor2<void> {
 
   final ComponentVisitorExceptionHandler _exceptionHandler;
 
+  /// The `@HostListener` methods already checked for a use of `$event`.
+  ///
+  /// A directive is visited for each component that uses it, so this keeps it
+  /// from being warned about more than once.
+  final _checkedHostListeners = <MethodElement>{};
+
   _NormalizedComponentVisitor(this._library, this._exceptionHandler);
 
   _ComponentVisitor _visitor() =>
-      _ComponentVisitor(_library, _exceptionHandler);
+      _ComponentVisitor(_library, _exceptionHandler, _checkedHostListeners);
 
   /// For each class, finds and extracts [CompileDirectiveMetadata].
   ///
@@ -225,6 +235,8 @@ class _ComponentVisitor
   final _setterInputs = <String, String>{};
   final _inputs = <String, String>{};
   final _inputTypes = <String, CompileTypeMetadata>{};
+  final _nonNullableInputs = <String>{};
+  final _jsEventOutputs = <String>{};
   final _outputs = <String, String>{};
   final _hostBindings = <String, ast.AST>{};
   final _hostListeners = <String, String>{};
@@ -242,7 +254,14 @@ class _ComponentVisitor
   /// This is used to look up resolved type information.
   ClassElement? _directiveClassElement;
 
-  _ComponentVisitor(this._library, this._exceptionHandler);
+  /// The `@HostListener` methods already checked for a use of `$event`.
+  final Set<MethodElement> _checkedHostListeners;
+
+  _ComponentVisitor(
+    this._library,
+    this._exceptionHandler,
+    this._checkedHostListeners,
+  );
 
   @override
   CompileDirectiveMetadata? visitClassElement(ClassElement element) {
@@ -361,6 +380,15 @@ class _ComponentVisitor
             );
           }
 
+          // A type parameter, or `dynamic`, may be nullable, so only a type
+          // that is certainly not nullable is recorded. A derived input
+          // overrides an inherited one, which is visited first.
+          if (setter.library.typeSystem.isNonNullable(propertyType)) {
+            _nonNullableInputs.add(element.displayName);
+          } else {
+            _nonNullableInputs.remove(element.displayName);
+          }
+
           final typeName = getTypeName(resolvedType);
           _addPropertyBindingTo(
             isField ? _fieldInputs : _setterInputs,
@@ -400,6 +428,13 @@ class _ComponentVisitor
       } else if (annotationInfo.isOutputType) {
         if (isGetter && element.isPublic) {
           _addPropertyBindingTo(_outputs, annotation, element);
+          // A derived output overrides an inherited one, which is visited
+          // first.
+          if (_emitsJsObjects(element)) {
+            _jsEventOutputs.add(element.displayName);
+          } else {
+            _jsEventOutputs.remove(element.displayName);
+          }
         } else {
           log.severe(
             '@Output can only be used on a public getter or field, '
@@ -663,7 +698,59 @@ class _ComponentVisitor
       methodArgs = const [r'$event'];
     }
     _hostListeners[eventName] = '$methodName(${methodArgs.join(', ')})';
+    _warnOnEventMemberRead(element, methodArgs);
   }
+
+  /// Whether the output [element] is a `Stream` of JavaScript objects, such as
+  /// the `UIEvent` of `package:web`, whose members cannot be read dynamically
+  /// in a release build (dart2js).
+  ///
+  /// A `Stream` of a type parameter, `dynamic` or `Object` may emit Dart
+  /// objects, so it is not one.
+  static bool _emitsJsObjects(Element element) {
+    final type = switch (element) {
+      FieldElement() => element.type,
+      GetterElement() => element.returnType,
+      _ => null,
+    };
+    if (type is! InterfaceType) return false;
+    final streamElement = element.library!.typeProvider.streamElement;
+    final eventType = type.asInstanceOf(streamElement)?.typeArguments.single;
+    if (eventType is! InterfaceType) return false;
+    bool isJsAny(InterfaceType type) =>
+        type.element.name == 'JSAny' &&
+        type.element.library.uri.toString() == 'dart:js_interop';
+    return isJsAny(eventType) || eventType.element.allSupertypes.any(isJsAny);
+  }
+
+  /// Warns if an argument of the `@HostListener` on [element] uses a member of
+  /// `$event`, which is a DOM event.
+  ///
+  /// This is checked once, in the library that declares [element], rather
+  /// than for each element that the directive matches.
+  void _warnOnEventMemberRead(MethodElement element, List<String> args) {
+    if (element.library != _library.element) return;
+    if (!_checkedHostListeners.add(element)) return;
+    for (final arg in args) {
+      String? member;
+      try {
+        member = findEventMember(
+          _expressionParser.parseAction(arg, '', const []).ast,
+        );
+      } on ParseException {
+        // Reported when the host listener is bound.
+        continue;
+      }
+      if (member != null) {
+        log.warning(
+          BuildError.forElement(element, eventMemberWarning(member)).toString(),
+        );
+        return;
+      }
+    }
+  }
+
+  static final _expressionParser = ExpressionParser();
 
   /// Adds a property binding for [element] to [bindings].
   ///
@@ -813,7 +900,9 @@ class _ComponentVisitor
       changeDetection: changeDetection,
       inputs: _inputs,
       inputTypes: _inputTypes,
+      nonNullableInputs: _nonNullableInputs,
       outputs: _outputs,
+      jsEventOutputs: _jsEventOutputs,
       hostBindings: _hostBindings,
       hostListeners: _hostListeners,
       analyzedClass: analyzedClass,

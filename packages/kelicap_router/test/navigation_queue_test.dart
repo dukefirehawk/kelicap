@@ -9,7 +9,7 @@ import 'package:kelicap_router/testing.dart';
 import 'package:kelicap_test/kelicap_test.dart';
 
 // ignore: uri_has_not_been_generated
-import '../../../router/test/navigation_queue_test.template.dart' as ng;
+import 'navigation_queue_test.template.dart' as ng;
 
 const firstToken = OpaqueToken<Future<void>>('first');
 const secondToken = OpaqueToken<Future<void>>('second');

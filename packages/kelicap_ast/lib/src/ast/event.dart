@@ -38,11 +38,14 @@ abstract mixin class EventAst implements TemplateAst {
   bool operator ==(Object other) {
     return other is EventAst &&
         name == other.name &&
+        value == other.value &&
         _listEquals.equals(reductions, other.reductions);
   }
 
+  // The reductions of a parsed event are a new list on each read, so they are
+  // hashed by their elements.
   @override
-  int get hashCode => Object.hash(name, reductions);
+  int get hashCode => Object.hash(name, value, _listEquals.hash(reductions));
 
   @override
   R accept<R, C>(TemplateAstVisitor<R, C?> visitor, [C? context]) {
@@ -104,7 +107,8 @@ class ParsedEventAst extends TemplateAst
     this.equalSignToken,
   ]) : super.parsed(
          prefixToken,
-         valueToken == null ? suffixToken : valueToken.rightQuote,
+         // `on-name` has no suffix, so without a value it ends at its name.
+         valueToken?.rightQuote ?? suffixToken ?? nameToken,
          sourceFile,
        );
 

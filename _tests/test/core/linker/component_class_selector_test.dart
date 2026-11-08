@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
+import 'package:_tests/matchers.dart';
 
 import 'component_class_selector_test.template.dart' as ng;
 
@@ -22,8 +23,14 @@ void main() {
         ng.createMatchClassSelectorComponentFactory(),
       );
       final testFixture = await testBed.create();
-      expect(testFixture.rootElement.querySelectorAll('foo'), hasLength(2));
-      expect(testFixture.rootElement.querySelectorAll('foo.bar'), hasLength(1));
+      expect(
+        testFixture.rootElement.querySelectorAll('foo').asList,
+        hasLength(2),
+      );
+      expect(
+        testFixture.rootElement.querySelectorAll('foo.bar').asList,
+        hasLength(1),
+      );
       expect(testFixture.assertOnlyInstance.components, hasLength(1));
     });
   });

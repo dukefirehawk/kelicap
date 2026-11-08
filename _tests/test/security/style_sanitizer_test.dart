@@ -49,10 +49,74 @@ void main() {
       );
       expect(internalSanitizeStyle('scale3d(1, 1, 2)'), 'scale3d(1, 1, 2)');
     });
+    test('accepts url in any case', () {
+      for (final value in [
+        'URL(https://cdn.example.com/a.png)',
+        'Url(https://cdn.example.com/a.png)',
+      ]) {
+        expect(internalSanitizeStyle(value), value);
+      }
+      expect(internalSanitizeStyle('URL(javascript:evil())'), 'unsafe');
+    });
+    test('accepts url among declarations, with spaces and semicolons', () {
+      for (final value in [
+        'url(https://cdn.example.com/a.png);',
+        'width: 10px; url(https://cdn.example.com/a.png)',
+        'width: 10px; url(https://cdn.example.com/a.png); ',
+      ]) {
+        expect(internalSanitizeStyle(value), value.trim());
+      }
+      expect(
+        internalSanitizeStyle('width: 10px; url(javascript:evil());'),
+        'unsafe',
+      );
+    });
     test('sanitizes urls', () {
       expect(internalSanitizeStyle('url(foo/bar.png)'), 'url(foo/bar.png)');
       expect(internalSanitizeStyle('url(javascript:evil())'), 'unsafe');
       expect(internalSanitizeStyle('url(strangeprotocol:evil)'), 'unsafe');
+    });
+    test('accepts urls with a safe scheme', () {
+      for (final value in [
+        'url(https://cdn.example.com/a.png)',
+        'url(http://cdn.example.com/a.png)',
+        'url("https://cdn.example.com/a.png")',
+        "url('https://cdn.example.com/a.png')",
+        'url( https://cdn.example.com/a.png )',
+        'url("foo/bar.png")',
+        'url(data:image/png;base64,iVBORw0KGgo=)',
+        'url("data:image/png;base64,iVBORw0KGgo=")',
+        'url(https://cdn.example.com/a.png);width: 10px',
+      ]) {
+        expect(internalSanitizeStyle(value), value);
+      }
+    });
+    test('rejects urls with an unsafe scheme', () {
+      for (final value in [
+        'url(javascript:evil)',
+        'url("javascript:evil")',
+        "url('javascript:evil')",
+        'url( javascript:evil )',
+        'url(" javascript:evil")',
+        'url(JAVASCRIPT:evil)',
+        'url(data:text/html;base64,PHNjcmlwdD4=)',
+        'url(javascript:evil);width: 10px',
+        'width: 10px;url("javascript:evil")',
+      ]) {
+        expect(internalSanitizeStyle(value), 'unsafe', reason: value);
+      }
+    });
+    test('rejects urls that could break out of a string or hide a scheme', () {
+      for (final value in [
+        r'url(javascript\3a evil)',
+        r'url("javascript\3a evil")',
+        'url("foo.png)',
+        'url(foo.png")',
+        '''url("foo.png')''',
+        'url("foo"bar".png")',
+      ]) {
+        expect(internalSanitizeStyle(value), 'unsafe', reason: value);
+      }
     });
   });
 }

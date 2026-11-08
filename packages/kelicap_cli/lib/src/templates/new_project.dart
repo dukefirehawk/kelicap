@@ -10,7 +10,8 @@ import '../util/logger.dart';
 
 part 'new_project.g.dart';
 
-Future<void> createNewProject(ArgResults argResults, String name) async {
+/// Creates the project [name], and returns the directory it is in.
+Future<String> createNewProject(ArgResults argResults, String name) async {
   final projectDirUrl = p.normalize('${argResults['path'] as String}/$name');
 
   if (!(argResults['force'] as bool)) {
@@ -46,4 +47,5 @@ Create a new project directory, or use --force to force generation into the targ
     }
     trace('created file at $path');
   }
+  return projectDirUrl;
 }

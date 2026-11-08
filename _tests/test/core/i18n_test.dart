@@ -3,6 +3,7 @@ import 'package:web/web.dart';
 import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
+import 'package:_tests/matchers.dart';
 
 import 'package:test/test.dart';
 
@@ -33,7 +34,7 @@ void main() {
     );
     final testFixture = await testBed.create();
     expect(testFixture.text, 'A message with emphasis!');
-    final lineBreaks = testFixture.rootElement.querySelectorAll('br');
+    final lineBreaks = testFixture.rootElement.querySelectorAll('br').asList;
     expect(lineBreaks, hasLength(1));
     final strongElement = testFixture.rootElement.querySelector('strong')!;
     expect(strongElement.textContent, 'emphasis!');

@@ -71,6 +71,13 @@ void main() {
       test('should not error on valid strings', () {
         expect(Validators.pattern('[a-zA-Z ]*')(Control('aaAA')), isNull);
       });
+      test('should match the entire value with alternatives', () {
+        final validator = Validators.pattern('cat|dog');
+        expect(validator(Control('cat')), isNull);
+        expect(validator(Control('dog')), isNull);
+        expect(validator(Control('catfish')), isNotNull);
+        expect(validator(Control('hotdog')), isNotNull);
+      });
       test('should error on failure to match string', () {
         expect(Validators.pattern('[a-zA-Z ]*')(Control('aaa0')), {
           'pattern': {

@@ -30,7 +30,7 @@ Kelicap needs Dart 3.13 or later. The quickest start is `kelicap create <name>`,
 
 ```yaml
 dependencies:
-  kelicap: ^1.1.2
+  kelicap: ^1.1.3
   web: ^1.1.1
 
 dev_dependencies:

@@ -8,7 +8,7 @@ import 'package:kelicap_router/testing.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../router/test/route_prefetcher_test.template.dart' as ng;
+import 'route_prefetcher_test.template.dart' as ng;
 
 void main() {
   late NgTestBed<AppComponent> testBed;

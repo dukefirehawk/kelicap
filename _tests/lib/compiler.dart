@@ -108,7 +108,8 @@ Future<void> _testBuilder(
   // `testBuilders` derives the packages it builds from `sourceAssets` and reads
   // everything else from `readerWriter`, so the framework goes in the latter.
   final readerWriter = TestReaderWriter(rootPackage: rootPackage);
-  for (final MapEntry(key: file, value: content) in (await _ngSources).entries) {
+  for (final MapEntry(key: file, value: content)
+      in (await _ngSources).entries) {
     readerWriter.testing.writeString(file, content);
   }
 

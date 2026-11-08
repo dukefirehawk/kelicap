@@ -796,6 +796,10 @@ class RecursiveAstParser {
           var synthOpenElement = EmbeddedContentAst();
           synthOpenElement.closeComplement = closeComplement;
           return synthOpenElement;
+        } else if (danglingCloseIdentifier == 'ng-container') {
+          return ContainerAst()..closeComplement = closeComplement;
+        } else if (danglingCloseIdentifier == 'template') {
+          return EmbeddedTemplateAst()..closeComplement = closeComplement;
         } else {
           var synthOpenElement = ElementAst(
             danglingCloseIdentifier,

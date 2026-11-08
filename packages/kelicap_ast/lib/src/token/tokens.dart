@@ -197,26 +197,30 @@ class NgSimpleQuoteToken extends _LexemeNgSimpleToken {
   factory NgSimpleQuoteToken.doubleQuotedText(
     int offset,
     String lexeme,
-    bool isClosed,
-  ) {
+    bool isClosed, {
+    int? sourceLength,
+  }) {
     return NgSimpleQuoteToken(
       NgSimpleTokenType.doubleQuote,
       offset,
       lexeme,
       isClosed,
+      sourceLength: sourceLength,
     );
   }
 
   factory NgSimpleQuoteToken.singleQuotedText(
     int offset,
     String lexeme,
-    bool isClosed,
-  ) {
+    bool isClosed, {
+    int? sourceLength,
+  }) {
     return NgSimpleQuoteToken(
       NgSimpleTokenType.singleQuote,
       offset,
       lexeme,
       isClosed,
+      sourceLength: sourceLength,
     );
   }
 
@@ -238,12 +242,17 @@ class NgSimpleQuoteToken extends _LexemeNgSimpleToken {
     String lexeme,
     bool isClosed, {
     bool isErrorSynthetic = false,
+    // The length of the source, which differs from the [lexeme] when an
+    // escaped quote in it is decoded.
+    int? sourceLength,
   }) : contentOffset = offset + 1,
        contentLexeme = lexeme.isEmpty
            ? lexeme
            : lexeme.substring(1, isClosed ? lexeme.length - 1 : lexeme.length),
-       quoteEndOffset = isClosed ? offset + lexeme.length - 1 : null,
-       super(offset, lexeme, lexeme.length, type);
+       quoteEndOffset = isClosed
+           ? offset + (sourceLength ?? lexeme.length) - 1
+           : null,
+       super(offset, lexeme, sourceLength ?? lexeme.length, type);
 
   @override
   bool operator ==(Object other) {
@@ -339,8 +348,19 @@ class NgToken implements NgBaseToken<NgTokenType> {
     return _LexemeNgToken(offset, string, NgTokenType.elementDecorator);
   }
 
-  factory NgToken.elementDecoratorValue(int offset, String string) {
-    return _LexemeNgToken(offset, string, NgTokenType.elementDecoratorValue);
+  /// Creates a value, whose [sourceLength] differs from its [string] when an
+  /// escaped quote in its source is decoded.
+  factory NgToken.elementDecoratorValue(
+    int offset,
+    String string, {
+    int? sourceLength,
+  }) {
+    return _LexemeNgToken(
+      offset,
+      string,
+      NgTokenType.elementDecoratorValue,
+      sourceLength: sourceLength,
+    );
   }
 
   factory NgToken.elementIdentifier(int offset, String string) {
@@ -407,8 +427,15 @@ class NgToken implements NgBaseToken<NgTokenType> {
     return NgToken._(NgTokenType.templatePrefix, offset);
   }
 
-  factory NgToken.text(int offset, String string) {
-    return _LexemeNgToken(offset, string, NgTokenType.text);
+  /// Creates text, whose [sourceLength] differs from its [string] when an
+  /// entity in its source is decoded.
+  factory NgToken.text(int offset, String string, {int? sourceLength}) {
+    return _LexemeNgToken(
+      offset,
+      string,
+      NgTokenType.text,
+      sourceLength: sourceLength,
+    );
   }
 
   factory NgToken.whitespace(int offset, String string) {

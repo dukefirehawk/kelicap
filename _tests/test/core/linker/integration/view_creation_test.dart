@@ -276,9 +276,11 @@ class DirectiveWithPropDecorators {
   @HostBinding('attr.my-attr')
   String? myAttr;
 
-  @HostListener('click', ['\$event.target'])
-  void onClick(Element target) {
-    this.target = target;
+  // The event, not `$event.target`, which a release build (dart2js) cannot
+  // read from a DOM object, as it is read dynamically.
+  @HostListener('click', [r'$event'])
+  void onClick(Event event) {
+    target = event.target as Element?;
   }
 
   void fireEvent(String message) {
