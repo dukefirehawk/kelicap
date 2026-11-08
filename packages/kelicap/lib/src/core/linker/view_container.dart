@@ -213,6 +213,9 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     if (previousIndex == -1) {
       throw StateError('View is not a member of this container');
     }
+    // Checked before the view is removed, so that an invalid index leaves the
+    // container as it was.
+    RangeError.checkValidIndex(newIndex, nestedViews, 'index');
     // The view would be inserted relative to its own nodes, which reorders them.
     if (previousIndex == newIndex) return;
 

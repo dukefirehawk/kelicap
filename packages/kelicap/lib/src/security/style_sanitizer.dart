@@ -44,7 +44,9 @@ final RegExp _safeStyleValue = RegExp(
 /// Given the common use case, low likelihood of attack vector, and low impact
 /// of an attack, this code is permissive and allows URLs that sanitize
 /// otherwise.
-final RegExp _urlRe = RegExp(r'^url\(([^)]+)\)$');
+///
+/// CSS function names are case-insensitive, so `URL(...)` matches as well.
+final RegExp _urlRe = RegExp(r'^url\(([^)]+)\)$', caseSensitive: false);
 
 /// Quotes could end the string of a `url(...)` value, and a backslash starts a
 /// CSS escape, which could hide a colon, and so a scheme, from the URL sanitizer.
@@ -103,6 +105,9 @@ String internalSanitizeStyle(String value) {
     var parts = value.split(';');
     var failed = false;
     for (var part in parts) {
+      // The parts of `a; url(b);` are `a`, ` url(b)` and an empty one.
+      part = part.trim();
+      if (part.isEmpty) continue;
       Match? urlMatch = _urlRe.firstMatch(part);
       if (urlMatch != null) {
         if (!_isSafeUrlArgument(urlMatch.group(1)!)) {

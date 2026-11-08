@@ -49,6 +49,28 @@ void main() {
       );
       expect(internalSanitizeStyle('scale3d(1, 1, 2)'), 'scale3d(1, 1, 2)');
     });
+    test('accepts url in any case', () {
+      for (final value in [
+        'URL(https://cdn.example.com/a.png)',
+        'Url(https://cdn.example.com/a.png)',
+      ]) {
+        expect(internalSanitizeStyle(value), value);
+      }
+      expect(internalSanitizeStyle('URL(javascript:evil())'), 'unsafe');
+    });
+    test('accepts url among declarations, with spaces and semicolons', () {
+      for (final value in [
+        'url(https://cdn.example.com/a.png);',
+        'width: 10px; url(https://cdn.example.com/a.png)',
+        'width: 10px; url(https://cdn.example.com/a.png); ',
+      ]) {
+        expect(internalSanitizeStyle(value), value.trim());
+      }
+      expect(
+        internalSanitizeStyle('width: 10px; url(javascript:evil());'),
+        'unsafe',
+      );
+    });
     test('sanitizes urls', () {
       expect(internalSanitizeStyle('url(foo/bar.png)'), 'url(foo/bar.png)');
       expect(internalSanitizeStyle('url(javascript:evil())'), 'unsafe');

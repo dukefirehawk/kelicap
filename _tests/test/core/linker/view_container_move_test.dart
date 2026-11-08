@@ -55,6 +55,21 @@ void main() {
       expect(fixture.rootElement, hasTextContent('a;b;c;'));
     });
 
+    test('throws on an index out of range, leaving the views', () async {
+      final fixture = await createViews();
+      await fixture.update((component) {
+        final container = component.container!;
+        expect(() => container.move(container.get(0), 3), throwsRangeError);
+        expect(() => container.move(container.get(0), -2), throwsRangeError);
+        expect(container.length, 3);
+      });
+      expect(fixture.rootElement, hasTextContent('a;b;c;'));
+
+      // The views are still in the container, so clearing it removes them.
+      await fixture.update((component) => component.container!.clear());
+      expect(fixture.rootElement, hasTextContent(''));
+    });
+
     test('moves a view to the given index', () async {
       final fixture = await createViews();
       await fixture.update((component) {
