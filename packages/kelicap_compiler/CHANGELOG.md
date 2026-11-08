@@ -5,12 +5,12 @@
 ### Breaking changes in 1.1.3
 
 * **Breaking:** An event binding of only whitespace, such as `(click)="  "`, fails to compile with "events must have a bound expression", as an empty one does, where it compiled to a handler that does nothing
-* **Breaking:** An input of a directive bound to `null`, such as `[value]="null"`, is set to `null` once, as any other value is, where the binding was dropped. On an input whose type is not nullable, it fails to compile, as a nullable expression does
+* **Breaking:** An input of a directive bound to `null`, such as `[value]="null"`, is set to `null` once, as any other value is, where the binding was dropped. On an input whose type is not nullable, it fails to compile with "Input "name" of Directive is not nullable, so it cannot be bound to null", reported at the binding in the template
 * **Breaking:** A two-way binding without an expression, such as `[(value)]` or `[(value)]=""`, fails to compile with "Two-way binding '[(name)]' requires an expression", where it was dropped. Give it an expression, or remove it
 
 ### New in 1.1.3
 
-* **Templates:** A handler of a DOM event that reads a member of `$event`, such as `(click)="onClick($event.target)"`, or a `@HostListener` argument such as `$event.target`, gets a warning: `$event` is read dynamically, which fails in a release build (dart2js). Pass `$event` to a method that takes a typed `Event` instead. The event of an `@Output()` is a Dart object, so it is not warned about
+* **Templates:** A handler of a DOM event that reads a member of `$event`, such as `(click)="onClick($event.target)"`, `$event!.target` or `$event['target']`, gets a warning: `$event` is read dynamically, which fails in a release build (dart2js). Pass `$event` to a method that takes a typed `Event` instead. The event of an `@Output()` is a Dart object, so it is not warned about. A `@HostListener` argument such as `$event.target`, of a directive or a component, is warned about once, at the method, when its library is compiled, rather than for each element the directive matches
 
 ### Fixes in 1.1.3
 

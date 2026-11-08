@@ -21,6 +21,8 @@ import '../template_optimize.dart';
 import '../template_parser.dart';
 import '../../../../v2/context.dart';
 
+import '../view_compiler/parse_utils.dart'
+    show eventMemberWarning, findEventMember;
 import 'missing_directives_validator.dart';
 import 'recursive_template_visitor.dart';
 
@@ -548,17 +550,9 @@ class _BindDirectivesVisitor
   /// build (dart2js) cannot read them, unlike the event of an `@Output()`,
   /// which is a Dart object.
   void _warnOnEventMemberRead(ASTWithSource handler, SourceSpan sourceSpan) {
-    final finder = _EventMemberFinder();
-    handler.ast.visit(finder);
-    final member = finder.member;
+    final member = findEventMember(handler.ast);
     if (member == null) return;
-    logWarning(
-      sourceSpan.message(
-        '"\$event.$member" reads a member of a DOM event dynamically, which '
-        'fails in a release build (dart2js). Pass "\$event" to a method that '
-        'takes a typed Event, and read it there.',
-      ),
-    );
+    logWarning(sourceSpan.message(eventMemberWarning(member)));
   }
 
   List<ng.BoundEventAst> _visitHostListeners(
@@ -593,7 +587,8 @@ class _BindDirectivesVisitor
       )) {
         return null;
       }
-      _warnOnEventMemberRead(value, hostListener.sourceSpan);
+      // A `$event` member in a host listener is warned about once, where the
+      // directive is analyzed, rather than for each element it matches.
       return ng.BoundEventAst(
         hostListener.eventName,
         handler,
@@ -1017,6 +1012,13 @@ class _ParseContext {
       for (var directiveName in directive.directive.inputs.keys) {
         var templateName = directive.directive.inputs[directiveName];
         if (templateName == name) {
+          _reportNullOnNonNullableInput(
+            directive.directive,
+            directiveName,
+            name,
+            value,
+            sourceSpan,
+          );
           _removeExisting(directive.inputs, templateName);
           directive.inputs.add(
             ng.BoundDirectivePropertyAst(
@@ -1032,6 +1034,30 @@ class _ParseContext {
       }
     }
     return foundMatch;
+  }
+
+  /// Reports a literal `null` bound to an input whose type is not nullable.
+  ///
+  /// Otherwise the generated code would assign `null` to it, which fails to
+  /// compile there, far from the template.
+  static void _reportNullOnNonNullableInput(
+    CompileDirectiveMetadata directive,
+    String memberName,
+    String templateName,
+    ng.BoundValue value,
+    SourceSpan sourceSpan,
+  ) {
+    if (!directive.nonNullableInputs.contains(memberName)) return;
+    if (value is! ng.BoundExpression) return;
+    var expression = value.expression.ast;
+    if (expression is! LiteralPrimitive || expression.value != null) return;
+    CompileContext.current.reportAndRecover(
+      BuildError.forSourceSpan(
+        sourceSpan,
+        'Input "$templateName" of ${directive.type.name} is not nullable, so '
+        'it cannot be bound to null',
+      ),
+    );
   }
 
   /// Binds an event handler to all Directives that have a corresponding
@@ -1896,53 +1922,3 @@ List<CompileDirectiveMetadata> matchElementDirectives(
   List<CompileDirectiveMetadata> directives,
   ast.ElementAst astNode,
 ) => _ParseContext._matchElementDirectives(directives, astNode);
-
-/// Finds the first member of `$event` that an expression uses.
-class _EventMemberFinder extends RecursiveAstVisitor<void> {
-  String? member;
-
-  static bool _isEvent(AST receiver) =>
-      receiver is PropertyRead &&
-      receiver.name == r'$event' &&
-      receiver.receiver is ImplicitReceiver;
-
-  void _found(AST receiver, String name) {
-    if (member == null && _isEvent(receiver)) member = name;
-  }
-
-  @override
-  void visitPropertyRead(PropertyRead ast, _) {
-    _found(ast.receiver, ast.name);
-    super.visitPropertyRead(ast, null);
-  }
-
-  @override
-  void visitSafePropertyRead(SafePropertyRead ast, _) {
-    _found(ast.receiver, ast.name);
-    super.visitSafePropertyRead(ast, null);
-  }
-
-  @override
-  void visitPropertyWrite(PropertyWrite ast, _) {
-    _found(ast.receiver, ast.name);
-    super.visitPropertyWrite(ast, null);
-  }
-
-  @override
-  void visitMethodCall(MethodCall ast, _) {
-    _found(ast.receiver, '${ast.name}()');
-    super.visitMethodCall(ast, null);
-  }
-
-  @override
-  void visitSafeMethodCall(SafeMethodCall ast, _) {
-    _found(ast.receiver, '${ast.name}()');
-    super.visitSafeMethodCall(ast, null);
-  }
-
-  @override
-  void visitKeyedRead(KeyedRead ast, _) {
-    _found(ast.receiver, '[]');
-    super.visitKeyedRead(ast, null);
-  }
-}

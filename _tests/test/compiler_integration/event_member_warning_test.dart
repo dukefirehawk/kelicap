@@ -8,8 +8,8 @@ import 'package:kelicap_compiler/v2/context.dart';
 void main() {
   setUp(CompileContext.overrideForTesting);
 
-  Matcher readsMember(String member) =>
-      contains('"\$event.$member" reads a member of a DOM event dynamically');
+  Matcher readsMember(String access) =>
+      contains('"$access" reads a member of a DOM event dynamically');
 
   test('warns on a member of a DOM event in a template', () async {
     await compilesExpecting(
@@ -24,7 +24,7 @@ void main() {
         void onClick(Object? target) {}
       }
     ''',
-      warnings: [readsMember('target')],
+      warnings: [readsMember(r'$event.target')],
     );
   });
 
@@ -39,7 +39,7 @@ void main() {
       )
       class TestComponent {}
     ''',
-      warnings: [readsMember('preventDefault()')],
+      warnings: [readsMember(r'$event.preventDefault()')],
     );
   });
 
@@ -61,7 +61,129 @@ void main() {
       )
       class TestComponent {}
     ''',
-      warnings: [readsMember('type')],
+      warnings: [readsMember(r'$event.type')],
+    );
+  });
+
+  test(
+    'warns on a member of a DOM event in a component @HostListener',
+    () async {
+      await compilesExpecting(
+        '''
+      import '$ngImport';
+
+      @Component(selector: 'test', template: '')
+      class TestComponent {
+        @HostListener('click', [r'\$event.type'])
+        void onClick(String type) {}
+      }
+    ''',
+        warnings: [readsMember(r'$event.type')],
+      );
+    },
+  );
+
+  test(
+    'warns once on a @HostListener of a directive used many times',
+    () async {
+      await compilesExpecting(
+        '''
+      import '$ngImport';
+
+      @Directive(selector: '[listener]')
+      class ListenerDirective {
+        @HostListener('click', [r'\$event.type'])
+        void onClick(String type) {}
+      }
+
+      @Component(
+        selector: 'test',
+        template: '<div listener></div><div listener></div>',
+        directives: [ListenerDirective],
+      )
+      class TestComponent {}
+
+      @Component(
+        selector: 'other',
+        template: '<div listener></div>',
+        directives: [ListenerDirective],
+      )
+      class OtherComponent {}
+    ''',
+        warnings: [readsMember(r'$event.type')],
+      );
+    },
+  );
+
+  test(
+    'warns on a @HostListener only in the library of its directive',
+    () async {
+      await compilesExpecting(
+        '''
+      import '$ngImport';
+      import 'listener.dart';
+
+      @Component(
+        selector: 'test',
+        template: '<div listener></div>',
+        directives: [ListenerDirective],
+      )
+      class TestComponent {}
+    ''',
+        include: {
+          'pkg|lib/listener.dart':
+              '''
+          import '$ngImport';
+
+          @Directive(selector: '[listener]')
+          class ListenerDirective {
+            @HostListener('click', [r'\$event.type'])
+            void onClick(String type) {}
+          }
+        ''',
+        },
+        warnings: [
+          allOf(
+            readsMember(r'$event.type'),
+            contains('package:pkg/listener.dart'),
+          ),
+        ],
+      );
+    },
+  );
+
+  test('warns on a member of a non-null DOM event', () async {
+    await compilesExpecting(
+      '''
+      import '$ngImport';
+
+      @Component(
+        selector: 'test',
+        template: r'<button (click)="onClick(\$event!.target)"></button>',
+      )
+      class TestComponent {
+        void onClick(Object? target) {}
+      }
+    ''',
+      warnings: [readsMember(r'$event!.target')],
+    );
+  });
+
+  test('warns on a key of a DOM event', () async {
+    await compilesExpecting(
+      '''
+      import '$ngImport';
+
+      @Component(
+        selector: 'test',
+        template:
+            r'<button (click)="onClick(\$event[' "'type'" r'])"></button>',
+      )
+      class TestComponent {
+        void onClick(Object? type) {}
+      }
+    ''',
+      warnings: [readsMember(r"$event['type']")],
     );
   });
 

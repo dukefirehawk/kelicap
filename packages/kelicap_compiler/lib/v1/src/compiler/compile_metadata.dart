@@ -459,6 +459,10 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
   final ChangeDetectionStrategy? changeDetection;
   final Map<String, String> inputs;
   final Map<String, CompileTypeMetadata> inputTypes;
+
+  /// The names of the inputs, as [inputs] keys them, whose type is not
+  /// nullable, so they cannot be bound to `null`.
+  final Set<String> nonNullableInputs;
   final Map<String, String> outputs;
   final Map<String, ast.AST> hostBindings;
   final Map<String, String> hostListeners;
@@ -486,6 +490,7 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
     this.changeDetection,
     this.inputs = const {},
     this.inputTypes = const {},
+    this.nonNullableInputs = const {},
     this.outputs = const {},
     this.hostBindings = const {},
     this.hostListeners = const {},
@@ -513,6 +518,7 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
        changeDetection = other.changeDetection,
        inputs = other.inputs,
        inputTypes = other.inputTypes,
+       nonNullableInputs = other.nonNullableInputs,
        outputs = other.outputs,
        hostBindings = other.hostBindings,
        hostListeners = other.hostListeners,
