@@ -201,6 +201,56 @@ void main() {
     ''');
   });
 
+  test('warns on a member of the DOM event of an output', () async {
+    await compilesExpecting(
+      '''
+      import 'dart:async';
+      import 'package:web/web.dart';
+      import '$ngImport';
+
+      @Component(selector: 'child', template: '')
+      class ChildComponent {
+        @Output()
+        Stream<UIEvent?> get trigger => const Stream.empty();
+      }
+
+      @Component(
+        selector: 'test',
+        template: r'<child (trigger)="onTrigger(\$event.target)"></child>',
+        directives: [ChildComponent],
+      )
+      class TestComponent {
+        void onTrigger(Object? target) {}
+      }
+    ''',
+      warnings: [readsMember(r'$event.target')],
+    );
+  });
+
+  for (final type in ['T', 'Object', 'dynamic']) {
+    test('does not warn on a member of the event of a Stream<$type>', () async {
+      await compilesNormally('''
+        import 'dart:async';
+        import '$ngImport';
+
+        @Component(selector: 'child', template: '')
+        class ChildComponent<T> {
+          @Output()
+          Stream<$type> get changed => const Stream.empty();
+        }
+
+        @Component(
+          selector: 'test',
+          template: r'<child (changed)="onChanged(\$event.length)"></child>',
+          directives: [ChildComponent],
+        )
+        class TestComponent {
+          void onChanged(Object? length) {}
+        }
+      ''');
+    });
+  }
+
   test('does not warn on a member of the event of an output', () async {
     await compilesNormally('''
       import 'dart:async';

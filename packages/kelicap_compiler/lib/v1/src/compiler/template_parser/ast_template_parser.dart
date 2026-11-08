@@ -527,6 +527,11 @@ class _BindDirectivesVisitor
         astNode.sourceSpan,
         handler,
       )) {
+        // The event of an output is a Dart object, unless the output emits
+        // JavaScript objects, such as a `Stream<UIEvent>`.
+        if (context.isJsEventOutput(astNode.name)) {
+          _warnOnEventMemberRead(value, astNode.sourceSpan);
+        }
         return null;
       }
       _warnOnEventMemberRead(value, astNode.sourceSpan);
@@ -1093,6 +1098,16 @@ class _ParseContext {
     }
     return foundMatch;
   }
+
+  /// Whether an output named [name] of a directive of this element emits
+  /// JavaScript objects.
+  bool isJsEventOutput(String name) => boundDirectives.any(
+    (directive) => directive.directive.outputs.entries.any(
+      (output) =>
+          output.value == name &&
+          directive.directive.jsEventOutputs.contains(output.key),
+    ),
+  );
 
   /// May return null if the value is internationalized but not a literal.
   ng.BoundValue? createBoundValue(

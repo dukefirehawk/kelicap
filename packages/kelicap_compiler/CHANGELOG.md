@@ -10,7 +10,7 @@
 
 ### New in 1.1.3
 
-* **Templates:** A handler of a DOM event that reads a member of `$event`, such as `(click)="onClick($event.target)"`, `$event!.target` or `$event['target']`, gets a warning: `$event` is read dynamically, which fails in a release build (dart2js). Pass `$event` to a method that takes a typed `Event` instead. The event of an `@Output()` is a Dart object, so it is not warned about. A `@HostListener` argument such as `$event.target`, of a directive or a component, is warned about once, at the method, when its library is compiled, rather than for each element the directive matches
+* **Templates:** A handler of a DOM event that reads a member of `$event`, such as `(click)="onClick($event.target)"`, `$event!.target` or `$event['target']`, gets a warning: `$event` is read dynamically, which fails in a release build (dart2js). Pass `$event` to a method that takes a typed `Event` instead. The event of an `@Output()` is a Dart object, so it is not warned about, unless the output is a `Stream` of a JavaScript type, such as `Stream<UIEvent>` of `package:web`, which re-emits a DOM event. A `@HostListener` argument such as `$event.target`, of a directive or a component, is warned about once, at the method, when its library is compiled, rather than for each element the directive matches
 
 ### Fixes in 1.1.3
 

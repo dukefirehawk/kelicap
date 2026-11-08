@@ -464,6 +464,10 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
   /// nullable, so they cannot be bound to `null`.
   final Set<String> nonNullableInputs;
   final Map<String, String> outputs;
+
+  /// The names of the outputs, as [outputs] keys them, whose events are
+  /// JavaScript objects, such as a `Stream<UIEvent>` of `package:web`.
+  final Set<String> jsEventOutputs;
   final Map<String, ast.AST> hostBindings;
   final Map<String, String> hostListeners;
   final List<LifecycleHooks> lifecycleHooks;
@@ -492,6 +496,7 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
     this.inputTypes = const {},
     this.nonNullableInputs = const {},
     this.outputs = const {},
+    this.jsEventOutputs = const {},
     this.hostBindings = const {},
     this.hostListeners = const {},
     this.analyzedClass,
@@ -520,6 +525,7 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
        inputTypes = other.inputTypes,
        nonNullableInputs = other.nonNullableInputs,
        outputs = other.outputs,
+       jsEventOutputs = other.jsEventOutputs,
        hostBindings = other.hostBindings,
        hostListeners = other.hostListeners,
        analyzedClass = analyzedClass ?? other.analyzedClass,

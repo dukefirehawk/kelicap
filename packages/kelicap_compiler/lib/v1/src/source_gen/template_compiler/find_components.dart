@@ -236,6 +236,7 @@ class _ComponentVisitor
   final _inputs = <String, String>{};
   final _inputTypes = <String, CompileTypeMetadata>{};
   final _nonNullableInputs = <String>{};
+  final _jsEventOutputs = <String>{};
   final _outputs = <String, String>{};
   final _hostBindings = <String, ast.AST>{};
   final _hostListeners = <String, String>{};
@@ -427,6 +428,13 @@ class _ComponentVisitor
       } else if (annotationInfo.isOutputType) {
         if (isGetter && element.isPublic) {
           _addPropertyBindingTo(_outputs, annotation, element);
+          // A derived output overrides an inherited one, which is visited
+          // first.
+          if (_emitsJsObjects(element)) {
+            _jsEventOutputs.add(element.displayName);
+          } else {
+            _jsEventOutputs.remove(element.displayName);
+          }
         } else {
           log.severe(
             '@Output can only be used on a public getter or field, '
@@ -693,6 +701,28 @@ class _ComponentVisitor
     _warnOnEventMemberRead(element, methodArgs);
   }
 
+  /// Whether the output [element] is a `Stream` of JavaScript objects, such as
+  /// the `UIEvent` of `package:web`, whose members cannot be read dynamically
+  /// in a release build (dart2js).
+  ///
+  /// A `Stream` of a type parameter, `dynamic` or `Object` may emit Dart
+  /// objects, so it is not one.
+  static bool _emitsJsObjects(Element element) {
+    final type = switch (element) {
+      FieldElement() => element.type,
+      GetterElement() => element.returnType,
+      _ => null,
+    };
+    if (type is! InterfaceType) return false;
+    final streamElement = element.library!.typeProvider.streamElement;
+    final eventType = type.asInstanceOf(streamElement)?.typeArguments.single;
+    if (eventType is! InterfaceType) return false;
+    bool isJsAny(InterfaceType type) =>
+        type.element.name == 'JSAny' &&
+        type.element.library.uri.toString() == 'dart:js_interop';
+    return isJsAny(eventType) || eventType.element.allSupertypes.any(isJsAny);
+  }
+
   /// Warns if an argument of the `@HostListener` on [element] uses a member of
   /// `$event`, which is a DOM event.
   ///
@@ -872,6 +902,7 @@ class _ComponentVisitor
       inputTypes: _inputTypes,
       nonNullableInputs: _nonNullableInputs,
       outputs: _outputs,
+      jsEventOutputs: _jsEventOutputs,
       hostBindings: _hostBindings,
       hostListeners: _hostListeners,
       analyzedClass: analyzedClass,
