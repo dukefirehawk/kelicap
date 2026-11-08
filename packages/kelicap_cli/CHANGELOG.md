@@ -8,16 +8,16 @@
 
 ## 1.0.3
 
-- chore: Update template
+* chore: Update template
 
 ## 1.0.2
 
-- chore: Update template
+* chore: Update template
 
 ## 1.0.1
 
-- chore: Add documentation link
+* chore: Add documentation link
 
 ## 1.0.0
 
-- chore: Initial version.
+* chore: Initial version.

@@ -15,15 +15,15 @@ No changes. Released with the other Kelicap packages, which share its version.
 
 ## 1.1.1
 
-- chore: Add documentation link
-- chore: Update README
+* chore: Add documentation link
+* chore: Update README
 
 ## 1.1.0
 
-- chore: Upgrade min sdk to 3.13.0 and other dependency upgrades
-- chore: Remove dependency on dart_internal package
-- refactor: Deprecated `toObservable` function and replaced with `toObservableList` and `toObservableMap` functions for better reactive state management.
+* chore: Upgrade min sdk to 3.13.0 and other dependency upgrades
+* chore: Remove dependency on dart_internal package
+* refactor: Deprecated `toObservable` function and replaced with `toObservableList` and `toObservableMap` functions for better reactive state management.
 
 ## 1.0.0
 
-- chore: Initial release
+* chore: Initial release
