@@ -305,6 +305,19 @@ void main() {
     });
   });
 
+  test('an invalid micro-expression is reported at its start', () {
+    const template = '<div *ngFor="   let x ="></div>';
+    recovering.exceptions.clear();
+    const NgParser().parse(
+      template,
+      sourceUrl: '/test/regression_test.dart#inline',
+      exceptionHandler: recovering,
+    );
+    final error = recovering.exceptions.single;
+    expect(error.errorCode, ParserErrorCode.invalidMicroExpression);
+    expect(error.offset, template.indexOf('let'));
+  });
+
   group('desugaring synthetic nodes', () {
     String desugar(StandaloneTemplateAst ast) =>
         humanize([ast.accept(DesugarVisitor()) as StandaloneTemplateAst]);

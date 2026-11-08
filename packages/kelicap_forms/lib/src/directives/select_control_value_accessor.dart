@@ -104,8 +104,9 @@ class NgSelectOption implements OnDestroy {
 
   /// The value of this option, which can be any object.
   ///
-  /// A binding that is null from the start does not call this setter, so such
-  /// an option is treated as if it had no `ngValue`.
+  /// `[ngValue]="null"` calls this setter with `null`. A binding to a variable
+  /// that is null from the start does not, as it has not changed, so such an
+  /// option is treated as if it had no `ngValue` until the value changes.
   @Input('ngValue')
   set ngValue(Object? value) {
     var select = _select;

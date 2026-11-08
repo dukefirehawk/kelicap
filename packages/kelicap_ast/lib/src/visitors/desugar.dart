@@ -111,6 +111,11 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
     var expressionOffset = starAst is ParsedStarAst
         ? starAst.valueToken?.innerValue?.offset
         : 0;
+    // The expression is trimmed, so it starts after any leading whitespace.
+    final rawValue = starAst.value;
+    if (expressionOffset != null && rawValue != null) {
+      expressionOffset += rawValue.length - rawValue.trimLeft().length;
+    }
     var directiveName = starAst.name;
     EmbeddedTemplateAst newAst;
     var attributesToAdd = <AttributeAst>[];

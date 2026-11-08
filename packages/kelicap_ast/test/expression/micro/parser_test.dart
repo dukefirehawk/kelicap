@@ -116,4 +116,46 @@ void main() {
       throwsA(TypeMatcher<KelicapParserException>()),
     );
   });
+
+  group('expressions with separators in them', () {
+    // Names and values, as `PropertyAst ==` compares values only since 1.1.3.
+    List<String> describe(NgMicroAst ast) => [
+      for (final let in ast.letBindings) 'let ${let.name}=${let.value}',
+      for (final property in ast.properties)
+        '${property.name}=${property.value}',
+    ];
+
+    test('keep a ";" in a string or brackets', () {
+      expect(describe(parse('ngFor', "let x of m['a;b']", 0)), [
+        'let x=null',
+        "ngForOf=m['a;b']",
+      ]);
+      expect(describe(parse('ngFor', 'let x of f(a, g(b; c))', 0)), [
+        'let x=null',
+        'ngForOf=f(a, g(b; c))',
+      ]);
+    });
+
+    test('keep a ":" in a conditional bound to the directive', () {
+      expect(describe(parse('ngTemplateOutlet', 'a?b:c; context: ctx', 0)), [
+        'ngTemplateOutlet=a?b:c',
+        'ngTemplateOutletContext=ctx',
+      ]);
+    });
+
+    test('keep whitespace in an expression bound to the directive', () {
+      expect(describe(parse('ngTemplateOutlet', 'f(a, b) ; context: ctx', 0)), [
+        'ngTemplateOutlet=f(a, b)',
+        'ngTemplateOutletContext=ctx',
+      ]);
+    });
+
+    test('trim the whitespace before a ";"', () {
+      expect(describe(parse('ngFor', 'let x of xs ; trackBy: fn ;', 0)), [
+        'let x=null',
+        'ngForOf=xs',
+        'ngForTrackBy=fn',
+      ]);
+    });
+  });
 }

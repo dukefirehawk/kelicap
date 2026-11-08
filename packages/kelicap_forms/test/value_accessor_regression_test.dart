@@ -54,6 +54,31 @@ void main() {
   });
 
   group('select', () {
+    test('supports an option whose value is null from the start', () async {
+      final fixture = await NgTestBed<NullLiteralOptionTest>(
+        ng.createNullLiteralOptionTestFactory(),
+      ).create();
+      final select =
+          fixture.rootElement.querySelector('select') as HTMLSelectElement;
+      expect(select.selectedIndex, 0, reason: 'the model is null');
+
+      await fixture.update((_) {
+        select.selectedIndex = 1;
+        _dispatchChange(select);
+      });
+      await fixture.update((component) {
+        expect(component.selected, 'one');
+      });
+
+      await fixture.update((_) {
+        select.selectedIndex = 0;
+        _dispatchChange(select);
+      });
+      await fixture.update((component) {
+        expect(component.selected, isNull);
+      });
+    });
+
     test('supports an option whose value changes to null', () async {
       final fixture = await NgTestBed<NullOptionTest>(
         ng.createNullOptionTestFactory(),
@@ -212,4 +237,17 @@ class StandaloneRadioTest {
   RadioButtonState unnamedB = RadioButtonState(false, 'unnamedB');
   RadioButtonState formA = RadioButtonState(true, 'formA');
   RadioButtonState formB = RadioButtonState(false, 'formB');
+}
+
+@Component(
+  selector: 'null-literal-option-test',
+  directives: [formDirectives],
+  template: '''
+<select [(ngModel)]="selected">
+  <option [ngValue]="null">None</option>
+  <option [ngValue]="'one'">One</option>
+</select>''',
+)
+class NullLiteralOptionTest {
+  Object? selected;
 }

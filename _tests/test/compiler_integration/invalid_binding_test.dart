@@ -39,4 +39,21 @@ void main() {
       );
     });
   }
+
+  for (final binding in ['(click)', '(click)=""', '(click)="  "']) {
+    test('should require an expression for "$binding"', () async {
+      await compilesExpecting(
+        '''
+        import '$ngImport';
+
+        @Component(
+          selector: 'test',
+          template: '<button $binding></button>',
+        )
+        class TestComponent {}
+      ''',
+        errors: [contains('events must have a bound expression: click')],
+      );
+    });
+  }
 }

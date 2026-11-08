@@ -8,6 +8,10 @@ export 'micro/ast.dart' show NgMicroAst;
 /// `let + 1`, which use an identifier that begins with or is `let`.
 final _isLet = RegExp(r'let\s+[a-zA-Z_$]');
 
+/// A key, such as `trackBy` in `trackBy: fn`, is a name directly followed by
+/// `:`, unlike `a?b` in the conditional `a?b:c`.
+final _isKey = RegExp(r'[a-zA-Z_$][\w$]*:');
+
 /// Returns whether [expression] is a special Kelicap *-star expression.
 ///
 /// This means it won't parse correctly with the standard expression parser, and
@@ -15,21 +19,20 @@ final _isLet = RegExp(r'let\s+[a-zA-Z_$]');
 /// multiple intents.
 bool isMicroExpression(String? expression) =>
     expression != null &&
-    (expression.startsWith(_isLet) || _startsWithBinding(expression));
+    (expression.startsWith(_isLet) ||
+        expression.startsWith(_isKey) ||
+        _hasSeparator(expression));
 
-/// Returns whether [expression] has a `:` or a `;` that ends a micro-syntax key
-/// or expression, before any whitespace, as the first one cannot contain any.
+/// Returns whether [expression] has a `;` that separates micro-syntax, which no
+/// expression has, after the start.
 ///
 /// One inside a string or brackets is part of an expression, such as
-/// `map['a:b']` or `check(x: 1)`, and a `:` can be part of a conditional, such
-/// as `a?b:c`.
-bool _startsWithBinding(String expression) {
+/// `map['a;b']`, which may also have whitespace, such as `f(a, b); let x`.
+bool _hasSeparator(String expression) {
   String? quote;
   var depth = 0;
-  var conditionals = 0;
   for (var i = 0; i < expression.length; i++) {
     final char = expression[i];
-    if (_whitespace.hasMatch(char)) return false;
     if (quote != null) {
       if (char == r'\') {
         i++;
@@ -45,24 +48,12 @@ bool _startsWithBinding(String expression) {
         depth++;
       case ')' || ']' || '}':
         depth--;
-      case '?' when depth == 0:
-        // `?.` and `??` are operators of their own, not conditionals.
-        final next = i + 1 < expression.length ? expression[i + 1] : '';
-        if (next == '.' || next == '?') {
-          i++;
-        } else {
-          conditionals++;
-        }
-      case ':' when depth == 0 && conditionals > 0:
-        conditionals--;
-      case ':' || ';' when depth == 0 && i > 0:
+      case ';' when depth <= 0 && expression.substring(0, i).trim().isNotEmpty:
         return true;
     }
   }
   return false;
 }
-
-final _whitespace = RegExp(r'\s');
 
 /// Returns a de-sugared micro AST from [expression].
 NgMicroAst parseMicroExpression(

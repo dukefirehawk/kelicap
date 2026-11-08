@@ -527,6 +527,7 @@ class _BindDirectivesVisitor
       )) {
         return null;
       }
+      _warnOnEventMemberRead(value, astNode.sourceSpan);
       return ng.BoundEventAst(
         _getEventName(astNode),
         handler,
@@ -538,6 +539,26 @@ class _BindDirectivesVisitor
       );
       return null;
     }
+  }
+
+  /// Warns if [handler], for an event of the DOM, uses a member of `$event`.
+  ///
+  /// `$event` is `dynamic` in the generated code, so its members are read
+  /// dynamically. A DOM event is a JavaScript object, from which a release
+  /// build (dart2js) cannot read them, unlike the event of an `@Output()`,
+  /// which is a Dart object.
+  void _warnOnEventMemberRead(ASTWithSource handler, SourceSpan sourceSpan) {
+    final finder = _EventMemberFinder();
+    handler.ast.visit(finder);
+    final member = finder.member;
+    if (member == null) return;
+    logWarning(
+      sourceSpan.message(
+        '"\$event.$member" reads a member of a DOM event dynamically, which '
+        'fails in a release build (dart2js). Pass "\$event" to a method that '
+        'takes a typed Event, and read it there.',
+      ),
+    );
   }
 
   List<ng.BoundEventAst> _visitHostListeners(
@@ -572,6 +593,7 @@ class _BindDirectivesVisitor
       )) {
         return null;
       }
+      _warnOnEventMemberRead(value, hostListener.sourceSpan);
       return ng.BoundEventAst(
         hostListener.eventName,
         handler,
@@ -1611,11 +1633,12 @@ class _TemplateValidator extends ast.RecursiveTemplateAstVisitor<void> {
         ),
       );
     }
-    if (astNode.value == null || astNode.value!.isEmpty) {
+    // As for annotations, a value of only whitespace is no expression either.
+    if (astNode.value == null || astNode.value!.trim().isEmpty) {
       CompileContext.current.reportAndRecover(
         BuildError.forSourceSpan(
           astNode.sourceSpan,
-          'events must have a bound expresssion: ${_getEventName(astNode)}',
+          'events must have a bound expression: ${_getEventName(astNode)}',
         ),
       );
     }
@@ -1873,3 +1896,53 @@ List<CompileDirectiveMetadata> matchElementDirectives(
   List<CompileDirectiveMetadata> directives,
   ast.ElementAst astNode,
 ) => _ParseContext._matchElementDirectives(directives, astNode);
+
+/// Finds the first member of `$event` that an expression uses.
+class _EventMemberFinder extends RecursiveAstVisitor<void> {
+  String? member;
+
+  static bool _isEvent(AST receiver) =>
+      receiver is PropertyRead &&
+      receiver.name == r'$event' &&
+      receiver.receiver is ImplicitReceiver;
+
+  void _found(AST receiver, String name) {
+    if (member == null && _isEvent(receiver)) member = name;
+  }
+
+  @override
+  void visitPropertyRead(PropertyRead ast, _) {
+    _found(ast.receiver, ast.name);
+    super.visitPropertyRead(ast, null);
+  }
+
+  @override
+  void visitSafePropertyRead(SafePropertyRead ast, _) {
+    _found(ast.receiver, ast.name);
+    super.visitSafePropertyRead(ast, null);
+  }
+
+  @override
+  void visitPropertyWrite(PropertyWrite ast, _) {
+    _found(ast.receiver, ast.name);
+    super.visitPropertyWrite(ast, null);
+  }
+
+  @override
+  void visitMethodCall(MethodCall ast, _) {
+    _found(ast.receiver, '${ast.name}()');
+    super.visitMethodCall(ast, null);
+  }
+
+  @override
+  void visitSafeMethodCall(SafeMethodCall ast, _) {
+    _found(ast.receiver, '${ast.name}()');
+    super.visitSafeMethodCall(ast, null);
+  }
+
+  @override
+  void visitKeyedRead(KeyedRead ast, _) {
+    _found(ast.receiver, '[]');
+    super.visitKeyedRead(ast, null);
+  }
+}

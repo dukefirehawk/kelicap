@@ -20,6 +20,10 @@ void main() {
       'ngForOf: items; let x',
       'foo;',
       'key:a?b:c',
+      'f(a, b); let x',
+      "x == 'a b'; let y",
+      'a?b:c; context: ctx',
+      'cond ; let x',
     ]) {
       test('is true for "$expression"', () {
         expect(isMicroExpression(expression), isTrue);
