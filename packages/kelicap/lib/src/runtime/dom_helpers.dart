@@ -260,8 +260,13 @@ void insertNodesAsSibling(List<Node> nodes, Node sibling) {
     return;
   }
 
-  //final nextSibling = sibling.nextNode;
-  final nextSibling = sibling.nextSibling;
+  // The nodes are inserted before the first node after [sibling] that is not
+  // one of them. Inserted before one of [nodes] that is already in place, the
+  // nodes after it would be moved in front of it, which reverses them.
+  var nextSibling = sibling.nextSibling;
+  while (nextSibling != null && nodes.contains(nextSibling)) {
+    nextSibling = nextSibling.nextSibling;
+  }
   if (nextSibling == null) {
     appendNodes(nodes, parentOfSibling);
   } else {
