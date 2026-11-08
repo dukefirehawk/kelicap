@@ -4,7 +4,7 @@
 
 ### Breaking changes in 1.1.3
 
-* **Breaking:** Requires `kelicap_compiler` 1.1.3, for the template fixes of `kelicap_ast` 1.1.3. It rejects some templates it compiled before, such as a two-way binding without an expression (`[(value)]`), an event binding of only whitespace, and `null` bound to an input that is not nullable. See its changelog
+* **Breaking:** Requires `kelicap_compiler` 1.1.3, for the template fixes of `kelicap_ast` 1.1.3. It rejects some templates it compiled before: a two-way binding without an expression (`[(value)]`), an event binding of only whitespace, and `null` bound to an input that is not nullable. An input of a directive bound to `null`, such as `[value]="null"`, is now set to `null`, and runs the directive's `ngAfterChanges`, where the binding was dropped. See its changelog
 
 ### Fixes in 1.1.3
 
