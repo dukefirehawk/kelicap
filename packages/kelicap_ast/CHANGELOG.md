@@ -8,7 +8,7 @@
 * **Micro-syntax:** A trailing `;`, as in `*ngFor="let x of xs;"`, is accepted, where it failed to parse
 * **Parser:** `on-name` and `bind-name` without a value have a source span, so the compiler reports a missing expression where it threw a `TypeError`, as did `<ng-content>` and `<ng-container>` with one
 * **Parser:** In a recovering parse, as the compiler's, an `@` without a name, and a `%` or `\` after `#` or `*`, are reported as errors, where they threw. `<div @="x"></div>` keeps its closing tag
-* **Whitespace:** The whitespace in a `<textarea>`, which is its value, is kept, as in a `<pre>`, which is matched in any case. Whitespace between inline elements such as `<u>`, `<s>`, `<mark>`, `<ins>` and `<del>` is kept
+* **Whitespace:** The whitespace in a `<textarea>`, which is its value, is kept, as in a `<pre>`, which is matched in any case, except a newline at the start of either, which the browser drops as well. `&ngsp;` in them is replaced with a space. Whitespace between inline elements such as `<u>`, `<s>`, `<mark>`, `<ins>` and `<del>` is kept
 * **Entities:** An unknown named entity, such as `&foo;`, is left as it is, where its `&` and `;` were removed. A numeric entity of any length is decoded, such as `&#x1F600;` and `&#9;`, which were left as text, and one that is not a character becomes U+FFFD, as in the browser
 * **Two-way binding:** `[(name)]` without an expression, or with an empty one, is reported as `bananaMissingValue`, where it was dropped, or bound ` = $event`
 * **Doctype:** `<!doctype html>` is recognized in any case, and a template that starts with `>` is text, where it was read as a doctype up to the next `>`

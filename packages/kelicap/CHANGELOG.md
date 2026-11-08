@@ -4,7 +4,7 @@
 
 ### Fixes in 1.1.3
 
-* **Compiler:** Requires `kelicap_compiler` 1.1.3, for the template fixes of `kelicap_ast` 1.1.3
+* **Compiler:** Requires `kelicap_compiler` 1.1.3, for the template fixes of `kelicap_ast` 1.1.3. It has a breaking change: a two-way binding without an expression, such as `[(value)]`, fails to compile. See its changelog
 * **NgFor:** The `even` and `odd` locals are updated for every item, including those that shift when an item is added or removed before them
 * **Security:** `[style]` bindings accept `url(...)` values with a safe absolute URL, such as `url(https://example.com/a.png)`, in or out of quotes, which were replaced with `unsafe`. Values with a quote or a backslash inside the URL, or with unbalanced quotes, are now rejected
 * **ViewContainerRef:** `move` without an index moves the view to the end of the container, where it threw a `RangeError`. Moving a view to the index it is already at leaves it in place, where it reordered the DOM nodes of a view that has more than one

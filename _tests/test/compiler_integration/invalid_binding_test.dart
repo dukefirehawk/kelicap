@@ -22,4 +22,21 @@ void main() {
       errors: [contains('The "tabindex" attribute expects an integer value')],
     );
   });
+
+  for (final binding in ['[(value)]', '[(value)]=""']) {
+    test('should require an expression for "$binding"', () async {
+      await compilesExpecting(
+        '''
+        import '$ngImport';
+
+        @Component(
+          selector: 'test',
+          template: '<input $binding>',
+        )
+        class TestComponent {}
+      ''',
+        errors: [contains("Two-way binding '[(name)]' requires an expression")],
+      );
+    });
+  }
 }

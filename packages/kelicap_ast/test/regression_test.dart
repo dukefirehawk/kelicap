@@ -96,6 +96,31 @@ void main() {
       );
     });
 
+    test('drops a newline at the start of a <textarea> or <pre>', () {
+      expect(
+        minimize('<textarea>\nfoo</textarea>'),
+        '<textarea>foo</textarea>',
+      );
+      expect(
+        minimize('<textarea>\r\nfoo</textarea>'),
+        '<textarea>foo</textarea>',
+      );
+      expect(minimize('<pre>\n  a</pre>'), '<pre>  a</pre>');
+      expect(minimize('<textarea>\n</textarea>'), '<textarea></textarea>');
+      // As in the browser, only the newline is dropped, not the indentation.
+      expect(
+        minimize('<textarea>\n    </textarea>'),
+        '<textarea>    </textarea>',
+      );
+    });
+
+    test('replaces &ngsp; with a space in a <textarea>', () {
+      expect(
+        minimize('<textarea>a&ngsp;b</textarea>'),
+        '<textarea>a b</textarea>',
+      );
+    });
+
     test('is kept in a <pre> of any case', () {
       expect(minimize('<PRE>  a   b  </PRE>'), '<PRE>  a   b  </PRE>');
     });
@@ -259,6 +284,18 @@ void main() {
       final asts = parse('</ng-container>', recover: true);
       expect(asts.single, isA<ContainerAst>());
       expect(errors(), [ParserErrorCode.danglingCloseElement]);
+    });
+
+    test('of an <ng-container> keeps its close tag when desugared', () {
+      recovering.exceptions.clear();
+      final asts = const NgParser().parse(
+        '</ng-container>',
+        sourceUrl: '/test/regression_test.dart#inline',
+        exceptionHandler: recovering,
+      );
+      final container = asts.single as ContainerAst;
+      expect(container.closeComplement.isSynthetic, isFalse);
+      expect(container.closeComplement.sourceSpan.text, '</ng-container>');
     });
 
     test('of a <template> is a template', () {

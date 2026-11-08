@@ -14,11 +14,6 @@ class MinimizeWhitespaceVisitor extends RecursiveTemplateAstVisitor<bool> {
     if (astNode is ContainerAst) {
       annotations = astNode.annotations;
     } else if (astNode is ElementAst) {
-      if (_preservesWhitespace.contains(astNode.name.toLowerCase())) {
-        // Don't modify whitespace of preformatted text, or of the value of a
-        // text area.
-        return true;
-      }
       annotations = astNode.annotations;
     } else if (astNode is EmbeddedTemplateAst) {
       annotations = astNode.annotations;
@@ -33,6 +28,42 @@ class MinimizeWhitespaceVisitor extends RecursiveTemplateAstVisitor<bool> {
 
   /// Elements whose text keeps its whitespace when rendered.
   static const _preservesWhitespace = {'pre', 'textarea'};
+
+  /// Returns [astNode], a [_preservesWhitespace] element, with its whitespace
+  /// kept, as in the browser, which only drops a newline at its start.
+  ///
+  /// The text directly in it still has `&ngsp;` replaced with a space.
+  static ElementAst _preserveWhitespace(ElementAst astNode) {
+    final childNodes = <StandaloneTemplateAst>[];
+    for (final child in astNode.childNodes) {
+      if (child is! TextAst) {
+        childNodes.add(child);
+        continue;
+      }
+      var value = child.value.replaceAll(_ngsp, ' ');
+      if (childNodes.isEmpty) {
+        value = value.replaceFirst(_leadingNewline, '');
+      }
+      if (value.isNotEmpty) {
+        childNodes.add(TextAst.from(child, value));
+      }
+    }
+    return ElementAst.from(
+      astNode,
+      astNode.name,
+      astNode.closeComplement,
+      attributes: astNode.attributes,
+      childNodes: childNodes,
+      events: astNode.events,
+      properties: astNode.properties,
+      references: astNode.references,
+      bananas: astNode.bananas,
+      stars: astNode.stars,
+      annotations: astNode.annotations,
+    );
+  }
+
+  static final _leadingNewline = RegExp(r'^\r?\n');
 
   const MinimizeWhitespaceVisitor();
 
@@ -63,6 +94,9 @@ class MinimizeWhitespaceVisitor extends RecursiveTemplateAstVisitor<bool> {
   TemplateAst visitElement(ElementAst astNode, [bool? context]) {
     if (_bailOutToPreserveWhitespace(astNode)) {
       return astNode;
+    }
+    if (_preservesWhitespace.contains(astNode.name.toLowerCase())) {
+      return _preserveWhitespace(astNode);
     }
     if (astNode.childNodes.isNotEmpty) {
       astNode = ElementAst.from(

@@ -208,7 +208,7 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
   static ContainerAst _growableContainer(ContainerAst node) {
     if (node is! SyntheticTemplateAst) return node;
     final origin = (node as SyntheticTemplateAst).origin;
-    return origin == null
+    final copy = origin == null
         ? ContainerAst(
             annotations: [...node.annotations],
             childNodes: [...node.childNodes],
@@ -220,6 +220,8 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
             childNodes: [...node.childNodes],
             stars: [...node.stars],
           );
+    // Such as the close tag of a dangling `</ng-container>`, recovered.
+    return copy..closeComplement = node.closeComplement;
   }
 
   static EmbeddedTemplateAst _growableTemplate(EmbeddedTemplateAst node) {

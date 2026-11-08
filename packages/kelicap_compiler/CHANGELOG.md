@@ -2,9 +2,16 @@
 
 ## 1.1.3
 
+### Breaking changes in 1.1.3
+
+* **Breaking:** A two-way binding without an expression, such as `[(value)]` or `[(value)]=""`, fails to compile with "Two-way binding '[(name)]' requires an expression", where it was dropped. Give it an expression, or remove it
+
 ### Fixes in 1.1.3
 
 * **Templates:** Requires `kelicap_ast` 1.1.3, which parses `*`-bindings such as `*ngIf="letter != null"` and `*ngIf="a?b:c"`, and reports invalid decorators where it threw
+* **Templates:** The whitespace in a `<textarea>`, which is its value, is kept, as in a `<pre>`, except a newline at the start of either, which the browser drops as well. A `<pre>` no longer starts with a blank line, and a `<textarea>` that holds only indentation has it as its value, as it would in HTML
+* **Templates:** Whitespace between inline elements such as `<u>`, `<s>`, `<mark>`, `<ins>` and `<del>` is kept, so `<u>a</u> <u>b</u>` shows a space
+* **Templates:** An unknown named entity, such as `&foo;`, is left as written, where its `&` and `;` were removed. A numeric entity of any length is decoded, such as `&#x1F600;` and `&#9;`, which were left as text
 
 ## 1.1.2
 

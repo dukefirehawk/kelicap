@@ -288,6 +288,7 @@ void main() {
   });
 
   test('should retain whitespace inside preformatted text', () {
+    // Except the newline at its start, which the browser drops as well.
     expect(
       _parseAndMinifiy('''
         <pre>
@@ -295,8 +296,7 @@ void main() {
           world
         </pre>
       '''),
-      '''<pre>
-          Hello
+      '''<pre>          Hello
           world
         </pre>''',
     );
