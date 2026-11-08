@@ -1,6 +1,7 @@
 part of 'exception_handler.dart';
 
 enum ParserErrorCode {
+  bananaMissingValue("Two-way binding '[(name)]' requires an expression"),
   cannotFindMatchingClose('Cannot find matching close element to this'),
   danglingCloseElement(
     'Closing tag is dangling and no matching open tag can be found',

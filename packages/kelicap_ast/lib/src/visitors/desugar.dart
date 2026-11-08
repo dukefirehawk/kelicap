@@ -17,6 +17,7 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
 
   @override
   TemplateAst visitContainer(ContainerAst astNode, [_]) {
+    astNode = _growableContainer(astNode);
     _visitChildren(astNode);
 
     if (astNode.stars.isNotEmpty) {
@@ -28,6 +29,7 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
 
   @override
   TemplateAst visitElement(ElementAst astNode, [_]) {
+    astNode = _growableElement(astNode);
     _visitChildren(astNode);
     if (astNode.bananas.isNotEmpty) {
       _desugarBananas(astNode);
@@ -53,6 +55,7 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
 
   @override
   TemplateAst visitEmbeddedTemplate(EmbeddedTemplateAst astNode, [_]) {
+    astNode = _growableTemplate(astNode);
     _visitChildren(astNode);
     return astNode;
   }
@@ -74,7 +77,19 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
   /// This clears any banana bindings from [astNode].
   void _desugarBananas(ElementAst astNode) {
     for (var banana in astNode.bananas) {
-      if (banana.value == null) continue;
+      if (banana.value == null || banana.value!.trim().isEmpty) {
+        // A synthetic banana has no source to report an error at.
+        if (!banana.isSynthetic) {
+          exceptionHandler.handle(
+            KelicapParserException(
+              ParserErrorCode.bananaMissingValue,
+              banana.sourceSpan.start.offset,
+              banana.sourceSpan.length,
+            ),
+          );
+        }
+        continue;
+      }
       astNode
         ..events.add(
           EventAst.from(
@@ -92,8 +107,10 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
     var starAst = stars[0];
     var origin = starAst;
     var starExpression = starAst.value?.trim();
-    var expressionOffset =
-        (starAst as ParsedStarAst).valueToken?.innerValue?.offset;
+    // A synthetic star, such as one created in a test, has no source.
+    var expressionOffset = starAst is ParsedStarAst
+        ? starAst.valueToken?.innerValue?.offset
+        : 0;
     var directiveName = starAst.name;
     EmbeddedTemplateAst newAst;
     var attributesToAdd = <AttributeAst>[];
@@ -107,7 +124,7 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
           directiveName,
           starExpression,
           expressionOffset,
-          sourceUrl: astNode.sourceUrl!,
+          sourceUrl: _sourceUrl(astNode),
           origin: origin,
         );
       } on KelicapParserException catch (e) {
@@ -151,5 +168,89 @@ class DesugarVisitor extends IdentityTemplateAstVisitor<void>
 
     stars.clear();
     return newAst;
+  }
+
+  // Desugaring changes the lists of a node in place. Those of a synthetic node,
+  // such as one created in a test, may be constant, so such a node is copied
+  // with growable lists, keeping its origin.
+
+  static ElementAst _growableElement(ElementAst node) {
+    if (node is! SyntheticTemplateAst) return node;
+    final origin = (node as SyntheticTemplateAst).origin;
+    return origin == null
+        ? ElementAst(
+            node.name,
+            node.closeComplement,
+            attributes: [...node.attributes],
+            childNodes: [...node.childNodes],
+            events: [...node.events],
+            properties: [...node.properties],
+            references: [...node.references],
+            bananas: [...node.bananas],
+            stars: [...node.stars],
+            annotations: [...node.annotations],
+          )
+        : ElementAst.from(
+            origin,
+            node.name,
+            node.closeComplement,
+            attributes: [...node.attributes],
+            childNodes: [...node.childNodes],
+            events: [...node.events],
+            properties: [...node.properties],
+            references: [...node.references],
+            bananas: [...node.bananas],
+            stars: [...node.stars],
+            annotations: [...node.annotations],
+          );
+  }
+
+  static ContainerAst _growableContainer(ContainerAst node) {
+    if (node is! SyntheticTemplateAst) return node;
+    final origin = (node as SyntheticTemplateAst).origin;
+    return origin == null
+        ? ContainerAst(
+            annotations: [...node.annotations],
+            childNodes: [...node.childNodes],
+            stars: [...node.stars],
+          )
+        : ContainerAst.from(
+            origin,
+            annotations: [...node.annotations],
+            childNodes: [...node.childNodes],
+            stars: [...node.stars],
+          );
+  }
+
+  static EmbeddedTemplateAst _growableTemplate(EmbeddedTemplateAst node) {
+    if (node is! SyntheticTemplateAst) return node;
+    final origin = (node as SyntheticTemplateAst).origin;
+    final copy = origin == null
+        ? EmbeddedTemplateAst(
+            annotations: [...node.annotations],
+            attributes: [...node.attributes],
+            childNodes: [...node.childNodes],
+            events: [...node.events],
+            properties: [...node.properties],
+            references: [...node.references],
+            letBindings: [...node.letBindings],
+          )
+        : EmbeddedTemplateAst.from(
+            origin,
+            annotations: [...node.annotations],
+            attributes: [...node.attributes],
+            childNodes: [...node.childNodes],
+            events: [...node.events],
+            properties: [...node.properties],
+            references: [...node.references],
+            letBindings: [...node.letBindings],
+          );
+    return copy..closeComplement = node.closeComplement;
+  }
+
+  /// The URL of [astNode]'s source, which a synthetic node may not have.
+  static String _sourceUrl(TemplateAst astNode) {
+    if (astNode is SyntheticTemplateAst && astNode.origin == null) return '';
+    return astNode.sourceUrl ?? '';
   }
 }

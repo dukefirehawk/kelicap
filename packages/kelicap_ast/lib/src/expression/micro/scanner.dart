@@ -35,6 +35,13 @@ class NgMicroScanner {
         throw StateError('An error occurred');
       case _NgMicroScannerState.isEndOfFile:
         return null;
+      case _NgMicroScannerState.scanAfterEndExpression:
+        // A trailing `;` ends the expression, as in `let x of xs;`.
+        if (_scanner.isDone) {
+          _state = _NgMicroScannerState.isEndOfFile;
+          return null;
+        }
+        return _scanInitial();
       case _NgMicroScannerState.scanAfterBindIdentifier:
         return _scanAfterBindIdentifier();
       case _NgMicroScannerState.scanAfterLetIdentifier:
@@ -74,7 +81,7 @@ class NgMicroScanner {
   NgMicroToken _scanAfterLetIdentifier() {
     var offset = _scanner.position;
     if (_scanner.scan(_findEndExpression)) {
-      _state = _NgMicroScannerState.scanInitial;
+      _state = _NgMicroScannerState.scanAfterEndExpression;
       return NgMicroToken.endExpression(offset, _lexeme(offset));
     }
     if (_scanner.scan(_findLetAssignmentBefore)) {
@@ -122,7 +129,7 @@ class NgMicroScanner {
     }
     var offset = _scanner.position;
     if (_scanner.scan(_findEndExpression)) {
-      _state = _NgMicroScannerState.scanInitial;
+      _state = _NgMicroScannerState.scanAfterEndExpression;
       return NgMicroToken.endExpression(offset, _lexeme(offset));
     }
     throw _unexpected();
@@ -191,6 +198,7 @@ class NgMicroScanner {
 enum _NgMicroScannerState {
   hasError,
   isEndOfFile,
+  scanAfterEndExpression,
   scanAfterLetIdentifier,
   scanAfterLetKeyword,
   scanAfterBindIdentifier,

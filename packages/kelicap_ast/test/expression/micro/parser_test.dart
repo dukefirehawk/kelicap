@@ -87,9 +87,32 @@ void main() {
     );
   });
 
-  test('should throw a parser error on trailing semi-colon', () {
+  test('should parse a trailing semi-colon', () {
+    // Names and values, as `PropertyAst ==` does not compare values.
+    List<String> describe(NgMicroAst ast) => [
+      for (final let in ast.letBindings) 'let ${let.name}=${let.value}',
+      for (final property in ast.properties)
+        '${property.name}=${property.value}',
+    ];
+    expect(describe(parse('ngFor', 'let item of items;', 0)), [
+      'let item=null',
+      'ngForOf=items',
+    ]);
+    expect(describe(parse('ngFor', 'let item of items; let i = index; ', 0)), [
+      'let item=null',
+      'let i=index',
+      'ngForOf=items',
+    ]);
+    expect(describe(parse('ngIf', 'foo;', 0)), ['ngIf=foo']);
+  });
+
+  test('should throw a parser error on an empty expression', () {
     expect(
-      () => parse('ngFor', 'let item of items;', 0),
+      () => parse('ngFor', '', 0),
+      throwsA(TypeMatcher<KelicapParserException>()),
+    );
+    expect(
+      () => parse('ngFor', ';', 0),
       throwsA(TypeMatcher<KelicapParserException>()),
     );
   });

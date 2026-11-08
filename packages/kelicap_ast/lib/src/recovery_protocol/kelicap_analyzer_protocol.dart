@@ -545,6 +545,32 @@ class NgAnalyzerRecoveryProtocol extends RecoveryProtocol {
   }
 
   @override
+  RecoverySolution scanSpecialAnnotationDecorator(
+    NgSimpleToken current,
+    NgTokenReversibleReader<Object> reader,
+  ) {
+    var type = current.type;
+
+    if (type == NgSimpleTokenType.bang ||
+        type == NgSimpleTokenType.dash ||
+        type == NgSimpleTokenType.forwardSlash ||
+        type == NgSimpleTokenType.unexpectedChar ||
+        type == NgSimpleTokenType.percent ||
+        type == NgSimpleTokenType.backSlash) {
+      return RecoverySolution.skip();
+    }
+    // An annotation has no suffix, so it continues as any other decorator.
+    reader.putBack(current);
+    return RecoverySolution(
+      NgScannerState.scanAfterElementDecorator,
+      NgToken.generateErrorSynthetic(
+        current.offset,
+        NgTokenType.elementDecorator,
+      ),
+    );
+  }
+
+  @override
   RecoverySolution scanSpecialBananaDecorator(
     NgSimpleToken current,
     NgTokenReversibleReader<Object> reader,

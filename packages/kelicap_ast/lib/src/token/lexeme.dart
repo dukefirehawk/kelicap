@@ -37,7 +37,15 @@ class _LexemeNgToken extends NgToken {
     this.lexeme,
     NgTokenType type, {
     super.errorSynthetic = false,
+    this.sourceLength,
   }) : super._(type, offset);
+
+  /// The length of the source, where the [lexeme] is decoded from it, so that
+  /// the token ends where its source does.
+  final int? sourceLength;
+
+  @override
+  int get length => errorSynthetic ? 0 : sourceLength ?? lexeme.length;
 
   @override
   bool operator ==(Object other) {

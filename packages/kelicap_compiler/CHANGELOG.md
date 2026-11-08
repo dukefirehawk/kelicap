@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.3
+
+### Fixes in 1.1.3
+
+* **Templates:** Requires `kelicap_ast` 1.1.3, which parses `*`-bindings such as `*ngIf="letter != null"` and `*ngIf="a?b:c"`, and reports invalid decorators where it threw
+
 ## 1.1.2
 
 ### Breaking changes in 1.1.2

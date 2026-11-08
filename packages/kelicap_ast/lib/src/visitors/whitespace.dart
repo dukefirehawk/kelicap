@@ -14,8 +14,9 @@ class MinimizeWhitespaceVisitor extends RecursiveTemplateAstVisitor<bool> {
     if (astNode is ContainerAst) {
       annotations = astNode.annotations;
     } else if (astNode is ElementAst) {
-      if (astNode.name == 'pre') {
-        // Don't modify whitespace of preformatted text.
+      if (_preservesWhitespace.contains(astNode.name.toLowerCase())) {
+        // Don't modify whitespace of preformatted text, or of the value of a
+        // text area.
         return true;
       }
       annotations = astNode.annotations;
@@ -29,6 +30,9 @@ class MinimizeWhitespaceVisitor extends RecursiveTemplateAstVisitor<bool> {
     }
     return false;
   }
+
+  /// Elements whose text keeps its whitespace when rendered.
+  static const _preservesWhitespace = {'pre', 'textarea'};
 
   const MinimizeWhitespaceVisitor();
 
@@ -192,35 +196,57 @@ class MinimizeWhitespaceVisitor extends RecursiveTemplateAstVisitor<bool> {
     'a',
     'abbr',
     'acronym',
+    'audio',
     'b',
+    'bdi',
     'bdo',
     'big',
     'br',
     'button',
+    'canvas',
     'cite',
     'code',
+    'data',
+    'datalist',
+    'del',
     'dfn',
     'em',
+    'embed',
     'i',
+    'iframe',
     'img',
     'input',
+    'ins',
     'kbd',
     'label',
     'map',
+    'mark',
+    'meter',
+    'noscript',
     'object',
+    'output',
+    'picture',
+    'progress',
     'q',
+    'ruby',
+    's',
     'samp',
     'script',
     'select',
+    'slot',
     'small',
     'span',
     'strong',
     'sub',
     'sup',
+    'svg',
     'textarea',
     'time',
     'tt',
+    'u',
     'var',
+    'video',
+    'wbr',
   };
 
   /// Returns whether [tagName] is normally an `display: inline` element.

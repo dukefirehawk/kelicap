@@ -43,7 +43,7 @@ abstract class TemplateAst {
   /// Whether this node is capable of containing children and does.
   ///
   /// If `true` then [childNodes] has at least one element.
-  final bool isParent = false;
+  bool get isParent => childNodes.isNotEmpty;
 
   /// Whether this node needs to be 'attached' to another node to be valid.
   bool get isStandalone => this is StandaloneTemplateAst;
