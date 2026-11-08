@@ -35,6 +35,18 @@ extension DomCollections on Element {
   ];
 }
 
+/// A Dart list of the nodes, for matchers such as `hasLength`, `isEmpty` and
+/// `everyElement`, which read `length` dynamically: a release build (dart2js)
+/// cannot read it from a `NodeList`, which is a JavaScript object.
+extension NodeListItems on NodeList {
+  List<Node> get asList => [for (var i = 0; i < length; i++) item(i)!];
+}
+
+/// A Dart list of the elements, for the same matchers as [NodeListItems].
+extension HTMLCollectionItems on HTMLCollection {
+  List<Element> get asList => [for (var i = 0; i < length; i++) item(i)!];
+}
+
 class _HasTextContent extends Matcher {
   final String expectedText;
 

@@ -63,7 +63,7 @@ void main() {
       ng.createUnsafeComponentFactory(),
     );
     final testFixture = await testBed.create();
-    expect(testFixture.rootElement.querySelectorAll('script'), isEmpty);
+    expect(testFixture.rootElement.querySelectorAll('script').asList, isEmpty);
   });
 
   test('should support named arguments in method calls', () async {

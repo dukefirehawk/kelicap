@@ -15,7 +15,9 @@ void main() {
     test('should support attaching component to tr tag', () async {
       var testBed = NgTestBed<TrTagTest>(ng.createTrTagTestFactory());
       var testFixture = await testBed.create();
-      var rows = testFixture.rootElement.querySelectorAll('tr[repaired-part]');
+      var rows = testFixture.rootElement
+          .querySelectorAll('tr[repaired-part]')
+          .asList;
       expect(rows, hasLength(3));
       expect(rows, everyElement(hasTextContent('Repaired')));
     });

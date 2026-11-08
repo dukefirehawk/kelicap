@@ -3,6 +3,7 @@ import 'package:kelicap/kelicap.dart';
 import 'package:kelicap/src/runtime/check_binding.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
+import 'package:_tests/matchers.dart';
 
 import 'if_test.template.dart' as ng;
 
@@ -16,7 +17,7 @@ void main() {
       );
       var testFixture = await testBed.create();
       var element = testFixture.rootElement;
-      expect(element.querySelectorAll('copy-me'), hasLength(1));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(1));
       expect(element.innerHTML, contains('hello2'));
     });
 
@@ -30,17 +31,17 @@ void main() {
       await testFixture.update((NgIfToggleTestComponent component) {
         component.booleanCondition = false;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(0));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(0));
 
       await testFixture.update((NgIfToggleTestComponent component) {
         component.booleanCondition = true;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(1));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(1));
 
       await testFixture.update((NgIfToggleTestComponent component) {
         component.booleanCondition = false;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(0));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(0));
     });
 
     test('should handle nested if correctly', () async {
@@ -53,31 +54,31 @@ void main() {
       await testFixture.update((NgIfNestedTestComponent component) {
         component.booleanCondition = false;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(0));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(0));
       expect(element.innerHTML.toString().contains('hello'), false);
 
       await testFixture.update((NgIfNestedTestComponent component) {
         component.booleanCondition = true;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(1));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(1));
       expect(element.innerHTML.toString().contains('hello'), true);
 
       await testFixture.update((NgIfNestedTestComponent component) {
         component.nestedBooleanCondition = false;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(0));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(0));
       expect(element.innerHTML.toString().contains('hello'), false);
 
       await testFixture.update((NgIfNestedTestComponent component) {
         component.nestedBooleanCondition = true;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(1));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(1));
       expect(element.innerHTML.toString().contains('hello'), true);
 
       await testFixture.update((NgIfNestedTestComponent component) {
         component.booleanCondition = false;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(0));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(0));
       expect(element.innerHTML.toString().contains('hello'), false);
     });
 
@@ -88,20 +89,20 @@ void main() {
       var testFixture = await testBed.create();
       var element = testFixture.rootElement;
       // Check startup.
-      expect(element.querySelectorAll('copy-me'), hasLength(3));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(3));
       expect(element.textContent, 'helloNumberhelloStringhelloFunction');
 
       await testFixture.update((NgIfMultiUpdateTestComponent component) {
         component.numberCondition = 0;
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(1));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(1));
       expect(element.textContent, 'helloString');
 
       await testFixture.update((NgIfMultiUpdateTestComponent component) {
         component.numberCondition = 1;
         component.stringCondition = 'bar';
       });
-      expect(element.querySelectorAll('copy-me'), hasLength(1));
+      expect(element.querySelectorAll('copy-me').asList, hasLength(1));
       expect(element.textContent, 'helloNumber');
       await testFixture.update((NgIfMultiUpdateTestComponent component) {
         component.booleanCondition = false;
