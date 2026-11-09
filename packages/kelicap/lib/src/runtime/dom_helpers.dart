@@ -260,8 +260,27 @@ void insertNodesAsSibling(List<Node> nodes, Node sibling) {
     return;
   }
 
-  //final nextSibling = sibling.nextNode;
-  final nextSibling = sibling.nextSibling;
+  // Nodes that already follow [sibling] in order are left in place: inserting
+  // a node removes it from the DOM first, which blurs a focused element and
+  // reloads an iframe.
+  var nextSibling = sibling.nextSibling;
+  var inPlace = 0;
+  while (inPlace < nodes.length && nextSibling == nodes[inPlace]) {
+    nextSibling = nextSibling!.nextSibling;
+    inPlace++;
+  }
+  if (inPlace == nodes.length) {
+    return;
+  }
+
+  // Otherwise, the nodes are inserted before the first node after [sibling]
+  // that is not one of them. Inserted before one of [nodes] that is already in
+  // place, the nodes after it would be moved in front of it, which reverses
+  // them.
+  nextSibling = sibling.nextSibling;
+  while (nextSibling != null && nodes.contains(nextSibling)) {
+    nextSibling = nextSibling.nextSibling;
+  }
   if (nextSibling == null) {
     appendNodes(nodes, parentOfSibling);
   } else {

@@ -496,6 +496,26 @@ class CompileTypeMetadataVisitor
     return CompileTokenMetadata(
       identifier: _idFor(type, libraryIdentifier: libraryIdentifier),
       identifierIsInstance: isInstance,
+      runtimeToken:
+          type is InterfaceType && isExtensionType(type) && !isInstance
+          ? _extensionTypeToken(type)
+          : null,
+    );
+  }
+
+  /// Returns the `OpaqueToken` that the generated code uses for the extension
+  /// [type]. See [extensionTypeTokenName].
+  CompileTokenMetadata _extensionTypeToken(InterfaceType type) {
+    return CompileTokenMetadata(
+      value: extensionTypeTokenName(type),
+      identifier: CompileIdentifierMetadata(
+        name: 'OpaqueToken',
+        moduleUrl: opaqueTokenLibrary,
+        typeArguments: [
+          fromTypeLink(linkTypeOf(extensionTypeTokenArgument(type)), _library),
+        ],
+      ),
+      identifierIsInstance: true,
     );
   }
 

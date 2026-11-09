@@ -137,7 +137,9 @@ class NgFor implements DoCheck {
     // TODO(rado): check if change detection can produce a change record that is
     // easier to consume than current.
 
-    final insertTuples = <_RecordViewTuple>[];
+    // `$implicit` is the item, which does not depend on the view's final index,
+    // so it is set as soon as the view is in place. The locals that do depend
+    // on it are set below, for every view, once all the operations are done.
     changes.forEachOperation((
       CollectionChangeRecord item,
       int? adjustedPreviousIndex,
@@ -149,24 +151,17 @@ class NgFor implements DoCheck {
             _templateRef!,
             currentIndex!,
           );
-          if (view != null) {
-            var tuple = _RecordViewTuple(item, view);
-            insertTuples.add(tuple);
-          }
+          view?.setLocal('\$implicit', item.item);
         }
       } else if (currentIndex == null) {
         _viewContainer?.remove(adjustedPreviousIndex!);
       } else {
         var view = _getEmbeddedViewRef(adjustedPreviousIndex!);
         _viewContainer?.move(view, currentIndex);
-        var tuple = _RecordViewTuple(item, view);
-        insertTuples.add(tuple);
+        view.setLocal('\$implicit', item.item);
       }
     });
 
-    for (var i = 0; i < insertTuples.length; i++) {
-      insertTuples[i].view.setLocal('\$implicit', insertTuples[i].record.item);
-    }
     for (var i = 0, len = _viewContainer?.length ?? 0; i < len; i++) {
       var viewRef = _getEmbeddedViewRef(i);
       viewRef.setLocal('first', identical(i, 0));
@@ -192,10 +187,4 @@ class NgFor implements DoCheck {
   /// assume that the returned [ViewRef]s are all [EmbeddedViewRef]s.
   EmbeddedViewRef _getEmbeddedViewRef(int index) =>
       unsafeCast(_viewContainer?.get(index));
-}
-
-class _RecordViewTuple {
-  final EmbeddedViewRef view;
-  final CollectionChangeRecord record;
-  _RecordViewTuple(this.record, this.view);
 }

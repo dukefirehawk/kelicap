@@ -12,6 +12,31 @@ import 'view_container_move_test.template.dart' as ng;
 void main() {
   tearDown(disposeAnyRunningTest);
 
+  group('ViewContainerRef.insert', () {
+    test('inserts a view after an empty view', () async {
+      final fixture = await NgTestBed<MoveTest>(ng.createMoveTestFactory())
+          .create();
+      await fixture.update((component) {
+        final container = component.container!
+          ..createEmbeddedView(component.item!).setLocal('text', 'a')
+          ..createEmbeddedView(component.empty!);
+        container.createEmbeddedView(component.item!).setLocal('text', 'b');
+      });
+      expect(fixture.rootElement, hasTextContent('a;b;'));
+    });
+
+    test('inserts a view after only empty views', () async {
+      final fixture = await NgTestBed<MoveTest>(ng.createMoveTestFactory())
+          .create();
+      await fixture.update((component) {
+        final container = component.container!
+          ..createEmbeddedView(component.empty!);
+        container.createEmbeddedView(component.item!).setLocal('text', 'a');
+      });
+      expect(fixture.rootElement, hasTextContent('a;'));
+    });
+  });
+
   group('ViewContainerRef.move', () {
     Future<NgTestFixture<MoveTest>> createViews() async {
       final fixture = await NgTestBed<MoveTest>(ng.createMoveTestFactory())
@@ -70,6 +95,16 @@ void main() {
       expect(fixture.rootElement, hasTextContent(''));
     });
 
+    test('moves a view after an empty view', () async {
+      final fixture = await createViews();
+      await fixture.update((component) {
+        final container = component.container!;
+        container.insert(component.empty!.createEmbeddedView(), 1);
+        container.move(container.get(3), 2);
+      });
+      expect(fixture.rootElement, hasTextContent('a;c;b;'));
+    });
+
     test('moves a view to the given index', () async {
       final fixture = await createViews();
       await fixture.update((component) {
@@ -84,12 +119,15 @@ void main() {
 @Component(
   selector: 'move-test',
   template: '''
-<template #item let-text="text">{{text}};</template>
+<template #item let-text="text">{{text}};</template><template #empty></template>
 <div #container></div>''',
 )
 class MoveTest {
   @ViewChild('item')
   TemplateRef? item;
+
+  @ViewChild('empty')
+  TemplateRef? empty;
 
   @ViewChild('container', read: ViewContainerRef)
   ViewContainerRef? container;

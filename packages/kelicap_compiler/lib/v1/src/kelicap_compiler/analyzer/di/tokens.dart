@@ -38,7 +38,7 @@ class TokenReader {
       // See [unerasedTypeValueOf].
       final typeValue = unerasedTypeValueOf(object) ?? constant.typeValue;
       // TODO: assertNotFunctionType.
-      return TypeTokenElement(linkTypeOf(typeValue));
+      return _parseTypeToken(typeValue);
     }
     if (constant.instanceOf($OpaqueToken)) {
       return _parseOpaqueToken(constant, element);
@@ -153,7 +153,7 @@ class TokenReader {
         $OpaqueToken.firstAnnotationOf(element);
     return constTypeOrToken != null
         ? parseTokenObject(constTypeOrToken, element)
-        : parseTokenType(element);
+        : _parseTypeToken(element.type);
   }
 
   /// Returns the type of [element] as a [TokenElement].
@@ -163,6 +163,25 @@ class TokenReader {
 
   TypeTokenElement _parseType(DartType type) =>
       TypeTokenElement(linkTypeOf(type));
+
+  /// Returns [type] used as a token: a [TypeTokenElement], or for an extension
+  /// type, the `OpaqueToken` that stands for it. See [extensionTypeTokenName].
+  TokenElement _parseTypeToken(DartType type) {
+    if (type is InterfaceType && isExtensionType(type)) {
+      final typeLink = linkTypeOf(extensionTypeTokenArgument(type));
+      return OpaqueTokenElement(
+        extensionTypeTokenName(type)!,
+        isMultiToken: false,
+        classUrl: TypeLink(
+          'OpaqueToken',
+          opaqueTokenLibrary,
+          generics: [typeLink],
+        ),
+        typeUrl: typeLink,
+      );
+    }
+    return _parseType(type);
+  }
 }
 
 /// A statically parsed token used as an identifier for injection.
