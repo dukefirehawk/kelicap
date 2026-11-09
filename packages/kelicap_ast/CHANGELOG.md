@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.4
+
+No changes. Released with the other Kelicap packages, which share its version.
+
 ## 1.1.3
 
 ### Breaking changes in 1.1.3
