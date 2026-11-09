@@ -1,9 +1,13 @@
 export 'src/kelicap_compiler/analyzer.dart'
     show
+        extensionTypeTokenArgument,
+        extensionTypeTokenName,
         getTypeName,
+        isExtensionType,
         isGlobalSingletonService,
         linkToReference,
         linkTypeOf,
+        opaqueTokenLibrary,
         typeArgumentOf,
         unerasedTypeOf,
         unerasedTypeValueOf,

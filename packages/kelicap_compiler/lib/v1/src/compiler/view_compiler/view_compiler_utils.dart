@@ -182,6 +182,10 @@ o.Expression getViewFactory(CompileDirectiveMetadata component, String name) {
 }
 
 o.Expression createDiTokenExpression(CompileTokenMetadata token) {
+  final runtimeToken = token.runtimeToken;
+  if (runtimeToken != null) {
+    return createDiTokenExpression(runtimeToken);
+  }
   if (token.identifierIsInstance) {
     return o
         .importExpr(token.identifier!)

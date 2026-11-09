@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:kelicap_common/kelicap_common.dart';
 
 import 'package:meta/dart2js.dart' as dart2js;
@@ -55,7 +57,22 @@ Error noProviderError(Object token) {
   return ArgumentError(_noProviderError(token));
 }
 
-String _noProviderError(Object token) => 'No provider found for $token';
+String _noProviderError(Object token) =>
+    'No provider found for $token${_jsTypeTokenHint(token)}';
+
+/// Explains a lookup by the `Type` of a JavaScript type, such as
+/// `injector.get(Document)`, which cannot find its provider.
+String _jsTypeTokenHint(Object token) {
+  if (!identical(token, JSObject) && !identical(token, JSAny)) {
+    return '';
+  }
+  return '. A type of package:web, such as Document or Window, is an '
+      'extension type, and so is $token at runtime: looked up by its Type, it '
+      'cannot be told apart from the others. The code that Kelicap generates '
+      'gives each one a token of its own, so inject it in a constructor (or '
+      'use the browser\'s document and window directly) rather than looking it '
+      'up by its Type in hand-written code';
+}
 
 /// A class of error that is thrown related to dependency injection.
 ///

@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/src/dart/element/type.dart';
 import 'package:source_gen/src/utils.dart';
@@ -146,3 +147,43 @@ Uri urlOf(Element? element, [String? name]) {
   return normalizeUrl(element.library!.firstFragment.source.uri)
       .replace(fragment: fragment);
 }
+
+/// The library of `OpaqueToken`, for the tokens that the compiler creates.
+const opaqueTokenLibrary = 'package:kelicap/src/meta/di_tokens.dart';
+
+/// Returns the name of the `OpaqueToken` that the compiler uses in place of
+/// [type] as a dependency injection token, if [type] is an extension type,
+/// such as `Document` or `Window` of `package:web`, or `null` otherwise.
+///
+/// At runtime, a `Type` literal of an extension type is that of its
+/// representation type: `Document`, `Window` and every other `package:web`
+/// type are all `JSObject`. Used as tokens, they are identical, and an injector
+/// would return the first of their providers for each of them. The compiler
+/// emits `const OpaqueToken<T>(name)` for them instead, both in providers and
+/// in the code that injects them, so each type has a token of its own.
+///
+/// The name is that of the extension type and its library, so a typedef of it,
+/// such as `HtmlElement` of `HTMLElement`, and a nullable `T?` have the same
+/// token as `T`.
+String? extensionTypeTokenName(DartType type) {
+  if (!isExtensionType(type)) {
+    return null;
+  }
+  final element = (type as InterfaceType).element;
+  return 'kelicap.extensionType:${element.library.uri}#${element.name}';
+}
+
+/// Whether [type] is an extension type.
+bool isExtensionType(DartType type) =>
+    type is InterfaceType && type.element is ExtensionTypeElement;
+
+/// Returns the type argument of the `OpaqueToken` that stands for the
+/// extension [type]: [type] itself, without nullability or a typedef.
+///
+/// The type arguments of two `const OpaqueToken`s must be the same for them to
+/// be identical, so `T?` and a typedef of `T` must use the same one as `T`.
+DartType extensionTypeTokenArgument(InterfaceType type) =>
+    type.element.instantiate(
+      typeArguments: type.typeArguments,
+      nullabilitySuffix: NullabilitySuffix.none,
+    );

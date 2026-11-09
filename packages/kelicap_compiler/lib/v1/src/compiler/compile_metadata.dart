@@ -166,10 +166,21 @@ class CompileTokenMetadata implements CompileMetadataWithIdentifier {
 
   final bool identifierIsInstance;
 
+  /// The token that the generated code uses at runtime in place of this one,
+  /// if it differs.
+  ///
+  /// It is set for an extension type, such as `Document` of `package:web`,
+  /// whose `Type` literal is that of its representation type at runtime, and
+  /// so identical to those of other extension types: it is an `OpaqueToken`
+  /// of the type. The compiler matches tokens by [identifier], so that
+  /// `HTMLElement` still finds the host element, and emits this one.
+  final CompileTokenMetadata? runtimeToken;
+
   CompileTokenMetadata({
     this.value,
     this.identifier,
     this.identifierIsInstance = false,
+    this.runtimeToken,
   });
 
   // Used to determine unique-ness of CompileTokenMetadata.

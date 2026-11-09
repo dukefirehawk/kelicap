@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.4
+
+### Fixes in 1.1.4
+
+* **Dependency injection:** Each `package:web` type, such as `Document`, `Window` or `HTMLElement`, and any other extension type, is a token of its own. At runtime the `Type` of an extension type is that of its representation type, so all `package:web` types were the same token, `JSObject`: an injector returned the first of their providers for each of them, such as `window` for `Document`, and a `querySelector` on it failed. The generated code now uses a `const OpaqueToken<T>` for each extension type `T`, in providers and where it is injected. A nullable `T?` and a typedef of `T`, such as `HtmlElement`, use the same token as `T`. A component still gets its host element for `HTMLElement` or `Element`. Requires `kelicap` 1.1.4, whose error explains a lookup by the `Type` of a `package:web` type
+
 ## 1.1.3
 
 ### Breaking changes in 1.1.3

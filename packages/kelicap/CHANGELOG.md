@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.4
+
+### Fixes in 1.1.4
+
+* **Dependency injection:** Code compiled by `kelicap_compiler` 1.1.4 injects each `package:web` type, such as `Document` and `Window`, from its own provider, where an injector returned the first of their providers for each of them. See its changelog. Hand-written code that looks one up by its `Type`, such as `injector.get(Document)`, cannot tell them apart, as each is `JSObject` at runtime, and no longer finds its provider: the error says so. Inject it in a constructor, or use `document` and `window` directly
+
 ## 1.1.3
 
 ### Breaking changes in 1.1.3
