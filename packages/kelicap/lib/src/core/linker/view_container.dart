@@ -202,10 +202,18 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     return result;
   }
 
-  Node? _findRenderNode(List<DynamicView> views, int index) {
-    return index > 0
-        ? views[index - 1].viewFragment!.findLastDomNode()
-        : nativeElement;
+  /// Returns the node after which the view at [index] of [views] goes: the
+  /// last DOM node of the nearest view before it that has one, or the anchor
+  /// of this container. A view without DOM nodes, such as one of an empty
+  /// `<template>`, is skipped.
+  Node _findRenderNode(List<DynamicView> views, int index) {
+    for (var i = index - 1; i >= 0; i--) {
+      final node = views[i].viewFragment!.findLastDomNode();
+      if (node != null) {
+        return node;
+      }
+    }
+    return nativeElement;
   }
 
   void _moveView(DynamicView view, int newIndex) {
@@ -216,18 +224,15 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     // Checked before the view is removed, so that an invalid index leaves the
     // container as it was.
     RangeError.checkValidIndex(newIndex, nestedViews, 'index');
-    // The view would be inserted relative to its own nodes, which reorders them.
+    // The view is already at its index, so neither the views nor the DOM
+    // change.
     if (previousIndex == newIndex) return;
 
     nestedViews
       ..removeAt(previousIndex)
       ..insert(newIndex, view);
 
-    final refRenderNode = _findRenderNode(nestedViews, newIndex);
-
-    if (refRenderNode != null) {
-      view.addRootNodesAfter(refRenderNode);
-    }
+    view.addRootNodesAfter(_findRenderNode(nestedViews, newIndex));
 
     view.wasMoved();
   }
@@ -236,12 +241,7 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     //final views = nestedViews;
     nestedViews.insert(viewIndex, view);
 
-    final refRenderNode = _findRenderNode(nestedViews, viewIndex);
-    //nestedViews = views;
-
-    if (refRenderNode != null) {
-      view.addRootNodesAfter(refRenderNode);
-    }
+    view.addRootNodesAfter(_findRenderNode(nestedViews, viewIndex));
 
     view.wasInserted(this);
   }
