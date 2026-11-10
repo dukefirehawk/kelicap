@@ -1,4 +1,4 @@
-# Kelicap AI Context
+# AGENTS.md — Kelicap
 
 ## Overview
 
