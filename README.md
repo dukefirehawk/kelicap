@@ -52,4 +52,4 @@ Dart 3.13.0 or later
 
 ### Documentation
 
-The Kelicap documentation is located at [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs).
+Read the [Kelicap Document](https://dukefirehawk.gitbook.io/kelicap-docs) online. Its source is in the [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs) repository.

@@ -97,4 +97,4 @@ The development build (DDC) tolerates dynamic access to JavaScript objects, and 
 
 ## Documentation
 
-The Kelicap documentation is at [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs), and runnable examples are in the [examples](https://github.com/dukefirehawk/kelicap/tree/main/examples) directory.
+Read the [Kelicap Document](https://dukefirehawk.gitbook.io/kelicap-docs) online; its source is in the [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs) repository. Runnable examples are in the [examples](https://github.com/dukefirehawk/kelicap/tree/main/examples) directory.

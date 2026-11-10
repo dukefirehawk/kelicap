@@ -48,9 +48,7 @@ void main() {
   }
 
   test('accepts null bound to an inherited input made nullable', () async {
-    await compilesNormally(
-      '''
-      import '$ngImport';
+    await compilesNormally('''      import '$ngImport';
 
       class BaseCounter {
         @Input()
@@ -63,9 +61,7 @@ void main() {
         @override
         set count(int? value) {}
       }
-    ''' +
-          testComponent('[count]="null"'),
-    );
+    ${testComponent('[count]="null"')}''');
   });
 
   test(
