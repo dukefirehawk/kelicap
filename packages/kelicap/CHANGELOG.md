@@ -5,6 +5,8 @@
 ### Fixes in 1.1.5
 
 * **API docs:** The library and lifecycle hook docs link to the [Kelicap documentation](https://dukefirehawk.gitbook.io/kelicap-docs), where they linked to pages of the old AngularDart site that do not exist, and the links to its live examples and cheat sheet are gone
+* **Pubspec:** The package links to its documentation on the [Kelicap documentation](https://dukefirehawk.gitbook.io/kelicap-docs) site, from pub.dev, where it linked to the GitHub repository of the docs
+* **README:** It links to the [Kelicap Components Gallery](https://kelicap-components-gallery.web.app/), where the components of `kelicap_components` can be tried live
 
 ## 1.1.4
 

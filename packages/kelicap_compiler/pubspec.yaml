@@ -3,7 +3,7 @@ description: >
   The Kelicap compiler.
   Transforms Kelicap template in HTML, CSS and Dart code into highly optimized instructions that the browser 
   can directly execute.
-version: 1.1.4
+version: 1.1.5
 repository: https://github.com/dukefirehawk/kelicap
 report_issues: https://github.com/dukefirehawk/kelicap/issues
 documentation: https://dukefirehawk.gitbook.io/kelicap-docs
@@ -24,8 +24,8 @@ dependencies:
   dart_style: ^3.0.1
   logging: ^1.1.0
   meta: ^1.8.0
-  kelicap_ast: ^1.1.4
-  kelicap_common: ^1.1.4
+  kelicap_ast: ^1.1.5
+  kelicap_common: ^1.1.5
   package_config: ^3.0.0
   path: ^1.8.3
   source_gen: ^4.0.0
