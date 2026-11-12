@@ -9,11 +9,9 @@
 /// For help using this library, see the Kelicap documentation:
 ///
 /// * [Kelicap guide][]
-/// * [Kelicap cheat sheet][cheatsheet]
 ///
-/// [Kelicap]: https://webdev.dartlang.org/kelicap
-/// [Kelicap guide]: https://webdev.dartlang.org/kelicap/guide
-/// [cheatsheet]: https://webdev.dartlang.org/kelicap/cheatsheet
+/// [Kelicap]: https://dukefirehawk.gitbook.io/kelicap-docs
+/// [Kelicap guide]: https://dukefirehawk.gitbook.io/kelicap-docs/docs/user-guide
 
 library;
 

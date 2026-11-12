@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.5
+
+### Fixes in 1.1.5
+
+* **API docs:** The library and lifecycle hook docs link to the [Kelicap documentation](https://dukefirehawk.gitbook.io/kelicap-docs), where they linked to pages of the old AngularDart site that do not exist, and the links to its live examples and cheat sheet are gone
+
 ## 1.1.4
 
 ### Fixes in 1.1.4
