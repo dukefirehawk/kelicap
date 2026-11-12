@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.5
+
+### Fixes in 1.1.5
+
+* **Pubspec:** The package links to its documentation on the [Kelicap documentation](https://dukefirehawk.gitbook.io/kelicap-docs) site, from pub.dev, where it linked to the GitHub repository of the docs
+
 ## 1.1.4
 
 No changes. Released with the other Kelicap packages, which share its version.
