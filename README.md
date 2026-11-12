@@ -19,7 +19,7 @@ Kelicap is structured into the following core packages:
 * **`kelicap_test`**: Testing utilities for Kelicap framework.
 * **`kelicap_forms`**: Forms components for Kelicap framework.
 * **`kelicap_router`**: Router components for Kelicap framework.
-* **`kelicap_components`**: Component library for Kelicap framework.
+* **`kelicap_components`**: Component library for Kelicap framework. See them in the [Kelicap Components Gallery](https://kelicap-components-gallery.web.app/).
 * **`kelicap_cli`**: Command-line tool for creating and managing Kelicap projects.
 
 ## Getting Started
@@ -53,3 +53,5 @@ Dart 3.13.0 or later
 ### Documentation
 
 Read the [Kelicap Document](https://dukefirehawk.gitbook.io/kelicap-docs) online. Its source is in the [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs) repository.
+
+Try the components of `kelicap_components` live in the [Kelicap Components Gallery](https://kelicap-components-gallery.web.app/), with the source code of each example.
