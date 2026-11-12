@@ -22,7 +22,7 @@ This package is the runtime: components, directives, pipes, dependency injection
 | [`kelicap_cli`](https://pub.dev/packages/kelicap_cli) | A command-line tool to create Kelicap projects |
 | [`kelicap_compiler`](https://pub.dev/packages/kelicap_compiler), [`kelicap_ast`](https://pub.dev/packages/kelicap_ast), [`kelicap_common`](https://pub.dev/packages/kelicap_common) | Used by the packages above; you don't depend on them directly |
 
-A library of UI components, [`kelicap_components`](https://github.com/dukefirehawk/kelicap_components), is developed in its own repository.
+A library of UI components, [`kelicap_components`](https://github.com/dukefirehawk/kelicap_components), is developed in its own repository. See them in the [Kelicap Components Gallery](https://kelicap-components-gallery.web.app/).
 
 ## Getting started
 
@@ -97,4 +97,6 @@ The development build (DDC) tolerates dynamic access to JavaScript objects, and 
 
 ## Documentation
 
-The Kelicap documentation is at [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs), and runnable examples are in the [examples](https://github.com/dukefirehawk/kelicap/tree/main/examples) directory.
+Read the [Kelicap Document](https://dukefirehawk.gitbook.io/kelicap-docs) online; its source is in the [kelicap-docs](https://github.com/dukefirehawk/kelicap-docs) repository. Runnable examples are in the [examples](https://github.com/dukefirehawk/kelicap/tree/main/examples) directory.
+
+Try the components of `kelicap_components` live in the [Kelicap Components Gallery](https://kelicap-components-gallery.web.app/), with the source code of each example.

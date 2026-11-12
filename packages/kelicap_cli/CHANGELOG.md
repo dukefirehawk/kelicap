@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.5
+
+### Fixes in 1.0.5
+
+* **New project:** The comment of the todo list template links to `kelicap_components` on pub.dev, where it linked to the old AngularDart site
+
 ## 1.0.4
 
 ### Fixes in 1.0.4

@@ -137,7 +137,7 @@ abstract class DoCheck {
 ///
 /// ### Examples
 ///
-/// Try this [live example][ex] from the [Lifecycle Hooks][docs] page:
+/// This example is from the [Lifecycle Hooks][docs] guide:
 ///
 /// <?code-excerpt "docs/lifecycle-hooks/lib/src/after_content_component.dart (template)"?>
 /// ```dart
@@ -182,8 +182,7 @@ abstract class DoCheck {
 /// }
 /// ```
 ///
-/// [docs]: https://webdev.dartlang.org/Kelicap/guide/lifecycle-hooks.html#aftercontent
-/// [ex]: https://webdev.dartlang.org/examples/lifecycle-hooks#after-content
+/// [docs]: https://dukefirehawk.gitbook.io/kelicap-docs/docs/user-guide/lifecycle-hooks#aftercontent
 abstract class AfterContentInit {
   void ngAfterContentInit();
 }
@@ -193,7 +192,7 @@ abstract class AfterContentInit {
 ///
 /// ### Examples
 ///
-/// Try this [live example][ex] from the [Lifecycle Hooks][docs] page:
+/// This example is from the [Lifecycle Hooks][docs] guide:
 ///
 /// <?code-excerpt "docs/lifecycle-hooks/lib/src/after_content_component.dart (template)"?>
 /// ```dart
@@ -238,8 +237,7 @@ abstract class AfterContentInit {
 /// }
 /// ```
 ///
-/// [docs]: https://webdev.dartlang.org/Kelicap/guide/lifecycle-hooks.html#aftercontent
-/// [ex]: https://webdev.dartlang.org/examples/lifecycle-hooks#after-content
+/// [docs]: https://dukefirehawk.gitbook.io/kelicap-docs/docs/user-guide/lifecycle-hooks#aftercontent
 abstract class AfterContentChecked {
   void ngAfterContentChecked();
 }
@@ -249,7 +247,7 @@ abstract class AfterContentChecked {
 ///
 /// ### Examples
 ///
-/// Try this [live example][ex] from the [Lifecycle Hooks][docs] page:
+/// This example is from the [Lifecycle Hooks][docs] guide:
 ///
 /// <?code-excerpt "docs/lifecycle-hooks/lib/src/after_view_component.dart (template)"?>
 /// ```dart
@@ -291,8 +289,7 @@ abstract class AfterContentChecked {
 /// }
 /// ```
 ///
-/// [docs]: https://webdev.dartlang.org/Kelicap/guide/lifecycle-hooks.html#afterview
-/// [ex]: https://webdev.dartlang.org/examples/lifecycle-hooks#after-view
+/// [docs]: https://dukefirehawk.gitbook.io/kelicap-docs/docs/user-guide/lifecycle-hooks#afterview
 abstract class AfterViewInit {
   void ngAfterViewInit();
 }
@@ -302,7 +299,7 @@ abstract class AfterViewInit {
 ///
 /// ### Examples
 ///
-/// Try this [live example][ex] from the [Lifecycle Hooks][docs] page:
+/// This example is from the [Lifecycle Hooks][docs] guide:
 ///
 /// <?code-excerpt "docs/lifecycle-hooks/lib/src/after_view_component.dart (template)"?>
 /// ```dart
@@ -344,8 +341,7 @@ abstract class AfterViewInit {
 /// }
 /// ```
 ///
-/// [docs]: https://webdev.dartlang.org/Kelicap/guide/lifecycle-hooks.html#afterview
-/// [ex]: https://webdev.dartlang.org/examples/lifecycle-hooks#after-view
+/// [docs]: https://dukefirehawk.gitbook.io/kelicap-docs/docs/user-guide/lifecycle-hooks#afterview
 abstract class AfterViewChecked {
   void ngAfterViewChecked();
 }
