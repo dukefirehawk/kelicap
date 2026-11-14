@@ -8,7 +8,7 @@ environment:
 publish_to: none
 
 dependencies:
-  kelicap: ^1.0.0
+  kelicap: ^1.2.0
   kelicap_router: ^1.0.0
   kelicap_forms: ^1.0.0
   http: ^1.6.0

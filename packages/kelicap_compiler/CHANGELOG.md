@@ -4,7 +4,7 @@
 
 ### New in 1.2.0
 
-* **Signals:** Generated views have a `detectChangesInMarkedViews` method, which change detects the views below them that a signal of `kelicap` 1.2.0 changed, without checking them. Code it generates requires `kelicap` 1.2.0
+* **Signals:** Generated views have a `detectChangesInMarkedViews` method, which checks only the views below them that a signal of `kelicap` 1.2.0 marked for check, rather than every one of them. Code it generates requires `kelicap` 1.2.0
 
 ## 1.1.5
 
