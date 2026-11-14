@@ -69,6 +69,59 @@ The JavaScript of a release build, raw and compressed, as served:
 - **The framework:** the two are about the same size, once compressed.
 - **The benchmark:** Kelicap's signal adds more to the output, but about half of that is Dart's own libraries, not Kelicap: `Uri.parse`, which reads `?rows=` from the URL (22 KB, raw), and `JsonEncoder`, which prints the results (9 KB), where the Angular benchmark uses the browser's `URL` and `JSON`. In an app where size matters, prefer the browser's APIs, through `package:web`, to `Uri` and `dart:convert`.
 
+## Compared with Jaspr
+
+The same benchmark in [Jaspr](https://jaspr.site) 0.23.5, a Dart web framework modelled on Flutter's components, is the [Jaspr Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr). Both are Dart, built with dart2js `-O4` on Dart 3.13.7, and run in the same headless Chrome. Jaspr has no change detection, and no signals, so the two modes are their nearest equivalents:
+
+- **fields:** each row is a `StatelessComponent`, rebuilt whenever its parent is, so every row is rebuilt on every pass.
+- **signals:** each row's value is a `ValueNotifier`, and each row a `StatefulComponent` that rebuilds itself when it changes. The table and the rows override `shouldRebuild`, to skip a rebuild when their input is the same, as OnPush does.
+
+Each operation is a change, a `setState` of the root, and the build that renders it, which Jaspr otherwise runs in a microtask. The rows rebuilt by each operation are the same as the rows checked in Kelicap.
+
+### Speed, with Jaspr
+
+The mean time of an operation, the median of three runs:
+
+| Change | Mode | Kelicap, 1,000 rows | Jaspr, 1,000 rows | Kelicap, 10,000 rows | Jaspr, 10,000 rows |
+| --- | --- | --- | --- | --- | --- |
+| One row | fields | 0.15 ms | 8.3 ms | 1.9 ms | 90 ms |
+| One row | signals | 0.009 ms | 0.040 ms | 0.099 ms | 0.032 ms |
+| Every row | fields | 0.52 ms | 10.1 ms | 6.0 ms | 113 ms |
+| Every row | signals | 0.74 ms | 9.8 ms | 6.6 ms | 105 ms |
+| Nothing | fields | 0.12 ms | 8.2 ms | 1.8 ms | 89 ms |
+| Nothing | signals | 0.001 ms | 0.021 ms | 0.001 ms | 0.020 ms |
+
+- **Rebuilding rows:** Kelicap is 13 to 70 times faster when rows are checked or rebuilt. Jaspr has no virtual DOM: each rebuilt element compares itself with the DOM, reading its attributes, and the content of its text nodes, so a rebuilt row costs about 15 to 20 DOM calls. Kelicap compares a binding with its previous value, in JavaScript, and touches the DOM only when it changed.
+- **One row, with signals:** Jaspr rebuilds the dirty row directly, so its time does not grow with the number of rows, and it is about 3 times faster with 10,000 rows. Kelicap's change detection goes through the table's rows to find the one marked for check.
+- **Nothing, with signals:** both check nothing, but Jaspr still rebuilds the root.
+
+### Memory, with Jaspr
+
+The JavaScript heap of the page, once its table is rendered and garbage is collected, the median of three runs, each in a new browser context:
+
+| Page | Kelicap | Jaspr |
+| --- | --- | --- |
+| A component that renders `<h1>Hello {{name}}</h1>` | 0.87 MB | 0.83 MB |
+| 10,000 rows, no table | 2.4 MB | 2.6 MB |
+| 10,000 rows, fields table | 13.6 MB | 25.0 MB |
+| 10,000 rows, signals table | 14.0 MB | 25.7 MB |
+| DOM nodes, 10,000 rows | 70,044 | 60,035 |
+
+- **Rendered rows:** a rendered row takes about 1.1 KB in Kelicap, and 2.2 to 2.3 KB in Jaspr, which keeps a component, an element and a render object for each component and each DOM node of the row.
+- **DOM nodes:** Kelicap's row has one more, the empty text node of the binding `{{checked()}}` that counts its checks.
+
+### Output size, with Jaspr
+
+| App | Framework | Raw | gzip | Brotli |
+| --- | --- | --- | --- | --- |
+| A component that renders `<h1>Hello {{name}}</h1>` | Kelicap | 98.0 KB | 31.2 KB | 26.8 KB |
+| | Jaspr | 101.7 KB | 31.1 KB | 26.8 KB |
+| The signals benchmark | Kelicap | 164.4 KB | 51.1 KB | 43.5 KB |
+| | Jaspr | 153.4 KB | 47.0 KB | 40.1 KB |
+
+- **The framework:** the two are the same size, once compressed.
+- **The benchmark:** Jaspr's is about 8% smaller. Both use the same code to time and report the scenarios, including `Uri.parse` and `JsonEncoder`, so the difference is that of the frameworks: Kelicap's templates compile to code for each component, where Jaspr's components are plain Dart.
+
 ## Running them
 
-The READMEs of the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench) and of the [Angular 22 Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular) say how to build and run them, and how to compare the two with `tool/compare.mjs`.
+The READMEs of the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench), of the [Angular 22 Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular) and of the [Jaspr Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr) say how to build and run them, and how to compare them with their `tool/compare.mjs`.

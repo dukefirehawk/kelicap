@@ -86,14 +86,18 @@ class BenchAppComponent {
     for (var i = 0; i < rowCount; i++) SignalRow('Row $i'),
   ];
 
-  /// The table on the page: 'fields', 'signals', or none.
-  String? mode;
+  /// The table on the page: 'fields', 'signals', or none, from `?show=`.
+  String? mode = Uri.parse(window.location.href).queryParameters['show'];
   var running = false;
   var status = '';
   var results = <Result>[];
   var json = '';
 
-  BenchAppComponent(this._zone);
+  BenchAppComponent(this._zone) {
+    // Creates the rows of both modes up front, so that the memory of a page
+    // does not depend on the table it shows.
+    fieldRows.length + signalRows.length;
+  }
 
   /// Runs the benchmark, synchronously.
   ///
