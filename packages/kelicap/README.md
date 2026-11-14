@@ -95,6 +95,57 @@ dart run build_runner build --release -o web:build
 
 The development build (DDC) tolerates dynamic access to JavaScript objects, and the release build (dart2js) does not, so test a release build before deploying. In templates and `@HostListener`s, pass `$event` to a method that takes a typed `Event`, rather than reading members such as `$event.target.value`.
 
+## Signals
+
+`package:kelicap/signals.dart` adds signals: values that notify the code that reads them when they change. A component can keep its state in signals, and read them in its template by calling them:
+
+```dart
+import 'package:kelicap/kelicap.dart';
+import 'package:kelicap/signals.dart';
+
+@Component(
+  selector: 'todo-list',
+  template: '''
+    <h2>Tasks ({{count()}})</h2>
+    <p *ngFor="let todo of todos()">{{todo}}</p>
+    <button (click)="add('Another task')">Add</button>
+  ''',
+  directives: [NgFor],
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class TodoListComponent {
+  final todos = signal(['Learn signals']);
+  late final count = computed(() => todos().length);
+
+  void add(String todo) => todos.update((todos) => [...todos, todo]);
+}
+```
+
+- **Writing:** `set` and `update` change a signal. Setting it to a value that is `identical` to its current value notifies nothing, so update a list or a map by setting a new one, as above, rather than changing it in place.
+- **Change detection:** setting a signal runs change detection, even outside of the `NgZone`, and checks only the components whose templates read it. With `ChangeDetectionStrategy.onPush`, the others, including those above them, are not checked, so a change costs only the components that show it. Plain fields of an OnPush component still need `ChangeDetectorRef.markForCheck`.
+- **Derived values:** `computed(() => ...)` derives a value from signals. It is computed when it is read, and cached until a signal it read changes.
+- **Effects:** `effect((onCleanup) { ... })` runs code now, and again whenever a signal it read changes. It is not destroyed with the component that created it: call `destroy()` on the `EffectRef` it returns, such as in `ngOnDestroy`.
+- **Streams:** `toSignal(stream, initialValue: ...)` returns a signal of a stream's latest event: call `cancel()` on it when the component is destroyed. `toStream(signal)` returns a stream of a signal's values.
+- **Reading without tracking:** `untracked(() => ...)` reads signals without being notified of their changes, and `batch(() => ...)` runs the effects of the signals it sets once, at its end.
+
+A signal read in a component's lifecycle hooks, or in the setters of its inputs, checks the component whose template uses it, not the component itself, as those run while that one is checked. Do not set a signal that a component reads while that component is checked, such as in its `ngAfterViewChecked`: it is not checked again.
+
+### Performance
+
+With plain fields and the default change detection, every change detection pass checks every component. With signals and OnPush, a pass checks only the components that read a signal that changed. The [signals benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench) measures a table of rows rendered both ways. These are the mean times of one change and the pass that renders it, in a release build in Chrome:
+
+| Change | 1,000 rows: fields | 1,000 rows: signals | 10,000 rows: fields | 10,000 rows: signals |
+| --- | --- | --- | --- | --- |
+| One row | 0.13 ms | < 0.01 ms | 1.9 ms | 0.10 ms |
+| Nothing, such as an event that changes no state | 0.12 ms | < 0.01 ms | 1.9 ms | < 0.01 ms |
+| Every row | 0.48 ms | 0.72 ms | 6.1 ms | 7.4 ms |
+
+- **One row:** about 20 times faster. Only that row is checked: not the table above it, nor the `*ngFor` that lists the rows, which would compare all of them. Change detection goes through the rows only to find the one that changed, so the time still grows a little with their number.
+- **Nothing:** a pass that follows an event that changed no signal checks nothing.
+- **Every row:** about 1.2 to 1.5 times slower, as each signal that changes notifies the component that read it. Signals pay off when a change affects a small part of the page, which is the common case.
+
+The times vary between runs, by up to half with 10,000 rows, and between machines: compare the columns of a row rather than the numbers themselves. The benchmark's README [compares it with Angular 22](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench#compared-with-angular-22), which checks the same rows: Kelicap is as fast or faster in each case.
+
 ## Documentation
 
 Read the [Kelicap Document](https://dukefirehawk.gitbook.io/kelicap-docs) online.

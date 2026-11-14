@@ -162,11 +162,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
     // Records the signals that this view reads while it is checked, including
     // in its embedded views, so that it is marked for check when one of them
     // changes. Child component views record their own.
-    final signals = _data.signals ??= ViewSignalConsumer(
-      detectChangesInternal,
-      detectCrash,
-      markForRefresh,
-    );
+    final signals = _data.signals ??= _ComponentViewSignals(this);
     if (ChangeDetectionHost.checkForCrashes) {
       // Run change detection in "slow-mode" to catch thrown exceptions.
       signals.checkForCrash();
@@ -184,6 +180,11 @@ abstract class ComponentView<T extends Object> extends RenderView {
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;
   }
+
+  // Called by [_ComponentViewSignals], which may not call the protected
+  // methods itself.
+  void _detectChangesForSignals() => detectChangesInternal();
+  void _detectCrashForSignals() => detectCrash();
 
   @override
   void detectChangesInMarkedDescendants() {
@@ -315,6 +316,23 @@ abstract class ComponentView<T extends Object> extends RenderView {
 
 /// Data for [ComponentView] bundled together as an optimization.
 @sealed
+/// Tracks the signals that a component view reads, and marks the view for
+/// refresh when one of them changes.
+final class _ComponentViewSignals extends ViewSignalConsumer {
+  final ComponentView<Object> _view;
+
+  _ComponentViewSignals(this._view);
+
+  @override
+  void detectChanges() => _view._detectChangesForSignals();
+
+  @override
+  void detectCrash() => _view._detectCrashForSignals();
+
+  @override
+  void onChanged() => _view.markForRefresh();
+}
+
 class _ComponentViewData implements RenderViewData {
   @dart2js.noInline
   factory _ComponentViewData(

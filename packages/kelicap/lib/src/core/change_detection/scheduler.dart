@@ -18,14 +18,18 @@ import '../zone/ng_zone.dart';
 /// for both.
 final class ChangeDetectionScheduler {
   /// The schedulers of the applications that are running.
-  static final _active = <ChangeDetectionScheduler>{};
+  ///
+  /// A list, as iterating it is cheaper than a set, and it is iterated on each
+  /// change to a signal.
+  static final _active = <ChangeDetectionScheduler>[];
 
   /// Requests a change detection pass in every application that is running.
   ///
   /// Used when state that any of them may render changes, such as a signal.
   static void scheduleAll() {
-    for (final scheduler in _active) {
-      scheduler.schedule();
+    final active = _active;
+    for (var i = 0, length = active.length; i < length; i++) {
+      active[i].schedule();
     }
   }
 

@@ -1,7 +1,8 @@
 /// Signals: values that notify the code that reads them when they change.
 ///
 /// Setting a [WritableSignal] runs change detection, so a component can keep
-/// its state in signals, and read them in its template:
+/// its state in signals, and read them in its template. [toSignal] and
+/// [toStream] convert between streams and signals.
 ///
 /// ```dart
 /// import 'package:kelicap/kelicap.dart';
@@ -31,3 +32,4 @@ export 'src/signals/signals.dart'
         effect,
         signal,
         untracked;
+export 'src/signals/streams.dart' show StreamSignal, toSignal, toStream;

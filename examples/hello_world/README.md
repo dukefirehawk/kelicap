@@ -5,6 +5,7 @@
 - *ngIf*
 - *ngFor*
 - outer/inner component
+- Signals: the todo list keeps its tasks in a signal, and uses OnPush change detection
 - Router
 
 ## Development build

@@ -12,6 +12,7 @@ dependencies:
   kelicap_router: ^1.0.0
   kelicap_forms: ^1.0.0
   http: ^1.6.0
+  web: ^1.1.1
   build_runner: ^2.4.0
 
 dev_dependencies:

@@ -75,7 +75,7 @@ abstract interface class EffectRef {
 /// }
 /// ```
 WritableSignal<T> signal<T>(T initialValue, {ValueEqualityFn<T>? equal}) =>
-    _WritableSignal(initialValue, equal ?? identical);
+    _WritableSignal(initialValue, equal);
 
 /// Creates a read-only [Signal] whose value [computation] derives from other
 /// signals.
@@ -163,7 +163,9 @@ T batch<T>(T Function() fn) {
 
 final class _WritableSignal<T> extends SignalNode<T>
     implements WritableSignal<T> {
-  final ValueEqualityFn<T> _equal;
+  /// Compares a new value with the current one, or `null` for [identical],
+  /// which is compared directly, rather than through a function.
+  final ValueEqualityFn<T>? _equal;
 
   _WritableSignal(T value, this._equal)
     : super(
@@ -178,7 +180,10 @@ final class _WritableSignal<T> extends SignalNode<T>
   @override
   void set(T value) {
     // The value most recently set, which a batch has not committed yet.
-    if (_equal(pendingValue, value)) {
+    final equal = _equal;
+    if (equal == null
+        ? identical(pendingValue, value)
+        : equal(pendingValue, value)) {
       return;
     }
     super.set(value);

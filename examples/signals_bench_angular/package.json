@@ -1,0 +1,26 @@
+{
+  "name": "signals-bench-angular",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The Kelicap signals benchmark, in Angular 22, to compare them.",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "build": "ng build"
+  },
+  "dependencies": {
+    "@angular/common": "22.2.6",
+    "@angular/compiler": "22.2.6",
+    "@angular/core": "22.2.6",
+    "@angular/platform-browser": "22.2.6",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.8.0"
+  },
+  "devDependencies": {
+    "@angular/build": "22.2.6",
+    "@angular/cli": "22.2.6",
+    "@angular/compiler-cli": "22.2.6",
+    "typescript": "~6.0.0"
+  }
+}
