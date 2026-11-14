@@ -132,7 +132,7 @@ A signal read in a component's lifecycle hooks, or in the setters of its inputs,
 
 ### Performance
 
-With plain fields and the default change detection, every change detection pass checks every component. With signals and OnPush, a pass checks only the components that read a signal that changed. The [signals benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench) measures a table of rows rendered both ways. These are the mean times of one change and the pass that renders it, in a release build in Chrome:
+With plain fields and the default change detection, every change detection pass checks every component. With signals and OnPush, a pass checks only the components that read a signal that changed. The [Kelicap Signals Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench) measures a table of rows rendered both ways. These are the mean times of one change and the pass that renders it, in a release build in Chrome:
 
 | Change | 1,000 rows: fields | 1,000 rows: signals | 10,000 rows: fields | 10,000 rows: signals |
 | --- | --- | --- | --- | --- |
@@ -144,10 +144,16 @@ With plain fields and the default change detection, every change detection pass 
 - **Nothing:** a pass that follows an event that changed no signal checks nothing.
 - **Every row:** about 1.2 to 1.5 times slower, as each signal that changes notifies the component that read it. Signals pay off when a change affects a small part of the page, which is the common case.
 
-The times vary between runs, by up to half with 10,000 rows, and between machines: compare the columns of a row rather than the numbers themselves. The benchmark's README [compares it with Angular 22](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench#compared-with-angular-22), which checks the same rows: Kelicap is as fast or faster in each case.
+The times vary between runs, by up to half with 10,000 rows, and between machines: compare the columns of a row rather than the numbers themselves.
+
+## Benchmark
+
+[Kelicap vs Angular 22 Benckmark](https://github.com/dukefirehawk/kelicap/blob/main/packages/kelicap/BENCHMARK.md) evaluates Kelicap against Angular 22 across speed, memory consumption, and bundle size.
 
 ## Documentation
 
 Read the [Kelicap Document](https://dukefirehawk.gitbook.io/kelicap-docs) online.
 
-Try the components of `kelicap_components` live in the [Kelicap Components Gallery](https://kelicap-components-gallery.web.app/), with the source code of each example.
+## Components Gallery
+
+Explore the components of `kelicap_components` live at [Kelicap Components Gallery](https://kelicap-components-gallery.web.app/).
