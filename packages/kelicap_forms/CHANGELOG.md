@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.0
+
+Requires `kelicap` 1.2.0, which adds signals. No other changes.
+
 ## 1.1.5
 
 ### Fixes in 1.1.5

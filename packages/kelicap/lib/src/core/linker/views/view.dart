@@ -95,6 +95,32 @@ abstract class View implements ChangeDetectorRef {
   @experimental
   void detectChangesInCheckAlwaysViews() {}
 
+  /// Change detects the views below this one that need it, without checking
+  /// this view: the component views marked by [ComponentView.markForRefresh],
+  /// and the views on the way to them.
+  ///
+  /// Generated views override this method to call
+  /// [detectChangesInMarkedDescendants] on their child component views, and
+  /// [ViewContainer.detectChangesInMarkedNestedViews] on their view
+  /// containers.
+  ///
+  /// Defaults to an empty method for views with neither.
+  @protected
+  void detectChangesInMarkedViews() {}
+
+  /// Change detects the views in this view, or below it, that need it, if any
+  /// was marked by [ComponentView.markForRefresh] since this view was checked.
+  ///
+  /// Called, instead of [detectChanges], by a view that is not checked, on the
+  /// views in its template, so that the marked views are reached without
+  /// checking the views on the way to them.
+  void detectChangesInMarkedDescendants();
+
+  /// Records that a view in this view, or below it, was marked by
+  /// [ComponentView.markForRefresh], and needs to be change detected, and
+  /// records it in the views above this one.
+  void markDescendantsForRefresh();
+
   /// Backing implementation of [detectChanges] for this view.
   ///
   /// Generated views may override this method to detect and propagate changes.

@@ -135,6 +135,8 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   @override
   void detectChangesDeprecated() {
     if (_data.shouldSkipChangeDetection) return;
+    // Checking this view checks the views below it, marked or not.
+    _data.hasMarkedDescendants = false;
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
@@ -182,6 +184,37 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   @override
   void detectChangesInternal() {
     componentView.detectChangesDeprecated();
+  }
+
+  // Default implementation for host views without view containers. A host
+  // view with them gets a generated one, which also calls this.
+  @override
+  void detectChangesInMarkedViews() {
+    componentView.detectChangesInMarkedDescendants();
+  }
+
+  @override
+  void detectChangesInMarkedDescendants() {
+    if (_data.hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
+      _data.hasMarkedDescendants = false;
+      detectChangesInMarkedViews();
+    }
+  }
+
+  @override
+  bool get hasMarkedDescendants => _data.hasMarkedDescendants;
+
+  @override
+  void markDescendantsForRefresh() {
+    if (_data.hasMarkedDescendants) {
+      // The views above this one have recorded it already.
+      return;
+    }
+    _data.hasMarkedDescendants = true;
+    if (_data.changeDetectionMode !=
+        ChangeDetectionCheckedState.waitingToBeAttached) {
+      _data.viewContainer?.parentView?.markDescendantsForRefresh();
+    }
   }
 
   @override
@@ -252,6 +285,10 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
 class _HostViewData implements DynamicViewData {
   @override
   ViewContainer? viewContainer;
+
+  /// Whether a view below this one was marked for refresh since this view was
+  /// checked.
+  var hasMarkedDescendants = false;
 
   @override
   ViewFragment? viewFragment;

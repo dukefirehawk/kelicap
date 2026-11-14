@@ -5,8 +5,7 @@ import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../../kelicap_test/test/frontend/bed_lifecycle_test.template.dart'
-    as ng;
+import 'bed_lifecycle_test.template.dart' as ng;
 
 void main() {
   late Element docRoot;

@@ -7,8 +7,7 @@ import 'package:kelicap_test/kelicap_test.dart';
 
 import 'package:web/web.dart';
 
-import '../../../../kelicap_test/test/frontend/bed_error_test.template.dart'
-    as ng;
+import 'bed_error_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);

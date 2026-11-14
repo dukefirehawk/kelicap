@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 import '../../../core/change_detection/host.dart';
 import '../../../core/linker/style_encapsulation.dart';
 import '../../../devtools.dart';
+import '../../../signals/view_consumer.dart';
 import 'render_view.dart';
 import 'view.dart';
 
@@ -139,21 +140,35 @@ abstract class ComponentView<T extends Object> extends RenderView {
       if (_data.changeDetectionMode ==
           ChangeDetectionCheckedState.waitingForMarkForCheck) {
         detectChangesInCheckAlwaysViews();
+        // Reaches the views below that were marked for refresh, without
+        // checking the views on the way.
+        if (_data.hasMarkedDescendants) {
+          _data.hasMarkedDescendants = false;
+          detectChangesInMarkedViews();
+        }
       }
       return;
     }
+
+    // Checking this view checks the views below it, marked or not.
+    _data.needsRefresh = false;
+    _data.hasMarkedDescendants = false;
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
       throw StateError('detectChanges');
     }
 
+    // Records the signals that this view reads while it is checked, including
+    // in its embedded views, so that it is marked for check when one of them
+    // changes. Child component views record their own.
+    final signals = _data.signals ??= _ComponentViewSignals(this);
     if (ChangeDetectionHost.checkForCrashes) {
       // Run change detection in "slow-mode" to catch thrown exceptions.
-      detectCrash();
+      signals.checkForCrash();
     } else {
       // Normally run change detection.
-      detectChangesInternal();
+      signals.check();
     }
 
     // If we are a 'CheckOnce' component, we are done being checked.
@@ -164,6 +179,62 @@ abstract class ComponentView<T extends Object> extends RenderView {
 
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;
+  }
+
+  // Called by [_ComponentViewSignals], which may not call the protected
+  // methods itself.
+  void _detectChangesForSignals() => detectChangesInternal();
+  void _detectCrashForSignals() => detectCrash();
+
+  @override
+  void detectChangesInMarkedDescendants() {
+    final mode = _data.changeDetectionMode;
+    if (mode == ChangeDetectionCheckedState.waitingToBeAttached ||
+        _data.changeDetectorState == ChangeDetectorState.errored) {
+      return;
+    }
+    if (_data.needsRefresh || mode == ChangeDetectionCheckedState.checkOnce) {
+      detectChangesDeprecated();
+    } else if (_data.hasMarkedDescendants) {
+      // Neither this view nor its default change detection is checked here:
+      // only the marked views below it, as its parent was not checked.
+      _data.hasMarkedDescendants = false;
+      detectChangesInMarkedViews();
+    }
+  }
+
+  /// Marks this view to be checked, without checking the views above it.
+  ///
+  /// Unlike [markForCheck], the views above this one are not checked: they
+  /// record that a view below them needs to be checked, and change detection
+  /// goes through them to it, without checking them, unless they are checked
+  /// anyway. Used when a signal that this view read changes, as that changes
+  /// nothing in the views above it.
+  void markForRefresh() {
+    final changeDetectionMode = _data.changeDetectionMode;
+    if (changeDetectionMode ==
+        ChangeDetectionCheckedState.waitingToBeAttached) {
+      return;
+    }
+    _data.needsRefresh = true;
+    if (changeDetectionMode ==
+        ChangeDetectionCheckedState.waitingForMarkForCheck) {
+      markAsCheckOnce();
+    }
+    parentView!.markDescendantsForRefresh();
+  }
+
+  @override
+  void markDescendantsForRefresh() {
+    if (_data.hasMarkedDescendants) {
+      // The views above this one have recorded it already.
+      return;
+    }
+    _data.hasMarkedDescendants = true;
+    if (_data.changeDetectionMode !=
+        ChangeDetectionCheckedState.waitingToBeAttached) {
+      parentView!.markDescendantsForRefresh();
+    }
   }
 
   /// Generated code that is called by hosts.
@@ -245,6 +316,23 @@ abstract class ComponentView<T extends Object> extends RenderView {
 
 /// Data for [ComponentView] bundled together as an optimization.
 @sealed
+/// Tracks the signals that a component view reads, and marks the view for
+/// refresh when one of them changes.
+final class _ComponentViewSignals extends ViewSignalConsumer {
+  final ComponentView<Object> _view;
+
+  _ComponentViewSignals(this._view);
+
+  @override
+  void detectChanges() => _view._detectChangesForSignals();
+
+  @override
+  void detectCrash() => _view._detectCrashForSignals();
+
+  @override
+  void onChanged() => _view.markForRefresh();
+}
+
 class _ComponentViewData implements RenderViewData {
   @dart2js.noInline
   factory _ComponentViewData(
@@ -272,6 +360,17 @@ class _ComponentViewData implements RenderViewData {
 
   @override
   List<StreamSubscription<void>>? subscriptions;
+
+  /// Tracks the signals that the view reads, once it has been checked.
+  ViewSignalConsumer? signals;
+
+  /// Whether the view was marked by [ComponentView.markForRefresh] since it
+  /// was checked.
+  var needsRefresh = false;
+
+  /// Whether a view below this one was marked for refresh since this view was
+  /// checked.
+  var hasMarkedDescendants = false;
 
   @override
   ChangeDetectionCheckedState get changeDetectionMode => _changeDetectionMode;
@@ -304,6 +403,7 @@ class _ComponentViewData implements RenderViewData {
   @override
   void destroy() {
     _destroyed = true;
+    signals?.dispose();
     final subscriptions = this.subscriptions;
     if (subscriptions != null) {
       for (var i = 0, length = subscriptions.length; i < length; ++i) {

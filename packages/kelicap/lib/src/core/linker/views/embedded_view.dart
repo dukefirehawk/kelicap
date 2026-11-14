@@ -136,6 +136,8 @@ abstract class EmbeddedView<T> extends RenderView
   @override
   void detectChangesDeprecated() {
     if (_data.shouldSkipChangeDetection) return;
+    // Checking this view checks the views below it, marked or not.
+    _data.hasMarkedDescendants = false;
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
@@ -152,6 +154,30 @@ abstract class EmbeddedView<T> extends RenderView
 
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;
+  }
+
+  @override
+  void detectChangesInMarkedDescendants() {
+    if (_data.hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
+      _data.hasMarkedDescendants = false;
+      detectChangesInMarkedViews();
+    }
+  }
+
+  @override
+  bool get hasMarkedDescendants => _data.hasMarkedDescendants;
+
+  @override
+  void markDescendantsForRefresh() {
+    if (_data.hasMarkedDescendants) {
+      // The views above this one have recorded it already.
+      return;
+    }
+    _data.hasMarkedDescendants = true;
+    if (_data.changeDetectionMode !=
+        ChangeDetectionCheckedState.waitingToBeAttached) {
+      _data.viewContainer?.parentView?.markDescendantsForRefresh();
+    }
   }
 
   @override
@@ -262,6 +288,10 @@ class _EmbeddedViewData<T> implements DynamicViewData, RenderViewData {
 
   @override
   List<StreamSubscription<void>>? subscriptions;
+
+  /// Whether a view below this one was marked for refresh since this view was
+  /// checked.
+  var hasMarkedDescendants = false;
 
   /// Storage for any callbacks registered with [addOnDestroyCallback].
   List<void Function()>? _onDestroyCallbacks;

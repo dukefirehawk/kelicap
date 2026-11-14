@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.0
+
+No changes. Released with the other Kelicap packages, as 1.2.0.
+
 ## 1.1.5
 
 ### Fixes in 1.1.5

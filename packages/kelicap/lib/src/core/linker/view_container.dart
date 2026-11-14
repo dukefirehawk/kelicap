@@ -64,6 +64,14 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     }
   }
 
+  /// Change detects the views in this container, or below them, that were
+  /// marked by `ComponentView.markForRefresh`, without checking the others.
+  void detectChangesInMarkedNestedViews() {
+    for (var i = 0, len = nestedViews.length; i < len; i++) {
+      nestedViews[i].detectChangesInMarkedDescendants();
+    }
+  }
+
   void detectChangesInNestedViews() {
     for (var i = 0, len = nestedViews.length; i < len; i++) {
       nestedViews[i].detectChangesDeprecated();
@@ -244,6 +252,12 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     view.addRootNodesAfter(_findRenderNode(nestedViews, viewIndex));
 
     view.wasInserted(this);
+
+    // Views below the view that need to be change detected are recorded above
+    // it only up to the container it was in, if any.
+    if (view.hasMarkedDescendants) {
+      parentView?.markDescendantsForRefresh();
+    }
   }
 
   DynamicView detachView(int viewIndex) {
