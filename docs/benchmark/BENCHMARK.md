@@ -2,25 +2,23 @@
 
 **Disclaimer: These figures are intended as a quick baseline check on Kelicap's performance rather than a formal, exhaustive benchmark, so please treat them as indicative.**
 
-The benchmark measures how fast Kelicap renders changes, how much memory it uses, and how large its output is, with plain fields and with [signals](https://github.com/dukefirehawk/kelicap/tree/main/packages/kelicap#signals), when compared with Angular 22, and with [Jaspr](https://jaspr.site), a Dart web framework modelled on Flutter. The apps measured are the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench), and the same benchmark in [Angular 22](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular) and in [Jaspr](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr). Each renders a table of rows in one of two modes:
+The benchmark measures how fast Kelicap renders changes, how much memory it uses, and how large its output is, with plain fields and with [signals](https://github.com/dukefirehawk/kelicap/tree/main/packages/kelicap#signals), when compared with Angular 22, and with [Jaspr](https://jaspr.site), a Dart web framework modelled on Flutter. The apps measured are the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench), and the in [Angular 22 Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular) and in [Jaspr Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr). Each renders a table of rows in one of two modes:
 
 - **fields:** each row's value is a plain field, and every component uses the change detection that checks it on every pass (Kelicap's default, and `ChangeDetectionStrategy.Eager` in Angular 22).
 - **signals:** each row's value is a signal, and the rows and the table use OnPush, so a row is checked only when its signal changes.
 
-Jaspr has no change detection and no signals, so its benchmark uses their nearest equivalents, described in [Compared with Jaspr](#compared-with-jaspr).
-
 ## Setup
 
 - `kelicap` 1.2.0, built with dart2js (`build_runner build --release`, `-O4`), on Dart 3.13.7.
-- Angular 22.2.6, in a production build (`ng build`), which runs without zone.js, the default in Angular 22.
+- Angular 22.2.6, in a production build (`ng build`), which runs without zone.js, the default in Angular 22, on Node 26.13.1
 - `jaspr` 0.23.5, a client-only app built like Kelicap's, with dart2js (`build_runner build --release`, `-O4`), on Dart 3.13.7.
 - Headless Chrome 154 on Linux.
 
 The numbers depend on the machine, and vary between runs: compare the columns of a table rather than numbers from different tables. Kelicap was measured with Angular in one session, and with Jaspr in another, so its numbers differ a little between the two comparisons.
 
-The sections below compare Kelicap with Angular. Its comparison with Jaspr is in [Compared with Jaspr](#compared-with-jaspr).
+## Compare with Angular
 
-## Speed
+### Rendering Speed with Angular
 
 Each operation is a change followed by the change detection pass that renders it. In Kelicap, it is one `NgZone` turn. In Angular, it is `markForCheck()` on the root component followed by `ApplicationRef.tick()`, the equivalent of an event handled in the root. The two benchmarks ran alternately in the same Chrome, and the times are the mean of an operation, the median of three runs.
 
@@ -44,7 +42,7 @@ Rows checked by each operation, the same in both frameworks:
 - **Signals:** a change checks only the rows that show it, in both frameworks. Changing one row is about 20 times faster than with fields, and a pass after an event that changed nothing checks nothing. Changing every row is 1.2 to 1.5 times slower, as each signal that changes notifies its row.
 - **Kelicap and Angular:** Kelicap is about 1.5 to 4 times faster, except when every row changes through signals, where it is as fast with 1,000 rows, and faster with 10,000.
 
-## Memory
+### Memory Consumption with Angular
 
 The JavaScript heap of the page, once its table is rendered and garbage is collected, the median of three runs, each in a new browser context. Both apps create the rows of both modes, and render the table of one, or none.
 
@@ -60,7 +58,7 @@ The JavaScript heap of the page, once its table is rendered and garbage is colle
 - **Rendered rows:** a rendered row takes about 1.1 KB in Kelicap, and 0.6 to 0.7 KB in Angular. Most of the difference is the local variables of `*ngFor`: each of its views keeps a map of seven of them (`$implicit`, `index`, `first`, `last`, `count`, `even` and `odd`), used or not, where Angular's `@for` keeps a small object, and computes `$first`, `$even` and the like from the index.
 - **DOM nodes:** Kelicap keeps the space between `</span> <b>` in the row's template as a text node, where Angular removes whitespace-only text nodes by default, so each row has one more node.
 
-## Output size
+### Bundle Size with Angular
 
 The JavaScript of a release build, raw and compressed, as served:
 
@@ -85,7 +83,7 @@ Each operation is a change, a `setState` of the root, and the build that renders
 
 The fields mode is the worst case for Jaspr: it rebuilds every row on every pass, which an app written for Jaspr avoids by keeping its state low in the tree, and its components `const` where they can be. The signals mode is closer to how a Jaspr app is written.
 
-### Speed, with Jaspr
+### Rending Speed with Jaspr
 
 The mean time of an operation, the median of three runs:
 
@@ -102,7 +100,7 @@ The mean time of an operation, the median of three runs:
 - **One row, with signals:** Jaspr rebuilds the dirty row directly, so its time does not grow with the number of rows, and it is about 3 times faster with 10,000 rows. Kelicap's change detection goes through the table's rows to find the one marked for check.
 - **Nothing, with signals:** both check nothing, but Jaspr still rebuilds the root.
 
-### Memory, with Jaspr
+### Memory Consumption with Jaspr
 
 The JavaScript heap of the page, once its table is rendered and garbage is collected, the median of three runs, each in a new browser context:
 
@@ -118,7 +116,7 @@ The JavaScript heap of the page, once its table is rendered and garbage is colle
 - **Rendered rows:** a rendered row takes about 1.1 KB in Kelicap, and 2.2 to 2.3 KB in Jaspr, which keeps a component, an element and a render object for each component and each DOM node of the row.
 - **DOM nodes:** Kelicap's row has one more, the empty text node of the binding `{{checked()}}` that counts its checks.
 
-### Output size, with Jaspr
+### Bundle Size with Jaspr
 
 | App | Framework | Raw | gzip | Brotli |
 | --- | --- | --- | --- | --- |
@@ -130,6 +128,6 @@ The JavaScript heap of the page, once its table is rendered and garbage is colle
 - **The framework:** the two are the same size, once compressed.
 - **The benchmark:** Jaspr's is about 8% smaller. Both use the same code to time and report the scenarios, including `Uri.parse` and `JsonEncoder`, so the difference is that of the frameworks: Kelicap's templates compile to code for each component, where Jaspr's components are plain Dart.
 
-## Running them
+## Running the Benchmark
 
-The READMEs of the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench), of the [Angular 22 Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular) and of the [Jaspr Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr) say how to build and run them, and how to compare them with their `tool/compare.mjs`.
+Refer to the README of the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench), [Angular 22 Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular) and [Jaspr Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr) on how to build and run them.
