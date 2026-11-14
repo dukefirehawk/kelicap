@@ -5,8 +5,7 @@ import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_test/src/bootstrap.dart';
 
-import '../../../kelicap_test/test/bootstrap_test.template.dart'
-    as ng_generated;
+import 'bootstrap_test.template.dart' as ng_generated;
 
 void main() {
   Injector noopInjector(Injector i) => i;

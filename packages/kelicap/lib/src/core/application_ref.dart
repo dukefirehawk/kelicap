@@ -10,6 +10,7 @@ import '../testability.dart';
 import '../utilities/unsafe_cast.dart';
 import 'change_detection/change_detector_ref.dart';
 import 'change_detection/host.dart';
+import 'change_detection/scheduler.dart';
 import 'exception_handler.dart';
 import 'linker/component_factory.dart' show ComponentRef, ComponentFactory;
 import 'zone/ng_zone.dart' show NgZone;
@@ -30,10 +31,14 @@ class ApplicationRef extends ChangeDetectionHost {
   final Injector _injector;
   final NgZone _ngZone;
 
+  // Created before _onMicroSub, so that it learns of each pass first.
+  late final ChangeDetectionScheduler _scheduler;
+
   late final StreamSubscription<void> _onErrorSub;
   late final StreamSubscription<void> _onMicroSub;
 
   ApplicationRef._(this._ngZone, this._exceptionHandler, this._injector) {
+    _scheduler = ChangeDetectionScheduler(_ngZone);
     _onErrorSub = _ngZone.onUncaughtError.listen((e) {
       handleUncaughtException(e.error, e.stackTrace);
     });
@@ -115,6 +120,7 @@ class ApplicationRef extends ChangeDetectionHost {
 
   /// Dispose of this application and all of its components.
   void dispose() {
+    _scheduler.dispose();
     _onErrorSub.cancel();
     _onMicroSub.cancel();
     // Destroying components removes them from this list. Destroying them in
@@ -151,6 +157,13 @@ extension DebugApplicationRef on ApplicationRef {
   /// Returns this app's [ExceptionHandler].
   // TODO(b/159650979): move to [App] if deemed an app-wide service.
   ExceptionHandler get exceptionHandler => _exceptionHandler;
+}
+
+/// **INTERNAL ONLY**: Not exported by `package:kelicap/kelicap.dart`.
+extension InternalApplicationRef on ApplicationRef {
+  /// Requests change detection for this app, for changes made outside its
+  /// [NgZone].
+  ChangeDetectionScheduler get changeDetectionScheduler => _scheduler;
 }
 
 /// An extension for testing this app.

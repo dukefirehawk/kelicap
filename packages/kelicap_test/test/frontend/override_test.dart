@@ -3,8 +3,7 @@ import 'package:kelicap/kelicap.dart';
 
 import 'package:kelicap_test/kelicap_test.dart';
 
-import '../../../../kelicap_test/test/frontend/override_test.template.dart'
-    as ng;
+import 'override_test.template.dart' as ng;
 
 void main() {
   tearDown(disposeAnyRunningTest);
