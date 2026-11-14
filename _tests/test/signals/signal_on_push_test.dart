@@ -77,6 +77,22 @@ void main() {
     expect(secondChecks, secondBefore);
   });
 
+  test('signals of siblings set together update both', () async {
+    // Both mark their parent, in either order.
+    await outside(() {
+      first.set(1);
+      second.set(2);
+    });
+    expect(text('first-child'), '1');
+    expect(text('second-child'), '2');
+    await outside(() {
+      second.set(3);
+      first.set(4);
+    });
+    expect(text('first-child'), '4');
+    expect(text('second-child'), '3');
+  });
+
   test('a signal read by an *ngIf updates it', () async {
     await outside(() => show.set(true));
     expect(text('#in-if'), 'a');

@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.0
+
+### New in 1.2.0
+
+* **Signals:** Generated views have a `detectChangesInMarkedViews` method, which change detects the views below them that a signal of `kelicap` 1.2.0 changed, without checking them. Code it generates requires `kelicap` 1.2.0
+
 ## 1.1.5
 
 ### Fixes in 1.1.5

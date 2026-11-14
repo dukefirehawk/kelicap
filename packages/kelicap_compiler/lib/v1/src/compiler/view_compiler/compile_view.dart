@@ -1495,6 +1495,27 @@ class CompileView {
     ];
   }
 
+  /// Whether this view needs a generated `detectChangesInMarkedViews()`, that
+  /// reaches the views below it that were marked for refresh.
+  ///
+  /// Host views have a default implementation, for their only child component
+  /// view, so they need one only to reach their view containers too.
+  bool get needsMarkedViewsChangeDetection =>
+      viewContainers.isNotEmpty ||
+      (viewType != ViewType.host && viewChildren.isNotEmpty);
+
+  /// Returns the statements of `detectChangesInMarkedViews()`, that reaches
+  /// the views below this one that were marked for refresh, without checking
+  /// this one.
+  List<o.Statement> writeMarkedViewsChangeDetectionStatements() => [
+    for (final viewContainer in viewContainers)
+      viewContainer.callMethod('detectChangesInMarkedNestedViews', []).toStmt(),
+    for (final viewChild in viewChildren)
+      viewChild.componentView!
+          .callMethod('detectChangesInMarkedDescendants', [])
+          .toStmt(),
+  ];
+
   List<o.Statement> writeChangeDetectionStatements() {
     var statements = <o.Statement>[];
     if (detectChangesInInputsMethod.isEmpty &&

@@ -48,13 +48,16 @@ google-chrome --headless=new --dump-dom \
 ## Results
 
 On Linux, in headless Chrome, with `kelicap` 1.2.0 (unreleased), the mean time
-of an operation, of two runs:
+of an operation, the median of three runs:
 
 | Scenario | 1,000 rows: fields | 1,000 rows: signals | 10,000 rows: fields | 10,000 rows: signals |
 |---|---|---|---|---|
-| Update one row | 0.27 ms | 0.07 ms | 1.9–2.9 ms | 1.3–2.1 ms |
-| Update all rows | 0.82 ms | 1.30 ms | 7.3–7.6 ms | 13.8–16.9 ms |
+| Update one row | 0.29 ms | 0.01 ms | 2.8 ms | 0.24 ms |
+| Update all rows | 0.87 ms | 1.4 ms | 7.7 ms | 14 ms |
 | No change | 0.28 ms | < 0.01 ms | 1.6–2.8 ms | < 0.01 ms |
+
+Times vary between runs, by up to half for 10,000 rows, so compare the modes
+within a row of the table rather than across tables.
 
 Rows checked per operation:
 
@@ -66,8 +69,11 @@ Rows checked per operation:
 
 - **No change**: signals check nothing, where fields check every row, so a
   pass that follows an event that changed nothing costs nothing.
-- **Update one row**: signals check one row, but the time still grows with the
-  number of rows: the row marks the table for check, and checking the table
-  runs its `*ngFor`, which compares every row of its list.
+- **Update one row**: signals check only the row, about 10 to 30 times faster.
+  The table above it is not checked, nor is its `*ngFor`, which would compare
+  every row of its list: change detection only goes through the table's rows
+  to find the one that changed, which is why the time still grows a little
+  with the number of rows.
 - **Update all rows**: signals are about 1.6 to 2 times slower, as each of the
-  writes notifies its row, which marks itself, and its ancestors, for check.
+  writes notifies its row, which records that it, and its ancestors, need to
+  be checked.

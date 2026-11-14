@@ -557,6 +557,15 @@ o.ClassStmt createViewClass(CompileView view, ExpressionParser parser) {
       null,
       [o.importExpr(Identifiers.dartCoreOverride)],
     ),
+    if (view.needsMarkedViewsChangeDetection)
+      o.ClassMethod(
+        'detectChangesInMarkedViews',
+        [],
+        view.writeMarkedViewsChangeDetectionStatements(),
+        null,
+        null,
+        [o.importExpr(Identifiers.dartCoreOverride)],
+      ),
     if (view.viewType == ViewType.embedded)
       o.ClassMethod(
         'dirtyParentQueriesInternal',
