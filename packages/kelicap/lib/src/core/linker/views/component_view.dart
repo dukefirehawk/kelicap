@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 import '../../../core/change_detection/host.dart';
 import '../../../core/linker/style_encapsulation.dart';
 import '../../../devtools.dart';
+import '../../../signals/view_consumer.dart';
 import 'render_view.dart';
 import 'view.dart';
 
@@ -148,12 +149,20 @@ abstract class ComponentView<T extends Object> extends RenderView {
       throw StateError('detectChanges');
     }
 
+    // Records the signals that this view reads while it is checked, including
+    // in its embedded views, so that it is marked for check when one of them
+    // changes. Child component views record their own.
+    final signals = _data.signals ??= ViewSignalConsumer(
+      detectChangesInternal,
+      detectCrash,
+      markForCheck,
+    );
     if (ChangeDetectionHost.checkForCrashes) {
       // Run change detection in "slow-mode" to catch thrown exceptions.
-      detectCrash();
+      signals.checkForCrash();
     } else {
       // Normally run change detection.
-      detectChangesInternal();
+      signals.check();
     }
 
     // If we are a 'CheckOnce' component, we are done being checked.
@@ -273,6 +282,9 @@ class _ComponentViewData implements RenderViewData {
   @override
   List<StreamSubscription<void>>? subscriptions;
 
+  /// Tracks the signals that the view reads, once it has been checked.
+  ViewSignalConsumer? signals;
+
   @override
   ChangeDetectionCheckedState get changeDetectionMode => _changeDetectionMode;
   ChangeDetectionCheckedState _changeDetectionMode;
@@ -304,6 +316,7 @@ class _ComponentViewData implements RenderViewData {
   @override
   void destroy() {
     _destroyed = true;
+    signals?.dispose();
     final subscriptions = this.subscriptions;
     if (subscriptions != null) {
       for (var i = 0, length = subscriptions.length; i < length; ++i) {

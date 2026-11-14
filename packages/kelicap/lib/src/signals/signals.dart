@@ -2,10 +2,11 @@ import 'package:alien_signals/alien_signals.dart'
     as alien
     show Effect, effect, endBatch, startBatch;
 import 'package:alien_signals/preset.dart'
-    show ComputedNode, SignalNode, setActiveSub;
+    show ComputedNode, SignalNode, getActiveSub, setActiveSub;
 import 'package:alien_signals/system.dart' show ReactiveFlags;
 
 import '../core/change_detection/scheduler.dart';
+import 'view_consumer.dart';
 
 /// A value that notifies the code that reads it when it changes.
 ///
@@ -21,7 +22,9 @@ abstract interface class Signal<T> {
 ///
 /// Setting it to a new value runs change detection, in every application that
 /// is running, even if the value was set outside of their [NgZone], such as in
-/// code run with `NgZone.runOutsideKelicap`.
+/// code run with `NgZone.runOutsideKelicap`. It marks the components whose
+/// templates read it for check, so an OnPush component that reads it is
+/// updated without calling `ChangeDetectorRef.markForCheck`.
 abstract interface class WritableSignal<T> implements Signal<T> {
   /// Sets the value of this signal to [value].
   ///
@@ -100,7 +103,24 @@ Signal<T> computed<T>(T Function() computation) => _Computed(computation);
 ///   onCleanup(timer.cancel);
 /// });
 /// ```
-EffectRef effect(void Function(EffectCleanupRegisterFn onCleanup) fn) =>
+EffectRef effect(void Function(EffectCleanupRegisterFn onCleanup) fn) {
+  // An effect is owned by the effect it is created in, which stops it when it
+  // runs again. One created while a view is checked, such as by a component
+  // that an *ngIf creates, is not owned by the view, which would stop it when
+  // the view is checked again.
+  final owner = getActiveSub();
+  if (owner is! ViewSignalConsumer) {
+    return _createEffect(fn);
+  }
+  setActiveSub(null);
+  try {
+    return _createEffect(fn);
+  } finally {
+    setActiveSub(owner);
+  }
+}
+
+EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) =>
     _EffectRef(
       alien.effect<void Function()?>(() {
         List<void Function()>? cleanups;

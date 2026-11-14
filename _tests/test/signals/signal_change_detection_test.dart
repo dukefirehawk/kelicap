@@ -75,10 +75,7 @@ void main() {
     await settle();
     ngZone.runOutsideKelicap(() => onPush.instance.count.set(1));
     await settle();
-    expect(onPush.location.textContent, '0', reason: 'not marked for check');
-    ngZone.runOutsideKelicap(() => onPush.instance.setAndMarkForCheck(2));
-    await settle();
-    expect(onPush.location.textContent, '2');
+    expect(onPush.location.textContent, '1');
   });
 }
 
@@ -97,23 +94,13 @@ class CounterComponent {
   void increment() => count.update((value) => value + 1);
 }
 
-/// Setting a signal does not mark the OnPush components that read it for
-/// check, so this one is marked by hand.
 @Component(
   selector: 'on-push-counter',
   template: '{{count()}}',
   changeDetection: ChangeDetectionStrategy.onPush,
 )
 class OnPushCounterComponent {
-  final ChangeDetectorRef _changeDetector;
   final count = signal(0);
-
-  OnPushCounterComponent(this._changeDetector);
-
-  void setAndMarkForCheck(int value) {
-    count.set(value);
-    _changeDetector.markForCheck();
-  }
 }
 
 class _RethrowingExceptionHandler implements ExceptionHandler {

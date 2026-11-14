@@ -1,0 +1,19 @@
+name: signals_bench
+
+description: Compares change detection of plain fields with signals in Kelicap.
+
+version: 0.1.0
+
+environment:
+  sdk: ">=3.13.0 <4.0.0"
+
+publish_to: none
+
+dependencies:
+  kelicap: ^1.1.5
+  web: ^1.1.1
+
+dev_dependencies:
+  build_runner: ^2.4.0
+  build_web_compilers: ^4.8.0
+  lints: ^6.1.0
