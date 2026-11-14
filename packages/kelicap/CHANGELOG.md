@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.0
+
+### New in 1.2.0
+
+* **Signals:** `package:kelicap/signals.dart` adds signals: values that notify the code that reads them when they change. Create one with `signal(0)`, read it with `count()`, also in a template (`{{count()}}`), and change it with `count.set(1)` or `count.update((value) => value + 1)`. It also has `computed`, for values derived from signals, `effect`, to run code when the signals it read change, `untracked` and `batch`. Setting a signal to a new value runs change detection in every application that is running, even if it was set outside the `NgZone`, such as in code run with `NgZone.runOutsideKelicap`. It does not mark the OnPush components that read it for check: call `ChangeDetectorRef.markForCheck` for those. An effect is not destroyed with the component that created it: destroy it in `ngOnDestroy`. The signals are built on `package:alien_signals`
+
 ## 1.1.5
 
 ### Fixes in 1.1.5

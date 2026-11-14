@@ -18,6 +18,7 @@ presets:
       - test/lifecycle_hooks
       - test/templates
       - test/security
+      - test/signals
     add_presets: [ci]
 
   vm:

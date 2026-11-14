@@ -13,6 +13,7 @@ environment:
 resolution: workspace
 
 dependencies:
+  alien_signals: ">=2.4.0 <2.5.0"
   build: ^4.0.0
   built_collection: ^5.1.1
   build_web_compilers: ^4.6.0

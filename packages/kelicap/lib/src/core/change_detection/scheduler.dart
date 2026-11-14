@@ -17,6 +17,18 @@ import '../zone/ng_zone.dart';
 /// handling, and the turn events that tests wait on, are therefore the same
 /// for both.
 final class ChangeDetectionScheduler {
+  /// The schedulers of the applications that are running.
+  static final _active = <ChangeDetectionScheduler>{};
+
+  /// Requests a change detection pass in every application that is running.
+  ///
+  /// Used when state that any of them may render changes, such as a signal.
+  static void scheduleAll() {
+    for (final scheduler in _active) {
+      scheduler.schedule();
+    }
+  }
+
   final NgZone _ngZone;
   late final StreamSubscription<void> _onMicrotaskEmptySub;
 
@@ -33,6 +45,7 @@ final class ChangeDetectionScheduler {
     _onMicrotaskEmptySub = _ngZone.onMicrotaskEmpty.listen((_) {
       _pending = false;
     });
+    _active.add(this);
   }
 
   /// Whether a pass has been requested and has not started yet.
@@ -66,6 +79,7 @@ final class ChangeDetectionScheduler {
 
   /// Stops this scheduler: requests made before or after are ignored.
   void dispose() {
+    _active.remove(this);
     _disposed = true;
     _pending = false;
     _onMicrotaskEmptySub.cancel();

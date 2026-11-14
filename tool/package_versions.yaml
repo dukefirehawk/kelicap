@@ -1,5 +1,6 @@
 sdk: ">=3.13.0 <4.0.0"
 
+alien_signals: ">=2.4.0 <2.5.0"
 analyzer: ^14.0.0
 args: ^2.6.0
 async: ^2.12.0
