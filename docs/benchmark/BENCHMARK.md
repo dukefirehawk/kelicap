@@ -2,18 +2,23 @@
 
 **Disclaimer: These figures are intended as a quick baseline check on Kelicap's performance rather than a formal, exhaustive benchmark, so please treat them as indicative.**
 
-The benchmark measures how fast Kelicap renders changes, how much memory it uses, and how large its output is, with plain fields and with [signals](https://github.com/dukefirehawk/kelicap/tree/main/packages/kelicap#signals), when compared with Angular 22. The two apps measured are the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench) and the same [Angular 22 Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular). Each renders a table of rows in one of two modes:
+The benchmark measures how fast Kelicap renders changes, how much memory it uses, and how large its output is, with plain fields and with [signals](https://github.com/dukefirehawk/kelicap/tree/main/packages/kelicap#signals), when compared with Angular 22, and with [Jaspr](https://jaspr.site), a Dart web framework modelled on Flutter. The apps measured are the [Kelicap Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench), and the same benchmark in [Angular 22](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_angular) and in [Jaspr](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr). Each renders a table of rows in one of two modes:
 
 - **fields:** each row's value is a plain field, and every component uses the change detection that checks it on every pass (Kelicap's default, and `ChangeDetectionStrategy.Eager` in Angular 22).
 - **signals:** each row's value is a signal, and the rows and the table use OnPush, so a row is checked only when its signal changes.
+
+Jaspr has no change detection and no signals, so its benchmark uses their nearest equivalents, described in [Compared with Jaspr](#compared-with-jaspr).
 
 ## Setup
 
 - `kelicap` 1.2.0, built with dart2js (`build_runner build --release`, `-O4`), on Dart 3.13.7.
 - Angular 22.2.6, in a production build (`ng build`), which runs without zone.js, the default in Angular 22.
+- `jaspr` 0.23.5, a client-only app built like Kelicap's, with dart2js (`build_runner build --release`, `-O4`), on Dart 3.13.7.
 - Headless Chrome 154 on Linux.
 
-The numbers depend on the machine, and vary between runs: compare the columns of a table rather than numbers from different tables.
+The numbers depend on the machine, and vary between runs: compare the columns of a table rather than numbers from different tables. Kelicap was measured with Angular in one session, and with Jaspr in another, so its numbers differ a little between the two comparisons.
+
+The sections below compare Kelicap with Angular. Its comparison with Jaspr is in [Compared with Jaspr](#compared-with-jaspr).
 
 ## Speed
 
@@ -51,7 +56,7 @@ The JavaScript heap of the page, once its table is rendered and garbage is colle
 | 10,000 rows, signals table | 14.0 MB | 10.5 MB |
 | DOM nodes, 10,000 rows | 70,045 | 60,040 |
 
-- **Data:** Kelicap's rows with signals uses more memory than Angular's.
+- **Data:** before any table is rendered, Kelicap's page takes about a third less memory than Angular's, 2.4 MB against 3.7 MB, with the rows of both modes created.
 - **Rendered rows:** a rendered row takes about 1.1 KB in Kelicap, and 0.6 to 0.7 KB in Angular. Most of the difference is the local variables of `*ngFor`: each of its views keeps a map of seven of them (`$implicit`, `index`, `first`, `last`, `count`, `even` and `odd`), used or not, where Angular's `@for` keeps a small object, and computes `$first`, `$even` and the like from the index.
 - **DOM nodes:** Kelicap keeps the space between `</span> <b>` in the row's template as a text node, where Angular removes whitespace-only text nodes by default, so each row has one more node.
 
@@ -71,12 +76,14 @@ The JavaScript of a release build, raw and compressed, as served:
 
 ## Compared with Jaspr
 
-The same benchmark in [Jaspr](https://jaspr.site) 0.23.5, a Dart web framework modelled on Flutter's components, is the [Jaspr Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr). Both are Dart, built with dart2js `-O4` on Dart 3.13.7, and run in the same headless Chrome. Jaspr has no change detection, and no signals, so the two modes are their nearest equivalents:
+The [Jaspr Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench_jaspr) is the same benchmark in Jaspr 0.23.5. Both apps are Dart, compiled by the same dart2js, so the differences are those of the frameworks. Jaspr has no change detection, and no signals, so its two modes are their nearest equivalents:
 
 - **fields:** each row is a `StatelessComponent`, rebuilt whenever its parent is, so every row is rebuilt on every pass.
 - **signals:** each row's value is a `ValueNotifier`, and each row a `StatefulComponent` that rebuilds itself when it changes. The table and the rows override `shouldRebuild`, to skip a rebuild when their input is the same, as OnPush does.
 
 Each operation is a change, a `setState` of the root, and the build that renders it, which Jaspr otherwise runs in a microtask. The rows rebuilt by each operation are the same as the rows checked in Kelicap.
+
+The fields mode is the worst case for Jaspr: it rebuilds every row on every pass, which an app written for Jaspr avoids by keeping its state low in the tree, and its components `const` where they can be. The signals mode is closer to how a Jaspr app is written.
 
 ### Speed, with Jaspr
 
@@ -107,6 +114,7 @@ The JavaScript heap of the page, once its table is rendered and garbage is colle
 | 10,000 rows, signals table | 14.0 MB | 25.7 MB |
 | DOM nodes, 10,000 rows | 70,044 | 60,035 |
 
+- **Data:** before any table is rendered, the two pages are within 10% of each other.
 - **Rendered rows:** a rendered row takes about 1.1 KB in Kelicap, and 2.2 to 2.3 KB in Jaspr, which keeps a component, an element and a render object for each component and each DOM node of the row.
 - **DOM nodes:** Kelicap's row has one more, the empty text node of the binding `{{checked()}}` that counts its checks.
 

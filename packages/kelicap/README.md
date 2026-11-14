@@ -130,7 +130,7 @@ class TodoListComponent {
 
 A signal read in a component's lifecycle hooks, or in the setters of its inputs, checks the component whose template uses it, not the component itself, as those run while that one is checked. Do not set a signal that a component reads while that component is checked, such as in its `ngAfterViewChecked`: it is not checked again.
 
-### Performance
+### Benchmark
 
 With plain fields and the default change detection, every change detection pass checks every component. With signals and OnPush, a pass checks only the components that read a signal that changed. The [Kelicap Signals Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench) measures a table of rows rendered both ways. These are the mean times of one change and the pass that renders it, in a release build in Chrome:
 
@@ -145,10 +145,6 @@ With plain fields and the default change detection, every change detection pass 
 - **Every row:** about 1.2 to 1.5 times slower, as each signal that changes notifies the component that read it. Signals pay off when a change affects a small part of the page, which is the common case.
 
 The times vary between runs, by up to half with 10,000 rows, and between machines: compare the columns of a row rather than the numbers themselves.
-
-## Benchmark
-
-[Kelicap vs Angular 22 Benckmark](https://github.com/dukefirehawk/kelicap/blob/main/packages/kelicap/BENCHMARK.md) evaluates Kelicap against Angular 22 across speed, memory consumption, and bundle size.
 
 ## Documentation
 

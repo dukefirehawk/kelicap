@@ -62,7 +62,7 @@ node tool/compare.mjs size /tmp/signals_bench /tmp/signals_bench_jaspr
 
 Set `CHROME` to the Chrome executable if it is not `google-chrome`.
 
-The results are in [the Kelicap benchmarks](../../packages/kelicap/BENCHMARK.md#compared-with-jaspr).
+The results are in the Kelicap benchmarks.
 They are worth reading with what the benchmark measures in mind: the fields
 mode rebuilds every row on every pass, which an app written for Jaspr would
 avoid with `const` components and state kept low in the tree.
