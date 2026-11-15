@@ -103,6 +103,23 @@ void main() {
     expect(scheduler.isPending, isFalse);
   });
 
+  test('a pass that calls cancel() does not count toward the limit', () {
+    final errors = <Object>[];
+    final passes = ChangeDetectionScheduler(ngZone, (e, _) => errors.add(e));
+    addTearDown(passes.dispose);
+    // Requested, then dropped, such as when too many refreshes stop a tick.
+    passes.runPass(() {
+      passes.schedule();
+      passes.cancel();
+    });
+    for (var i = 1; i < ChangeDetectionScheduler.maxPassesInARow; i++) {
+      passes.runPass(passes.schedule);
+    }
+    expect(errors, isEmpty);
+    passes.runPass(passes.schedule);
+    expect(errors, [isStateError]);
+  });
+
   test('dispose() stops scheduling', () async {
     appRef.dispose();
     ngZone.runOutsideKelicap(scheduler.schedule);

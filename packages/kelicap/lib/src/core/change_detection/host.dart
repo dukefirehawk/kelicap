@@ -114,10 +114,11 @@ abstract class ChangeDetectionHost {
 
   /// Runs [AppView.detectChanges] on all top-level components/views.
   void _runTick() {
+    // The length is read on each iteration, as a root component destroyed
+    // during the tick, such as by a lifecycle hook, is removed from the list.
     final detectors = _changeDetectors;
-    final length = detectors.length;
     _markedForRefresh = false;
-    for (var i = 0; i < length; i++) {
+    for (var i = 0; i < detectors.length; i++) {
       detectors[i].detectChanges();
     }
     // A signal that changed during the pass, such as in a lifecycle hook,
@@ -142,7 +143,7 @@ abstract class ChangeDetectionHost {
         return;
       }
       _markedForRefresh = false;
-      for (var i = 0; i < length; i++) {
+      for (var i = 0; i < detectors.length; i++) {
         final detector = detectors[i];
         if (detector is View) {
           detector.detectChangesInMarkedDescendants();
@@ -151,7 +152,7 @@ abstract class ChangeDetectionHost {
     }
     if (isDevMode) {
       debugEnterThrowOnChanged();
-      for (var i = 0; i < length; i++) {
+      for (var i = 0; i < detectors.length; i++) {
         detectors[i].detectChanges();
       }
       debugThrowIfUnstableExpressionsFound();
@@ -168,11 +169,10 @@ abstract class ChangeDetectionHost {
   /// Returns whether an exception was caught.
   bool _runTickGuarded() {
     final detectors = _changeDetectors;
-    final length = detectors.length;
     if (isDevMode) {
       debugThrowOnChangedImmediately();
     }
-    for (var i = 0; i < length; i++) {
+    for (var i = 0; i < detectors.length; i++) {
       final detector = detectors[i];
       if (detector is View) {
         final view = detector;

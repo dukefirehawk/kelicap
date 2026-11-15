@@ -55,6 +55,7 @@ void main() {
     a = signal(0);
     b = signal(0);
     loopChecks = hookChecks = doChecks = bumps = 0;
+    RootDestroyer.onChecked = null;
     rowSignals = [signal(0), signal(0), signal(0)];
     counterChecks.clear();
     errors = [];
@@ -270,6 +271,15 @@ void main() {
       expect(errors, isEmpty);
     },
   );
+
+  test('a root component destroyed during a tick is not checked', () async {
+    await bootstrap(ng.createRootDestroyerFactory());
+    final second = await bootstrap(ng.createStateReaderComponentFactory());
+    RootDestroyer.onChecked = second.destroy;
+    ngZone.run(() {});
+    await settle();
+    expect(errors, isEmpty);
+  });
 
   test(
     'a host view marked before it is inserted is refreshed once inserted',
@@ -859,4 +869,17 @@ class _CollectingExceptionHandler implements ExceptionHandler {
 
   @override
   void call(exception, [stackTrace, String? reason]) => errors.add(exception);
+}
+
+/// Calls [onChecked], once, when it is checked.
+@Component(selector: 'root-destroyer', template: '')
+class RootDestroyer implements AfterViewChecked {
+  static void Function()? onChecked;
+
+  @override
+  void ngAfterViewChecked() {
+    final callback = onChecked;
+    onChecked = null;
+    callback?.call();
+  }
 }
