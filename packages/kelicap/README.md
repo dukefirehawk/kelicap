@@ -138,13 +138,13 @@ With plain fields and the default change detection, every change detection pass 
 
 | Change | 1,000 rows: fields | 1,000 rows: signals | 10,000 rows: fields | 10,000 rows: signals |
 | --- | --- | --- | --- | --- |
-| One row | 0.13 ms | < 0.01 ms | 1.9 ms | 0.10 ms |
-| Nothing, such as an event that changes no state | 0.12 ms | < 0.01 ms | 1.9 ms | < 0.01 ms |
-| Every row | 0.48 ms | 0.72 ms | 6.1 ms | 7.4 ms |
+| One row | 0.15 ms | < 0.01 ms | 1.7 ms | < 0.01 ms |
+| Nothing, such as an event that changes no state | 0.14 ms | < 0.01 ms | 1.8 ms | < 0.01 ms |
+| Every row | 0.60 ms | 0.92 ms | 6.3 ms | 8.2 ms |
 
-- **One row:** about 20 times faster. Only that row is checked: not the table above it, nor the `*ngFor` that lists the rows, which would compare all of them. Change detection goes through the rows only to find the one that changed, so the time still grows a little with their number.
+- **One row:** about 30 times faster with 1,000 rows, and 250 times with 10,000. Only that row is checked: not the table above it, nor the `*ngFor` that lists the rows, which would compare all of them. The `*ngFor` records which of its rows were marked, so change detection goes straight to the row, and the time does not grow with the number of rows.
 - **Nothing:** a pass that follows an event that changed no signal checks nothing.
-- **Every row:** about 1.2 to 1.5 times slower, as each signal that changes notifies the component that read it. Signals pay off when a change affects a small part of the page, which is the common case.
+- **Every row:** about 1.3 to 1.5 times slower, as each signal that changes notifies the component that read it. Signals pay off when a change affects a small part of the page, which is the common case.
 
 The times vary between runs, by up to half with 10,000 rows, and between machines: compare the columns of a row rather than the numbers themselves.
 

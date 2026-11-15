@@ -211,17 +211,16 @@ abstract class ComponentView<T extends Object> extends RenderView {
     if (signals != null) {
       return _check(signals);
     }
-    if (_data.changeDetectorState == ChangeDetectorState.neverChecked) {
-      // Stored before the check, so that it is disposed with the view even if
-      // the check throws after it recorded a signal.
-      final first = _data.signals = _ComponentViewSignals(this);
-      final checkAgain = _check(first);
-      if (!first.hasDependencies) {
-        // Recorded nothing, so nothing notifies it: dropped.
-        _data.signals = null;
-      }
-      return checkAgain;
+    if (_data.changeDetectorState != ChangeDetectorState.neverChecked &&
+        !_checkWithoutRecording()) {
+      return false;
     }
+    return _checkWithNewSignals();
+  }
+
+  /// Checks this view, which has read no signal, without recording the
+  /// signals that it reads, and returns whether it read one.
+  bool _checkWithoutRecording() {
     signalRead = false;
     // Not recorded by the view above this one, if it records its own.
     final previous = setActiveSub(null);
@@ -234,12 +233,18 @@ abstract class ComponentView<T extends Object> extends RenderView {
     } finally {
       setActiveSub(previous);
     }
-    if (!signalRead) {
-      return false;
-    }
-    final late = _data.signals = _ComponentViewSignals(this);
-    final checkAgain = _check(late);
-    if (!late.hasDependencies) {
+    return signalRead;
+  }
+
+  /// Checks this view with a new [ViewSignalConsumer], which it keeps if it
+  /// recorded a signal.
+  ///
+  /// It is stored before the check, so that it is disposed with the view even
+  /// if the check throws after it recorded a signal.
+  bool _checkWithNewSignals() {
+    final signals = _data.signals = _ComponentViewSignals(this);
+    final checkAgain = _check(signals);
+    if (!signals.hasDependencies) {
       // Recorded nothing, so nothing notifies it: dropped.
       _data.signals = null;
     }
@@ -304,12 +309,12 @@ abstract class ComponentView<T extends Object> extends RenderView {
   }
 
   @override
-  View? get viewAboveForRefresh => parentView;
+  ViewData get viewData => _data;
 
   @override
-  bool get isWaitingToBeAttached =>
-      _data.changeDetectionMode ==
-      ChangeDetectionCheckedState.waitingToBeAttached;
+  void markViewAboveForRefresh() {
+    parentView!.markDescendantsForRefresh();
+  }
 
   /// Generated code that is called by hosts.
   ///

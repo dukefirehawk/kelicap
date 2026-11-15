@@ -59,6 +59,13 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   bool checkForCrash() => _track(forCrash: true);
 
   bool _track({required bool forCrash}) {
+    if (_disposed) {
+      // A destroyed view, which is not checked unless something is wrong:
+      // checked without recording the signals it reads, which would keep it
+      // alive, and notify it.
+      forCrash ? detectCrash() : detectChanges();
+      return false;
+    }
     _checking = true;
     _forCrash = forCrash;
     // Makes alien.run() run this node, which it does only when it is dirty.
@@ -94,8 +101,13 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   /// Whether the last [check] recorded a signal.
   bool get hasDependencies => deps != null;
 
+  var _disposed = false;
+
   /// Stops tracking: [onChanged] is not called again.
-  void dispose() => alien.stop(this);
+  void dispose() {
+    _disposed = true;
+    alien.stop(this);
+  }
 
   @override
   alien.EffectCleanup? runEffect() {

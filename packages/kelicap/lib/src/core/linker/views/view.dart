@@ -114,7 +114,18 @@ abstract class View implements ChangeDetectorRef {
   /// Called, instead of [detectChanges], by a view that is not checked, on the
   /// views in its template, so that the marked views are reached without
   /// checking the views on the way to them.
-  void detectChangesInMarkedDescendants();
+  ///
+  /// Defaults to reaching them, unless this view is not to be checked: a
+  /// component view overrides it, as it checks itself if it was marked.
+  void detectChangesInMarkedDescendants() {
+    if (_hasMarkedDescendants && !viewData.shouldSkipChangeDetection) {
+      detectChangesInMarkedViewsKeepingMarks();
+    }
+  }
+
+  /// The data of this view.
+  @protected
+  ViewData get viewData;
 
   var _hasMarkedDescendants = false;
 
@@ -122,16 +133,19 @@ abstract class View implements ChangeDetectorRef {
   /// [ComponentView.markForRefresh] since this view was checked.
   bool get hasMarkedDescendants => _hasMarkedDescendants;
 
-  /// The view above this one, in which [markDescendantsForRefresh] records
-  /// that a view below it was marked, if any.
+  /// Records in the view above this one, or in the container of this one,
+  /// that a view below it was marked, if any, as [markDescendantsForRefresh]
+  /// does.
   @protected
-  View? get viewAboveForRefresh;
+  void markViewAboveForRefresh();
 
   /// Whether this view is waiting to be attached, in which case
   /// [markDescendantsForRefresh] records nothing above it: the container that
   /// attaches it does.
   @protected
-  bool get isWaitingToBeAttached;
+  bool get isWaitingToBeAttached =>
+      viewData.changeDetectionMode ==
+      ChangeDetectionCheckedState.waitingToBeAttached;
 
   /// Clears [hasMarkedDescendants] when this view is checked, which checks the
   /// views below it, marked or not.
@@ -164,7 +178,7 @@ abstract class View implements ChangeDetectorRef {
     }
     _hasMarkedDescendants = true;
     if (!isWaitingToBeAttached) {
-      viewAboveForRefresh?.markDescendantsForRefresh();
+      markViewAboveForRefresh();
     }
   }
 

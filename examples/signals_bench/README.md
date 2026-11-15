@@ -52,9 +52,9 @@ of an operation, the median of three runs:
 
 | Scenario | 1,000 rows: fields | 1,000 rows: signals | 10,000 rows: fields | 10,000 rows: signals |
 |---|---|---|---|---|
-| Update one row | 0.13 ms | < 0.01 ms | 1.9 ms | 0.10 ms |
-| Update all rows | 0.48 ms | 0.72 ms | 6.1 ms | 7.4 ms |
-| No change | 0.12 ms | < 0.01 ms | 1.9 ms | < 0.01 ms |
+| Update one row | 0.15 ms | < 0.01 ms | 1.7 ms | < 0.01 ms |
+| Update all rows | 0.60 ms | 0.92 ms | 6.3 ms | 8.2 ms |
+| No change | 0.14 ms | < 0.01 ms | 1.8 ms | < 0.01 ms |
 
 Times vary between runs, by up to half for 10,000 rows, so compare the modes
 within a row of the table rather than across tables.
@@ -69,12 +69,12 @@ Rows checked per operation:
 
 - **No change**: signals check nothing, where fields check every row, so a
   pass that follows an event that changed nothing costs nothing.
-- **Update one row**: signals check only the row, about 20 times faster.
-  The table above it is not checked, nor is its `*ngFor`, which would compare
-  every row of its list: change detection only goes through the table's rows
-  to find the one that changed, which is why the time still grows a little
-  with the number of rows.
-- **Update all rows**: signals are about 1.2 to 1.5 times slower, as each of
+- **Update one row**: signals check only the row, about 30 times faster
+  with 1,000 rows, and 250 times with 10,000. The table above it is not
+  checked, nor is its `*ngFor`, which would compare every row of its list. The
+  `*ngFor` records which of its rows were marked, so change detection goes
+  straight to the row, and the time does not grow with the number of rows.
+- **Update all rows**: signals are about 1.3 to 1.5 times slower, as each of
   the writes notifies its row, which records that it, and its ancestors, need
   to be checked.
 
@@ -87,18 +87,20 @@ headless Chrome, the two run alternately, the median of three runs:
 
 | Scenario | Mode | 1,000 rows: Kelicap | 1,000 rows: Angular | 10,000 rows: Kelicap | 10,000 rows: Angular |
 |---|---|---|---|---|---|
-| Update one row | fields | 0.13 ms | 0.44 ms | 1.9 ms | 4.6 ms |
-| Update one row | signals | 0.006 ms | 0.024 ms | 0.10 ms | 0.27 ms |
-| Update all rows | fields | 0.48 ms | 0.91 ms | 6.1 ms | 8.6 ms |
-| Update all rows | signals | 0.72 ms | 0.73 ms | 7.4 ms | 9.3 ms |
-| No change | fields | 0.12 ms | 0.45 ms | 1.9 ms | 4.6 ms |
-| No change | signals | 0.001 ms | 0.003 ms | 0.001 ms | 0.003 ms |
+| Update one row | fields | 0.15 ms | 0.48 ms | 1.7 ms | 4.6 ms |
+| Update one row | signals | 0.005 ms | 0.025 ms | 0.007 ms | 0.28 ms |
+| Update all rows | fields | 0.60 ms | 0.83 ms | 6.3 ms | 9.2 ms |
+| Update all rows | signals | 0.92 ms | 0.71 ms | 8.2 ms | 8.8 ms |
+| No change | fields | 0.14 ms | 0.42 ms | 1.8 ms | 4.7 ms |
+| No change | signals | 0.001 ms | 0.003 ms | 0.001 ms | 0.004 ms |
 
 - **Rows checked:** the same in both, in every scenario: signals with OnPush
   check only the row that changed, or none.
-- **One row, and fields:** Kelicap is about 1.5 to 4 times faster.
-- **Every row, with signals:** about as fast in both with 1,000 rows, and
-  faster in Kelicap with 10,000.
+- **Fields:** Kelicap is about 1.4 to 3 times faster.
+- **One row, with signals:** Kelicap is 5 times faster with 1,000 rows, and
+  40 times with 10,000, as its time does not grow with the number of rows.
+- **Every row, with signals:** Angular is about 1.3 times faster with 1,000
+  rows, and Kelicap about 1.1 times faster with 10,000.
 
 Both benchmarks ran in the same Chrome, alternately, so compare the frameworks
 within this table rather than with other runs.

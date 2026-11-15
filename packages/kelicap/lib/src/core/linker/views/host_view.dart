@@ -194,19 +194,12 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   }
 
   @override
-  void detectChangesInMarkedDescendants() {
-    if (hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
-      detectChangesInMarkedViewsKeepingMarks();
-    }
+  ViewData get viewData => _data;
+
+  @override
+  void markViewAboveForRefresh() {
+    _data.viewContainer?.markNestedViewForRefresh(this);
   }
-
-  @override
-  View? get viewAboveForRefresh => _data.viewContainer?.parentView;
-
-  @override
-  bool get isWaitingToBeAttached =>
-      _data.changeDetectionMode ==
-      ChangeDetectionCheckedState.waitingToBeAttached;
 
   @override
   void disableChangeDetection() {

@@ -21,6 +21,9 @@ var hookChecks = 0;
 var doChecks = 0;
 var bumps = 0;
 
+/// The signals of the rows of [RowsComponent].
+var rowSignals = <WritableSignal<int>>[];
+
 /// How many times [LoopComponent] sets a signal, at most, so that a test of a
 /// pass that never ends does not freeze the browser.
 const loopCap = 1000;
@@ -52,6 +55,7 @@ void main() {
     a = signal(0);
     b = signal(0);
     loopChecks = hookChecks = doChecks = bumps = 0;
+    rowSignals = [signal(0), signal(0), signal(0)];
     counterChecks.clear();
     errors = [];
 
@@ -164,6 +168,52 @@ void main() {
     await settle();
     expect(bumps, lessThan(10));
     expect(errors, isEmpty);
+  });
+
+  group('marked views in an *ngFor', () {
+    late ComponentRef<RowsComponent> rows;
+    String rowsText() {
+      final items = rows.location.querySelectorAll('.row');
+      return [for (var i = 0; i < items.length; i++) items.item(i)!.textContent]
+          .join(' ');
+    }
+
+    setUp(() async {
+      rows = await bootstrap<RowsComponent>(ng.createRowsComponentFactory());
+      expect(rowsText(), '0 0 0');
+    });
+
+    test('are checked, and only they', () async {
+      await outside(() {
+        rowSignals[0].set(1);
+        rowSignals[2].set(3);
+      });
+      expect(rowsText(), '1 0 3');
+      expect(errors, isEmpty);
+    });
+
+    test('are checked when one of them is removed in the same pass', () async {
+      await outside(() {
+        rowSignals[1].set(5);
+        rowSignals[2].set(7);
+        rows.instance.removeRow(1);
+      });
+      expect(rowsText(), '0 7');
+      await outside(() => rowSignals[2].set(8));
+      expect(rowsText(), '0 8');
+      expect(errors, isEmpty);
+    });
+
+    test('are checked after one of them throws', () async {
+      await outside(() {
+        rowSignals[0].set(-1);
+        rowSignals[2].set(9);
+      });
+      expect(errors, isNotEmpty);
+      expect(rowsText().split(' ').last, '9');
+      await outside(() => rowSignals[2].set(10));
+      expect(rowsText().split(' ').last, '10');
+    });
   });
 
   test('a signal with a custom equal notifies of the same object', () async {
@@ -379,6 +429,42 @@ class EvenBumper implements AfterViewChecked {
     if (++bumps < loopCap) {
       count.update((value) => value + 2);
     }
+  }
+}
+
+/// An OnPush list of OnPush rows, each of which reads one of [rowSignals].
+@Component(
+  selector: 'rows',
+  template: '<row *ngFor="let value of values" [value]="value"></row>',
+  directives: [NgFor, RowComponent],
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class RowsComponent {
+  final ChangeDetectorRef _changeDetector;
+  var values = List.of(rowSignals);
+
+  RowsComponent(this._changeDetector);
+
+  void removeRow(int index) {
+    values = List.of(values)..removeAt(index);
+    _changeDetector.markForCheck();
+  }
+}
+
+/// Renders [value], and throws when it is -1.
+@Component(
+  selector: 'row',
+  template: '<span class="row">{{text()}}</span>',
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class RowComponent {
+  @Input()
+  late WritableSignal<int> value;
+
+  String text() {
+    final current = value();
+    if (current == -1) throw StateError('row is -1');
+    return '$current';
   }
 }
 

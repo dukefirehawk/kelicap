@@ -24,12 +24,12 @@ Each operation is a change followed by the change detection pass that renders it
 
 | Change | Mode | Kelicap, 1,000 rows | Angular, 1,000 rows | Kelicap, 10,000 rows | Angular, 10,000 rows |
 | --- | --- | --- | --- | --- | --- |
-| One row | fields | 0.13 ms | 0.44 ms | 1.9 ms | 4.6 ms |
-| One row | signals | 0.006 ms | 0.024 ms | 0.10 ms | 0.27 ms |
-| Every row | fields | 0.48 ms | 0.91 ms | 6.1 ms | 8.6 ms |
-| Every row | signals | 0.72 ms | 0.73 ms | 7.4 ms | 9.3 ms |
-| Nothing | fields | 0.12 ms | 0.45 ms | 1.9 ms | 4.6 ms |
-| Nothing | signals | 0.001 ms | 0.003 ms | 0.001 ms | 0.003 ms |
+| One row | fields | 0.15 ms | 0.48 ms | 1.7 ms | 4.6 ms |
+| One row | signals | 0.005 ms | 0.025 ms | 0.007 ms | 0.28 ms |
+| Every row | fields | 0.60 ms | 0.83 ms | 6.3 ms | 9.2 ms |
+| Every row | signals | 0.92 ms | 0.71 ms | 8.2 ms | 8.8 ms |
+| Nothing | fields | 0.14 ms | 0.42 ms | 1.8 ms | 4.7 ms |
+| Nothing | signals | 0.001 ms | 0.003 ms | 0.001 ms | 0.004 ms |
 
 Rows checked by each operation, the same in both frameworks:
 
@@ -39,8 +39,8 @@ Rows checked by each operation, the same in both frameworks:
 | Every row | All | All |
 | Nothing | All | None |
 
-- **Signals:** a change checks only the rows that show it, in both frameworks. Changing one row is about 20 times faster than with fields, and a pass after an event that changed nothing checks nothing. Changing every row is 1.2 to 1.5 times slower, as each signal that changes notifies its row.
-- **Kelicap and Angular:** Kelicap is about 1.5 to 4 times faster, except when every row changes through signals, where it is as fast with 1,000 rows, and faster with 10,000.
+- **Signals:** a change checks only the rows that show it, in both frameworks. In Kelicap, changing one row is about 30 times faster than with fields with 1,000 rows, and 250 times with 10,000, and a pass after an event that changed nothing checks nothing. Changing every row is 1.3 to 1.5 times slower, as each signal that changes notifies its row.
+- **Kelicap and Angular:** with fields, Kelicap is about 1.4 to 3 times faster. Changing one row through signals, it is 5 times faster with 1,000 rows, and 40 times with 10,000: its `*ngFor` records which of its rows were marked, so its time does not grow with the number of rows, where Angular's does. When every row changes through signals, Angular is about 1.3 times faster with 1,000 rows, and Kelicap about 1.1 times faster with 10,000.
 
 ### Memory Consumption with Angular
 
@@ -50,12 +50,12 @@ The JavaScript heap of the page, once its table is rendered and garbage is colle
 | --- | --- | --- |
 | A component that renders `<h1>Hello {{name}}</h1>` | 0.87 MB | 0.87 MB |
 | 10,000 rows, no table | 2.4 MB | 3.7 MB |
-| 10,000 rows, fields table | 13.7 MB | 9.9 MB |
+| 10,000 rows, fields table | 12.9 MB | 9.9 MB |
 | 10,000 rows, signals table | 14.0 MB | 10.5 MB |
 | DOM nodes, 10,000 rows | 70,045 | 60,040 |
 
 - **Data:** before any table is rendered, Kelicap's page takes about a third less memory than Angular's, 2.4 MB against 3.7 MB, with the rows of both modes created.
-- **Rendered rows:** a rendered row takes about 1.1 KB in Kelicap, and 0.6 to 0.7 KB in Angular. Most of the difference is the local variables of `*ngFor`: each of its views keeps a map of seven of them (`$implicit`, `index`, `first`, `last`, `count`, `even` and `odd`), used or not, where Angular's `@for` keeps a small object, and computes `$first`, `$even` and the like from the index.
+- **Rendered rows:** a rendered row takes about 1.0 KB in Kelicap with fields, whose rows record no signals, and 1.2 KB with signals, and 0.6 to 0.7 KB in Angular. Most of the difference is the local variables of `*ngFor`: each of its views keeps a map of seven of them (`$implicit`, `index`, `first`, `last`, `count`, `even` and `odd`), used or not, where Angular's `@for` keeps a small object, and computes `$first`, `$even` and the like from the index.
 - **DOM nodes:** Kelicap keeps the space between `</span> <b>` in the row's template as a text node, where Angular removes whitespace-only text nodes by default, so each row has one more node.
 
 ### Bundle Size with Angular
@@ -64,9 +64,9 @@ The JavaScript of a release build, raw and compressed, as served:
 
 | App | Framework | Raw | gzip | Brotli |
 | --- | --- | --- | --- | --- |
-| A component that renders `<h1>Hello {{name}}</h1>` | Kelicap | 98.0 KB | 31.0 KB | 26.8 KB |
+| A component that renders `<h1>Hello {{name}}</h1>` | Kelicap | 99.8 KB | 31.9 KB | 27.4 KB |
 | | Angular | 91.3 KB | 30.5 KB | 27.5 KB |
-| The signals benchmark | Kelicap | 164.4 KB | 50.9 KB | 43.5 KB |
+| The signals benchmark | Kelicap | 167.7 KB | 52.2 KB | 44.5 KB |
 | | Angular | 111.2 KB | 37.2 KB | 33.5 KB |
 
 - **The framework:** the two are about the same size, once compressed.
@@ -89,15 +89,15 @@ The mean time of an operation, the median of three runs:
 
 | Change | Mode | Kelicap, 1,000 rows | Jaspr, 1,000 rows | Kelicap, 10,000 rows | Jaspr, 10,000 rows |
 | --- | --- | --- | --- | --- | --- |
-| One row | fields | 0.15 ms | 8.3 ms | 1.9 ms | 90 ms |
-| One row | signals | 0.009 ms | 0.040 ms | 0.099 ms | 0.032 ms |
-| Every row | fields | 0.52 ms | 10.1 ms | 6.0 ms | 113 ms |
-| Every row | signals | 0.74 ms | 9.8 ms | 6.6 ms | 105 ms |
-| Nothing | fields | 0.12 ms | 8.2 ms | 1.8 ms | 89 ms |
-| Nothing | signals | 0.001 ms | 0.021 ms | 0.001 ms | 0.020 ms |
+| One row | fields | 0.14 ms | 8.2 ms | 1.8 ms | 97 ms |
+| One row | signals | 0.007 ms | 0.036 ms | 0.011 ms | 0.034 ms |
+| Every row | fields | 0.51 ms | 10.2 ms | 6.3 ms | 113 ms |
+| Every row | signals | 1.04 ms | 8.7 ms | 9.3 ms | 108 ms |
+| Nothing | fields | 0.12 ms | 8.2 ms | 1.7 ms | 91 ms |
+| Nothing | signals | 0.001 ms | 0.019 ms | 0.001 ms | 0.022 ms |
 
-- **Rebuilding rows:** Kelicap is 13 to 70 times faster when rows are checked or rebuilt. Jaspr has no virtual DOM: each rebuilt element compares itself with the DOM, reading its attributes, and the content of its text nodes, so a rebuilt row costs about 15 to 20 DOM calls. Kelicap compares a binding with its previous value, in JavaScript, and touches the DOM only when it changed.
-- **One row, with signals:** Jaspr rebuilds the dirty row directly, so its time does not grow with the number of rows, and it is about 3 times faster with 10,000 rows. Kelicap's change detection goes through the table's rows to find the one marked for check.
+- **Rebuilding rows:** Kelicap is 8 to 70 times faster when rows are checked or rebuilt. Jaspr has no virtual DOM: each rebuilt element compares itself with the DOM, reading its attributes, and the content of its text nodes, so a rebuilt row costs about 15 to 20 DOM calls. Kelicap compares a binding with its previous value, in JavaScript, and touches the DOM only when it changed.
+- **One row, with signals:** both go straight to the row that changed, so neither's time grows with the number of rows: Jaspr rebuilds the dirty row directly, and Kelicap's `*ngFor` records which of its rows were marked. Kelicap is 3 to 5 times faster.
 - **Nothing, with signals:** both check nothing, but Jaspr still rebuilds the root.
 
 ### Memory Consumption with Jaspr
@@ -108,25 +108,25 @@ The JavaScript heap of the page, once its table is rendered and garbage is colle
 | --- | --- | --- |
 | A component that renders `<h1>Hello {{name}}</h1>` | 0.87 MB | 0.83 MB |
 | 10,000 rows, no table | 2.4 MB | 2.6 MB |
-| 10,000 rows, fields table | 13.6 MB | 25.0 MB |
+| 10,000 rows, fields table | 12.9 MB | 25.0 MB |
 | 10,000 rows, signals table | 14.0 MB | 25.7 MB |
 | DOM nodes, 10,000 rows | 70,044 | 60,035 |
 
 - **Data:** before any table is rendered, the two pages are within 10% of each other.
-- **Rendered rows:** a rendered row takes about 1.1 KB in Kelicap, and 2.2 to 2.3 KB in Jaspr, which keeps a component, an element and a render object for each component and each DOM node of the row.
+- **Rendered rows:** a rendered row takes about 1.0 KB in Kelicap with fields, and 1.2 KB with signals, and 2.2 to 2.3 KB in Jaspr, which keeps a component, an element and a render object for each component and each DOM node of the row.
 - **DOM nodes:** Kelicap's row has one more, the empty text node of the binding `{{checked()}}` that counts its checks.
 
 ### Bundle Size with Jaspr
 
 | App | Framework | Raw | gzip | Brotli |
 | --- | --- | --- | --- | --- |
-| A component that renders `<h1>Hello {{name}}</h1>` | Kelicap | 98.0 KB | 31.2 KB | 26.8 KB |
+| A component that renders `<h1>Hello {{name}}</h1>` | Kelicap | 99.8 KB | 31.9 KB | 27.4 KB |
 | | Jaspr | 101.7 KB | 31.1 KB | 26.8 KB |
-| The signals benchmark | Kelicap | 164.4 KB | 51.1 KB | 43.5 KB |
+| The signals benchmark | Kelicap | 167.7 KB | 52.2 KB | 44.5 KB |
 | | Jaspr | 153.4 KB | 47.0 KB | 40.1 KB |
 
-- **The framework:** the two are the same size, once compressed.
-- **The benchmark:** Jaspr's is about 8% smaller. Both use the same code to time and report the scenarios, including `Uri.parse` and `JsonEncoder`, so the difference is that of the frameworks: Kelicap's templates compile to code for each component, where Jaspr's components are plain Dart.
+- **The framework:** the two are within 3% of each other, once compressed.
+- **The benchmark:** Jaspr's is about 10% smaller. Both use the same code to time and report the scenarios, including `Uri.parse` and `JsonEncoder`, so the difference is that of the frameworks: Kelicap's templates compile to code for each component, where Jaspr's components are plain Dart.
 
 ## Running the Benchmark
 

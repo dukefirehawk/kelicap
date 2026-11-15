@@ -26,6 +26,11 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
 
   List<DynamicView> nestedViews = [];
 
+  /// The views in this container that a view below was marked in, by
+  /// `ComponentView.markForRefresh`, since they were checked, so that change
+  /// detection reaches them without going through every view.
+  List<DynamicView>? _markedNestedViews;
+
   ViewContainer(
     this.index,
     this.parentIndex,
@@ -65,15 +70,42 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     }
   }
 
+  /// Records that a view below [view], one of this container's, was marked by
+  /// `ComponentView.markForRefresh`, and records it in the views above.
+  void markNestedViewForRefresh(DynamicView view) {
+    (_markedNestedViews ??= []).add(view);
+    parentView?.markDescendantsForRefresh();
+  }
+
   /// Change detects the views in this container, or below them, that were
   /// marked by `ComponentView.markForRefresh`, without checking the others.
   void detectChangesInMarkedNestedViews() {
-    for (var i = 0, len = nestedViews.length; i < len; i++) {
-      nestedViews[i].detectChangesInMarkedDescendants();
+    final marked = _markedNestedViews;
+    if (marked == null) {
+      return;
+    }
+    // Views marked while they are checked are recorded anew.
+    _markedNestedViews = null;
+    var i = 0;
+    try {
+      for (final length = marked.length; i < length; i++) {
+        marked[i].detectChangesInMarkedDescendants();
+      }
+    } catch (_) {
+      // Keeps the view that threw, and those not checked yet, so that the
+      // check that looks for the view that threw reaches it.
+      final rest = marked.sublist(i);
+      final markedSince = _markedNestedViews;
+      _markedNestedViews = markedSince == null
+          ? rest
+          : (rest..addAll(markedSince));
+      rethrow;
     }
   }
 
   void detectChangesInNestedViews() {
+    // Checks them all, marked or not.
+    _markedNestedViews = null;
     for (var i = 0, len = nestedViews.length; i < len; i++) {
       nestedViews[i].detectChangesDeprecated();
     }
@@ -257,7 +289,7 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     // Views below the view that need to be change detected are recorded above
     // it only up to the container it was in, if any.
     if (view.hasMarkedDescendants) {
-      parentView?.markDescendantsForRefresh();
+      markNestedViewForRefresh(view);
       // Checked before the tick that is running ends, if there is one.
       ChangeDetectionHost.recordMarkedForRefresh();
     }
@@ -265,6 +297,7 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
 
   DynamicView detachView(int viewIndex) {
     final view = nestedViews.removeAt(viewIndex);
+    _markedNestedViews?.removeWhere((marked) => identical(marked, view));
     view
       ..removeRootNodes()
       ..wasRemoved();
