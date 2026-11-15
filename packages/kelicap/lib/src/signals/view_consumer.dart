@@ -76,6 +76,9 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
     return true;
   }
 
+  /// Whether the last [check] recorded a signal.
+  bool get hasDependencies => deps != null;
+
   /// Stops tracking: [onChanged] is not called again.
   void dispose() => alien.stop(this);
 

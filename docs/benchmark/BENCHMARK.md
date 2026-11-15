@@ -9,7 +9,7 @@ The benchmark measures how fast Kelicap renders changes, how much memory it uses
 
 ## Setup
 
-- `kelicap` 1.2.0, built with dart2js (`build_runner build --release`, `-O4`), on Dart 3.13.7.
+- `kelicap` 2.0.0, built with dart2js (`build_runner build --release`, `-O4`), on Dart 3.13.7.
 - Angular 22.2.6, in a production build (`ng build`), which runs without zone.js, the default in Angular 22, on Node 26.13.1
 - `jaspr` 0.23.5, a client-only app built like Kelicap's, with dart2js (`build_runner build --release`, `-O4`), on Dart 3.13.7.
 - Headless Chrome 154 on Linux.

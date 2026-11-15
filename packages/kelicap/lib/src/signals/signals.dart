@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:alien_signals/alien_signals.dart'
     as alien
-    show Effect, effect, endBatch, startBatch;
+    show Effect, effect, endBatch, startBatch, trigger;
 import 'package:alien_signals/preset.dart'
     show ComputedNode, SignalNode, getActiveSub, setActiveSub;
 import 'package:alien_signals/system.dart' show ReactiveFlags;
@@ -32,7 +32,11 @@ abstract interface class WritableSignal<T> implements Signal<T> {
   ///
   /// Nothing is notified if [value] is equal to the current value, by the
   /// `equal` function given to [signal], which is [identical] by default. So
-  /// after changing a list or map in place, set the signal to a new one.
+  /// after changing a list or map in place, set the signal to a new one, or
+  /// give [signal] an `equal` function that tells it changed.
+  ///
+  /// Change detection runs if a view, an effect or a computed value has read
+  /// this signal.
   void set(T value);
 
   /// Sets the value of this signal to what [updater] returns for its current
@@ -166,10 +170,13 @@ EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) {
 /// recomputing, or running again, when that signal changes.
 T untracked<T>(T Function() fn) {
   final previous = setActiveSub(null);
+  // Signals read here do not make a view that is checked record signals.
+  final read = signalRead;
   try {
     return fn();
   } finally {
     setActiveSub(previous);
+    signalRead = read;
   }
 }
 
@@ -215,11 +222,26 @@ final class _WritableSignal<T> extends SignalNode<T>
       return;
     }
     try {
-      super.set(value);
+      if (identical(pendingValue, value)) {
+        // The same object, which [equal] tells has changed, such as a list
+        // changed in place: notifies the code that read it, which setting it
+        // would not, as it compares the objects.
+        alien.trigger(_read);
+      } else {
+        super.set(value);
+      }
     } finally {
-      // Even if an effect that the set runs throws, render the change.
-      ChangeDetectionScheduler.scheduleAll();
+      // Renders the change, even if code that the set ran threw, unless no
+      // view, effect or computed value reads this signal, as nothing then
+      // shows it.
+      if (subs != null) {
+        ChangeDetectionScheduler.scheduleAll();
+      }
     }
+  }
+
+  void _read() {
+    get();
   }
 
   @override

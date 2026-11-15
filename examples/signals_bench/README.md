@@ -47,7 +47,7 @@ google-chrome --headless=new --dump-dom \
 
 ## Results
 
-On Linux, in headless Chrome, with `kelicap` 1.2.0 (unreleased), the mean time
+On Linux, in headless Chrome, with `kelicap` 2.0.0 (unreleased), the mean time
 of an operation, the median of three runs:
 
 | Scenario | 1,000 rows: fields | 1,000 rows: signals | 10,000 rows: fields | 10,000 rows: signals |

@@ -161,28 +161,23 @@ abstract class ComponentView<T extends Object> extends RenderView {
       throw StateError('detectChanges');
     }
 
-    // Once this view has read a signal, records the signals that it reads
-    // while it is checked, including in its embedded views, so that it is
-    // marked for check when one of them changes. Child component views record
-    // their own.
-    final signals = _data.signals;
+    // Records the signals that this view reads while it is checked, including
+    // in its embedded views, so that it is marked for check when one of them
+    // changes. Child component views record their own. The flag that tells a
+    // view that it read a signal is restored, so that the reads of this view
+    // do not count as those of the view above it.
+    final outerRead = signalRead;
     final bool checkAgain;
     try {
-      if (signals == null) {
-        checkAgain = _checkWithoutSignals() && _checkRecordingSignals();
-      } else if (ChangeDetectionHost.checkForCrashes) {
-        // Run change detection in "slow-mode" to catch thrown exceptions.
-        checkAgain = signals.checkForCrash();
-      } else {
-        // Normally run change detection.
-        checkAgain = signals.check();
-      }
+      checkAgain = _checkRecordingSignals();
     } catch (_) {
       // Keeps this view marked, so that the check that looks for the view
       // that threw, which goes only through marked views below views that are
       // not checked, reaches it.
       _data.needsRefresh = true;
       rethrow;
+    } finally {
+      signalRead = outerRead;
     }
 
     // If we are a 'CheckOnce' component, we are done being checked.
@@ -202,17 +197,31 @@ abstract class ComponentView<T extends Object> extends RenderView {
     }
   }
 
-  /// Checks this view, which has not read a signal yet, without recording the
-  /// signals that it reads, which costs less.
+  /// Checks this view, recording the signals that it reads, if it reads any.
   ///
-  /// Returns whether it read one, which it did not record: it must be checked
-  /// again, with [_checkRecordingSignals].
-  bool _checkWithoutSignals() {
-    final outerRead = signalRead;
+  /// Its first check records them. If it read none, it keeps no
+  /// [ViewSignalConsumer], and is checked without one, which costs less,
+  /// until it reads one: it is then checked again, recording them, which runs
+  /// the lifecycle hooks of the directives in its template again.
+  ///
+  /// Returns whether a signal that it read changed while it was checked, as
+  /// [ViewSignalConsumer.check] does.
+  bool _checkRecordingSignals() {
+    final signals = _data.signals;
+    if (signals != null) {
+      return _check(signals);
+    }
+    if (_data.changeDetectorState == ChangeDetectorState.neverChecked) {
+      final first = _ComponentViewSignals(this);
+      final checkAgain = _check(first);
+      if (first.hasDependencies) {
+        _data.signals = first;
+      }
+      return checkAgain;
+    }
     signalRead = false;
     // Not recorded by the view above this one, if it records its own.
     final previous = setActiveSub(null);
-    final bool read;
     try {
       if (ChangeDetectionHost.checkForCrashes) {
         detectCrash();
@@ -221,25 +230,17 @@ abstract class ComponentView<T extends Object> extends RenderView {
       }
     } finally {
       setActiveSub(previous);
-      read = signalRead;
-      signalRead = outerRead;
     }
-    return read;
+    if (!signalRead) {
+      return false;
+    }
+    return _check(_data.signals = _ComponentViewSignals(this));
   }
 
-  /// Checks this view again, now that it has read a signal, recording the
-  /// signals that it reads from now on.
-  ///
-  /// Returns whether one of them changed while it was checked, as
-  /// [ViewSignalConsumer.check] does.
-  bool _checkRecordingSignals() {
-    // Checked already: its first check's lifecycle hooks have run.
-    _data.changeDetectorState = ChangeDetectorState.checkedBefore;
-    final signals = _data.signals = _ComponentViewSignals(this);
-    return ChangeDetectionHost.checkForCrashes
-        ? signals.checkForCrash()
-        : signals.check();
-  }
+  static bool _check(ViewSignalConsumer signals) =>
+      ChangeDetectionHost.checkForCrashes
+      ? signals.checkForCrash()
+      : signals.check();
 
   /// Whether this view is marked to be checked, which
   /// [detectChangesInMarkedDescendants] then does.

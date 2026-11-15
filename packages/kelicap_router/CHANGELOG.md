@@ -1,8 +1,10 @@
 # Change Log
 
-## 1.2.0
+## 2.0.0
 
-Requires `kelicap` 1.2.0, which adds signals. No other changes.
+### Breaking changes in 2.0.0
+
+* **Breaking:** Requires `kelicap` 2.0.0, which adds signals, and `kelicap_compiler` 2.0.0. No other changes
 
 ## 1.1.5
 

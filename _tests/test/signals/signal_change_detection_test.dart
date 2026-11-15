@@ -62,6 +62,12 @@ void main() {
     expect(scheduler.isPending, isFalse);
   });
 
+  test('setting a signal that nothing reads schedules nothing', () {
+    final unread = signal(0);
+    ngZone.runOutsideKelicap(() => unread.set(1));
+    expect(scheduler.isPending, isFalse);
+  });
+
   test('setting a signal schedules nothing once the app is disposed', () {
     appRef.dispose();
     ngZone.runOutsideKelicap(() => counter.instance.count.set(1));

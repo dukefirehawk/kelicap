@@ -14,6 +14,9 @@ late WritableSignal<int> state;
 late WritableSignal<int> a;
 late WritableSignal<int> b;
 var loopChecks = 0;
+
+/// The checks of each [CheckCounter], by its name.
+final counterChecks = <String, int>{};
 var hookChecks = 0;
 
 /// How many times [LoopComponent] sets a signal, at most, so that a test of a
@@ -47,6 +50,7 @@ void main() {
     a = signal(0);
     b = signal(0);
     loopChecks = hookChecks = 0;
+    counterChecks.clear();
     errors = [];
 
     ngZone = NgZone();
@@ -97,6 +101,29 @@ void main() {
     expect(loopChecks, lessThan(loopCap));
     expect(errors, isNotEmpty);
     expect(errors, everyElement(isStateError));
+  });
+
+  test(
+    'a view that reads a signal is checked as often as one that does not',
+    () async {
+      // Each bootstrap checks the roots before it too: compares the checks
+      // of one bootstrap.
+      await bootstrap(ng.createPlainParentComponentFactory());
+      final plainChecks = counterChecks['plain'];
+      final parent = await bootstrap(ng.createSignalParentComponentFactory());
+      expect(parent.location.textContent, '0');
+      expect(counterChecks['signal'], plainChecks);
+    },
+  );
+
+  test('a signal with a custom equal notifies of the same object', () async {
+    final items = signal(<int>[], equal: (a, b) => false);
+    final seen = <int>[];
+    final ref = effect((_) => seen.add(items().length));
+    items().add(1);
+    items.set(items());
+    expect(seen, [0, 1]);
+    ref.destroy();
   });
 
   test('an effect that throws does not stop the views it precedes', () async {
@@ -190,10 +217,19 @@ void main() {
   });
 }
 
-/// Sets a new value in a signal on every check, which schedules another pass.
+/// Sets a new value in a signal on every check, which schedules another pass,
+/// as an effect reads it.
 @Component(selector: 'loop', template: 'loop')
-class LoopComponent implements AfterViewChecked {
+class LoopComponent implements AfterViewChecked, OnDestroy {
   final _ticks = signal(0);
+  late final _reader = effect((_) => _ticks());
+
+  LoopComponent() {
+    _reader;
+  }
+
+  @override
+  void ngOnDestroy() => _reader.destroy();
 
   @override
   void ngAfterViewChecked() {
@@ -220,6 +256,37 @@ class SelfSettingComponent {
     }
     return count;
   }
+}
+
+/// Reads [state], with a child that counts the checks of its view.
+@Component(
+  selector: 'signal-parent',
+  template: '{{value()}}<check-counter name="signal"></check-counter>',
+  directives: [CheckCounter],
+)
+class SignalParentComponent {
+  int value() => state();
+}
+
+/// [SignalParentComponent] without the signal.
+@Component(
+  selector: 'plain-parent',
+  template: '{{value()}}<check-counter name="plain"></check-counter>',
+  directives: [CheckCounter],
+)
+class PlainParentComponent {
+  int value() => 0;
+}
+
+/// Counts the checks of its view in [counterChecks].
+@Component(selector: 'check-counter', template: '')
+class CheckCounter implements AfterViewChecked {
+  @Input()
+  String name = '';
+
+  @override
+  void ngAfterViewChecked() =>
+      counterChecks[name] = (counterChecks[name] ?? 0) + 1;
 }
 
 /// An OnPush component that renders [state].
