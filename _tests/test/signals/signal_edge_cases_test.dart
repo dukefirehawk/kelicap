@@ -247,6 +247,44 @@ void main() {
     expect(errors, isEmpty);
   });
 
+  test(
+    'a marked view removed while marked views are checked is not checked',
+    () async {
+      await bootstrap(ng.createManualRowsRootFactory());
+      final rows = manualRows!;
+      ngZone.run(rows.addRows);
+      await settle();
+      expect(rows.container.length, 2);
+      expect(errors, isEmpty);
+      // While the first row is checked, it removes the second, also marked.
+      await outside(() {
+        rowSignals[0].set(2);
+        rowSignals[1].set(5);
+      });
+      expect(rows.container.length, 1);
+      expect(errors, isEmpty);
+    },
+  );
+
+  test('a view that reads a signal in some checks keeps recording', () async {
+    final parent = await bootstrap<InputReaderParent>(
+      ng.createInputReaderParentFactory(),
+    );
+    Future<int> checksOfChange(int value) async {
+      final before = counterChecks['input']!;
+      ngZone.run(() => parent.instance.value = value);
+      await settle();
+      return counterChecks['input']! - before;
+    }
+
+    // The first signal it reads checks it twice, once.
+    final first = await checksOfChange(1);
+    final second = await checksOfChange(2);
+    expect(second, lessThan(first));
+    expect(await checksOfChange(3), second);
+    expect(errors, isEmpty);
+  });
+
   test('a signal with a custom equal notifies of the same object', () async {
     final items = signal(<int>[], equal: (a, b) => false);
     final seen = <int>[];
@@ -536,6 +574,92 @@ class ThrowingReaderComponent {
   int value() => a();
 
   int boom() => throw StateError('boom');
+}
+
+/// The [ManualRowsComponent] of the test that runs.
+ManualRowsComponent? manualRows;
+
+@Component(
+  selector: 'manual-rows-root',
+  template: '<manual-rows-parent></manual-rows-parent>',
+  directives: [ManualRowsParent],
+)
+class ManualRowsRoot {}
+
+/// An OnPush view that is not checked, in which [ManualRowsComponent] puts
+/// the views of its container.
+@Component(
+  selector: 'manual-rows-parent',
+  template: '<manual-rows></manual-rows>',
+  directives: [ManualRowsComponent],
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class ManualRowsParent {}
+
+/// Creates two [RemoverRow]s in its container, which read [rowSignals].
+@Component(selector: 'manual-rows', template: '')
+class ManualRowsComponent {
+  final ViewContainerRef container;
+  final ChangeDetectorRef _changeDetector;
+
+  ManualRowsComponent(this.container, this._changeDetector) {
+    manualRows = this;
+  }
+
+  void addRows() {
+    for (var i = 0; i < 2; i++) {
+      container
+          .createComponent<RemoverRow>(ng.createRemoverRowFactory())
+          .instance
+        ..value = rowSignals[i]
+        // The first row removes the second when it reads 2.
+        ..onTwo = i == 0 ? () => container.remove(1) : null;
+    }
+    // Checks the OnPush view above, which renders the rows, once.
+    _changeDetector.markForCheck();
+  }
+}
+
+/// Renders [value], and calls [onTwo] once when it reads 2.
+@Component(
+  selector: 'remover-row',
+  template: '{{text()}}',
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class RemoverRow {
+  late WritableSignal<int> value;
+  void Function()? onTwo;
+
+  String text() {
+    final current = value();
+    if (current == 2) {
+      final callback = onTwo;
+      onTwo = null;
+      callback?.call();
+    }
+    return '$current';
+  }
+}
+
+/// Reads no signal itself: its child reads [state] in an input setter.
+@Component(
+  selector: 'input-reader-parent',
+  template:
+      '<check-counter name="input"></check-counter>'
+      '<input-reader [value]="value"></input-reader>',
+  directives: [CheckCounter, InputReader],
+)
+class InputReaderParent {
+  var value = 0;
+}
+
+/// Reads [state] when its input is set above 0.
+@Component(selector: 'input-reader', template: '')
+class InputReader {
+  @Input()
+  set value(int value) {
+    if (value > 0) state();
+  }
 }
 
 /// A root component whose host binding reads [state].

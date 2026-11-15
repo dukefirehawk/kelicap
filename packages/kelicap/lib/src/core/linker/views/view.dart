@@ -118,8 +118,24 @@ abstract class View implements ChangeDetectorRef {
   /// Defaults to reaching them, unless this view is not to be checked: a
   /// component view overrides it, as it checks itself if it was marked.
   void detectChangesInMarkedDescendants() {
-    if (_hasMarkedDescendants && !viewData.shouldSkipChangeDetection) {
+    if (_hasMarkedDescendants && reachesMarkedDescendants) {
       detectChangesInMarkedViewsKeepingMarks();
+    }
+  }
+
+  /// Whether [detectChangesInMarkedDescendants] reaches the marked views below
+  /// this one: unless this view is not to be checked.
+  @protected
+  bool get reachesMarkedDescendants => !viewData.shouldSkipChangeDetection;
+
+  /// Checks this view, in "slow-mode" after a crash, to catch the exceptions
+  /// thrown, as [ChangeDetectionHost.checkForCrashes] tells.
+  @protected
+  void detectChangesOrCrash() {
+    if (ChangeDetectionHost.checkForCrashes) {
+      detectCrash();
+    } else {
+      detectChangesInternal();
     }
   }
 

@@ -7,7 +7,6 @@ import 'package:web/web.dart';
 import 'package:meta/dart2js.dart' as dart2js;
 import 'package:meta/meta.dart';
 
-import '../../../core/change_detection/host.dart';
 import '../../../core/linker/style_encapsulation.dart';
 import '../../../core/linker/view_container.dart';
 import '../../../core/linker/view_fragment.dart';
@@ -145,13 +144,7 @@ abstract class EmbeddedView<T> extends RenderView
       throw StateError('detectChanges');
     }
 
-    if (ChangeDetectionHost.checkForCrashes) {
-      // Run change detection in "slow-mode" to catch thrown exceptions.
-      detectCrash();
-    } else {
-      // Normally run change detection.
-      detectChangesInternal();
-    }
+    detectChangesOrCrash();
 
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;

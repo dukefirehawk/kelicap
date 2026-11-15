@@ -211,11 +211,12 @@ abstract class ComponentView<T extends Object> extends RenderView {
     if (signals != null) {
       return signals.check();
     }
-    if (_data.changeDetectorState != ChangeDetectorState.neverChecked &&
-        !_checkWithoutRecording()) {
+    final firstCheck =
+        _data.changeDetectorState == ChangeDetectorState.neverChecked;
+    if (!firstCheck && !_checkWithoutRecording()) {
       return false;
     }
-    return _checkWithNewSignals();
+    return _checkWithNewSignals(firstCheck: firstCheck);
   }
 
   /// Checks this view, which has read no signal, without recording the
@@ -225,36 +226,29 @@ abstract class ComponentView<T extends Object> extends RenderView {
     // Not recorded by the view above this one, if it records its own.
     final previous = setActiveSub(null);
     try {
-      _runCheck();
+      detectChangesOrCrash();
     } finally {
       setActiveSub(previous);
     }
     return signalRead;
   }
 
-  /// Checks this view with a new [ViewSignalConsumer], which it keeps if it
-  /// recorded a signal.
+  /// Checks this view with a new [ViewSignalConsumer].
   ///
   /// It is stored before the check, so that it is disposed with the view even
-  /// if the check throws after it recorded a signal.
-  bool _checkWithNewSignals() {
+  /// if the check throws after it recorded a signal. On the first check, it is
+  /// dropped if it recorded none. After a check without one that read a
+  /// signal, it is kept even so: the view reads signals in some checks, such
+  /// as in the setter of an input of a child, which runs only when the input
+  /// changes, and would otherwise be checked twice each time it does.
+  bool _checkWithNewSignals({required bool firstCheck}) {
     final signals = _data.signals = _ComponentViewSignals(this);
     final checkAgain = signals.check();
-    if (!signals.hasDependencies) {
+    if (firstCheck && !signals.hasDependencies) {
       // Recorded nothing, so nothing notifies it: dropped.
       _data.signals = null;
     }
     return checkAgain;
-  }
-
-  /// Checks this view, in "slow-mode" after a crash, to catch the exceptions
-  /// thrown, as [ChangeDetectionHost.checkForCrashes] tells.
-  void _runCheck() {
-    if (ChangeDetectionHost.checkForCrashes) {
-      detectCrash();
-    } else {
-      detectChangesInternal();
-    }
   }
 
   /// Whether this view is marked to be checked, which
@@ -273,14 +267,19 @@ abstract class ComponentView<T extends Object> extends RenderView {
   void detectChangesInMarkedDescendants() {
     if (isMarkedForRefresh) {
       detectChangesDeprecated();
-    } else if (hasMarkedDescendants &&
-        !isWaitingToBeAttached &&
-        _data.changeDetectorState != ChangeDetectorState.errored) {
+    } else {
       // Neither this view nor its default change detection is checked here:
       // only the marked views below it, as its parent was not checked.
-      detectChangesInMarkedViewsKeepingMarks();
+      super.detectChangesInMarkedDescendants();
     }
   }
+
+  /// An OnPush view that waits to be marked for check is not checked, but the
+  /// marked views below it are reached.
+  @override
+  bool get reachesMarkedDescendants =>
+      !isWaitingToBeAttached &&
+      _data.changeDetectorState != ChangeDetectorState.errored;
 
   /// Marks this view to be checked, without checking the views above it.
   ///
@@ -311,6 +310,10 @@ abstract class ComponentView<T extends Object> extends RenderView {
   void markViewAboveForRefresh() {
     parentView!.markDescendantsForRefresh();
   }
+
+  // Called by [_ComponentViewSignals], which may not call the protected
+  // method itself.
+  void _detectChangesOrCrash() => detectChangesOrCrash();
 
   /// Generated code that is called by hosts.
   ///
@@ -397,7 +400,7 @@ final class _ComponentViewSignals extends ViewSignalConsumer {
   _ComponentViewSignals(this._view);
 
   @override
-  void runCheck() => _view._runCheck();
+  void runCheck() => _view._detectChangesOrCrash();
 
   @override
   void onChanged() => _view.markForRefresh();

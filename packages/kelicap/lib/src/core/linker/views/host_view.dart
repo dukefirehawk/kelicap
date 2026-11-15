@@ -162,20 +162,10 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
       signals.dispose();
       _data.signals = null;
     }
-    _runCheck();
+    detectChangesOrCrash();
 
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;
-  }
-
-  /// Checks this view, in "slow-mode" after a crash, to catch the exceptions
-  /// thrown, as [ChangeDetectionHost.checkForCrashes] tells.
-  void _runCheck() {
-    if (ChangeDetectionHost.checkForCrashes) {
-      detectCrash();
-    } else {
-      detectChangesInternal();
-    }
   }
 
   /// Marks this view to be checked, as a signal that it read changed, before
@@ -239,6 +229,10 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   void markViewAboveForRefresh() {
     _data.viewContainer?.markNestedViewForRefresh(this);
   }
+
+  // Called by [_HostViewSignals], which may not call the protected method
+  // itself.
+  void _detectChangesOrCrash() => detectChangesOrCrash();
 
   @override
   void disableChangeDetection() {
@@ -386,7 +380,7 @@ final class _HostViewSignals extends ViewSignalConsumer {
   _HostViewSignals(this._view);
 
   @override
-  void runCheck() => _view._runCheck();
+  void runCheck() => _view._detectChangesOrCrash();
 
   @override
   void onChanged() => _view._markForRefresh();
