@@ -23,6 +23,21 @@ abstract class ChangeDetectionHost {
   /// **INTERNAL ONLY**: Whether a crash was detected during the last `tick()`.
   static bool get checkForCrashes => _current?._lastGuardedView != null;
 
+  /// How many times a [tick] checks again the views that signals marked while
+  /// it checked them, before it reports an error, as they would otherwise be
+  /// checked forever.
+  static const maxRefreshesInATick = 100;
+
+  /// Whether a view was marked for refresh, by a signal, since the last time
+  /// [_runTick] reset it.
+  static var _markedForRefresh = false;
+
+  /// **INTERNAL ONLY**: Records that a signal marked a view for refresh, so
+  /// that a [tick] that is running checks it before it ends.
+  static void recordMarkedForRefresh() {
+    _markedForRefresh = true;
+  }
+
   /// **INTERNAL ONLY**: Register a crash during [view.detectCrash].
   static void handleCrash(View view, Object error, StackTrace trace) {
     final current = _current!;
@@ -101,8 +116,38 @@ abstract class ChangeDetectionHost {
   void _runTick() {
     final detectors = _changeDetectors;
     final length = detectors.length;
+    _markedForRefresh = false;
     for (var i = 0; i < length; i++) {
       detectors[i].detectChanges();
+    }
+    // A signal that changed during the pass, such as in a lifecycle hook,
+    // marked the views that read it, including views checked before it
+    // changed: checks them, and only them, before the pass ends.
+    for (var refreshes = 0; _markedForRefresh; refreshes++) {
+      if (refreshes == maxRefreshesInATick) {
+        _markedForRefresh = false;
+        handleUncaughtException(
+          StateError(
+            'Signals set while views were checked marked views to be checked '
+            'again, $maxRefreshesInATick times in a row: they are not checked '
+            'again until something else runs change detection, such as an '
+            'event. Set a signal that a view reads only when its value '
+            'changes, rather than each time it is checked.',
+          ),
+          StackTrace.current,
+          'DigestTick',
+        );
+        refreshLimitReached();
+        // The views would differ from the values they show.
+        return;
+      }
+      _markedForRefresh = false;
+      for (var i = 0; i < length; i++) {
+        final detector = detectors[i];
+        if (detector is View) {
+          detector.detectChangesInMarkedDescendants();
+        }
+      }
     }
     if (isDevMode) {
       debugEnterThrowOnChanged();
@@ -177,6 +222,12 @@ abstract class ChangeDetectionHost {
     view.disableChangeDetection();
     handleUncaughtException(error, trace);
   }
+
+  /// Called when a [tick] stops checking the views that signals marked while
+  /// it checked them, after [maxRefreshesInATick] times, such as to cancel the
+  /// pass that setting those signals requested, which would do the same.
+  @protected
+  void refreshLimitReached() {}
 
   /// Forwards an [error] and [trace] to the user's error handler.
   ///

@@ -7,7 +7,6 @@ import 'package:web/web.dart';
 import 'package:meta/dart2js.dart' as dart2js;
 import 'package:meta/meta.dart';
 
-import '../../../core/change_detection/host.dart';
 import '../../../core/linker/style_encapsulation.dart';
 import '../../../core/linker/view_container.dart';
 import '../../../core/linker/view_fragment.dart';
@@ -17,6 +16,7 @@ import '../../../runtime/dom_helpers.dart';
 import '../../../utilities/unsafe_cast.dart';
 import 'dynamic_view.dart';
 import 'render_view.dart';
+import 'view.dart';
 
 /// The base type of a view that implements a `<template>` element.
 ///
@@ -137,47 +137,25 @@ abstract class EmbeddedView<T> extends RenderView
   void detectChangesDeprecated() {
     if (_data.shouldSkipChangeDetection) return;
     // Checking this view checks the views below it, marked or not.
-    _data.hasMarkedDescendants = false;
+    clearMarkedDescendants();
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
       throw StateError('detectChanges');
     }
 
-    if (ChangeDetectionHost.checkForCrashes) {
-      // Run change detection in "slow-mode" to catch thrown exceptions.
-      detectCrash();
-    } else {
-      // Normally run change detection.
-      detectChangesInternal();
-    }
+    detectChangesOrCrash();
 
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;
   }
 
   @override
-  void detectChangesInMarkedDescendants() {
-    if (_data.hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
-      _data.hasMarkedDescendants = false;
-      detectChangesInMarkedViews();
-    }
-  }
+  ViewData get viewData => _data;
 
   @override
-  bool get hasMarkedDescendants => _data.hasMarkedDescendants;
-
-  @override
-  void markDescendantsForRefresh() {
-    if (_data.hasMarkedDescendants) {
-      // The views above this one have recorded it already.
-      return;
-    }
-    _data.hasMarkedDescendants = true;
-    if (_data.changeDetectionMode !=
-        ChangeDetectionCheckedState.waitingToBeAttached) {
-      _data.viewContainer?.parentView?.markDescendantsForRefresh();
-    }
+  void markViewAboveForRefresh() {
+    _data.viewContainer?.markNestedViewForRefresh(this);
   }
 
   @override
@@ -240,6 +218,9 @@ abstract class EmbeddedView<T> extends RenderView
   }
 
   @override
+  ViewContainer? get currentContainer => _data.viewContainer;
+
+  @override
   void wasRemoved() {
     dirtyParentQueriesInternal();
     _data.viewContainer = null;
@@ -288,10 +269,6 @@ class _EmbeddedViewData<T> implements DynamicViewData, RenderViewData {
 
   @override
   List<StreamSubscription<void>>? subscriptions;
-
-  /// Whether a view below this one was marked for refresh since this view was
-  /// checked.
-  var hasMarkedDescendants = false;
 
   /// Storage for any callbacks registered with [addOnDestroyCallback].
   List<void Function()>? _onDestroyCallbacks;

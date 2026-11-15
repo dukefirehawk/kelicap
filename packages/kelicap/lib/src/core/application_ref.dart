@@ -38,12 +38,12 @@ class ApplicationRef extends ChangeDetectionHost {
   late final StreamSubscription<void> _onMicroSub;
 
   ApplicationRef._(this._ngZone, this._exceptionHandler, this._injector) {
-    _scheduler = ChangeDetectionScheduler(_ngZone);
+    _scheduler = ChangeDetectionScheduler(_ngZone, handleUncaughtException);
     _onErrorSub = _ngZone.onUncaughtError.listen((e) {
       handleUncaughtException(e.error, e.stackTrace);
     });
     _onMicroSub = _ngZone.onMicrotaskEmpty.listen((_) {
-      _ngZone.runGuarded(tick);
+      _scheduler.runPass(() => _ngZone.runGuarded(tick));
     });
   }
 
@@ -117,6 +117,9 @@ class ApplicationRef extends ChangeDetectionHost {
     }
     unregisterChangeDetector(component.changeDetectorRef as ChangeDetectorRef);
   }
+
+  @override
+  void refreshLimitReached() => _scheduler.cancel();
 
   /// Dispose of this application and all of its components.
   void dispose() {

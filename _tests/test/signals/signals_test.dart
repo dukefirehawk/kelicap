@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:test/test.dart';
 import 'package:kelicap/signals.dart';
 
@@ -94,6 +96,42 @@ void main() {
       count.set(1);
       ref.destroy();
       expect(log, ['run 0', 'cleanup 0', 'run 1', 'cleanup 1']);
+    });
+
+    test('reports an error to its zone, and runs the effects after it', () {
+      final count = signal(0);
+      final errors = <Object>[];
+      final seen = <int>[];
+      late EffectRef throwing;
+      runZonedGuarded(() {
+        throwing = effect((_) {
+          if (count() == 1) throw StateError('effect');
+        });
+      }, (error, _) => errors.add(error));
+      final other = effect((_) => seen.add(count()));
+
+      expect(() => count.set(1), returnsNormally);
+      expect(errors, [isStateError]);
+      expect(seen, [0, 1]);
+      throwing.destroy();
+      other.destroy();
+    });
+
+    test('reports an error of a cleanup to its zone', () {
+      final count = signal(0);
+      final errors = <Object>[];
+      late EffectRef ref;
+      runZonedGuarded(() {
+        ref = effect((onCleanup) {
+          count();
+          onCleanup(() => throw StateError('cleanup'));
+        });
+      }, (error, _) => errors.add(error));
+
+      expect(() => count.set(1), returnsNormally);
+      expect(errors, [isStateError]);
+      ref.destroy();
+      expect(errors, hasLength(2));
     });
 
     test('does not run after it is destroyed', () {

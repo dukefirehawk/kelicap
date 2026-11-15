@@ -1,10 +1,14 @@
 # Change Log
 
-## 1.2.0
+## 2.0.0
 
-### New in 1.2.0
+### Breaking changes in 2.0.0
 
-* **Signals:** Generated views have a `detectChangesInMarkedViews` method, which checks only the views below them that a signal of `kelicap` 1.2.0 marked for check, rather than every one of them. Code it generates requires `kelicap` 1.2.0
+* **Breaking:** Code it generates requires `kelicap` 2.0.0: it calls methods of views that `kelicap` 1.x does not have, such as `detectChangesInMarkedDescendants`, so an app that uses `kelicap` 1.x fails to compile with it
+
+### New in 2.0.0
+
+* **Signals:** Generated views have a `detectChangesInMarkedViews` method, which checks only the views below them that a signal of `kelicap` 2.0.0 marked for check, rather than every one of them, and runs the `ngAfterContentChecked` and `ngAfterViewChecked` hooks of the directives on the element of each component view it checks, but not their `ngDoCheck`, as their parent view is not checked
 
 ## 1.1.5
 

@@ -14,10 +14,6 @@ abstract class DynamicView implements View, ViewRef {
   /// Tracks the root DOM nodes or view containers of this view.
   ViewFragment? get viewFragment;
 
-  /// Whether a view below this one was marked by
-  /// `ComponentView.markForRefresh` since this view was checked.
-  bool get hasMarkedDescendants;
-
   /// Appends this view's root DOM nodes as siblings after [node].
   // TODO(b/132109599): replace with single static method or function.
   void addRootNodesAfter(Node node);
@@ -40,6 +36,9 @@ abstract class DynamicView implements View, ViewRef {
   ///
   /// This is invoked by the [ViewContainer] from which this view was removed.
   void wasRemoved();
+
+  /// The container in which this view is inserted, or null if it is not.
+  ViewContainer? get currentContainer;
 }
 
 /// The interface for [DynamicView] data bundled together as an optimization.

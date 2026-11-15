@@ -127,6 +127,51 @@ void main() {
       expect(seen, [0]);
     });
 
+    test('may be listened to more than once', () async {
+      final count = signal(0);
+      final stream = toStream(count);
+      final first = <int>[];
+      final second = <int>[];
+      final a = stream.listen(first.add);
+      final b = stream.listen(second.add);
+      await settle();
+      count.set(1);
+      await settle();
+      await a.cancel();
+      count.set(2);
+      await settle();
+      expect(first, [0, 1]);
+      expect(second, [0, 1, 2]);
+      await b.cancel();
+    });
+
+    test('may be listened to again after it is cancelled', () async {
+      final count = signal(0);
+      final stream = toStream(count);
+      await stream.listen((_) {}).cancel();
+      count.set(1);
+      final seen = <int>[];
+      final subscription = stream.listen(seen.add);
+      await settle();
+      expect(seen, [1]);
+      await subscription.cancel();
+    });
+
+    test('sends an error of the source to the stream', () async {
+      final count = signal(0);
+      final checked = computed(
+        () => count() == 1 ? throw StateError('count is 1') : count(),
+      );
+      final errors = <Object>[];
+      final subscription = toStream(checked)
+          .listen((_) {}, onError: (Object error) => errors.add(error));
+      await settle();
+      expect(() => count.set(1), returnsNormally);
+      await settle();
+      expect(errors, [isStateError]);
+      await subscription.cancel();
+    });
+
     test('a listener may set a signal', () async {
       final count = signal(0);
       final copy = signal(-1);
@@ -137,5 +182,27 @@ void main() {
       expect(copy(), 5);
       await subscription.cancel();
     });
+
+    test(
+      'listened to in an effect, keeps sending once it runs again',
+      () async {
+        final count = signal(0);
+        final trigger = signal(0);
+        final seen = <int>[];
+        StreamSubscription<int>? subscription;
+        final outer = effect((_) {
+          trigger();
+          subscription ??= toStream(count).listen(seen.add);
+        });
+        await settle();
+        // Runs the outer effect again, which stops the effects it owns.
+        trigger.set(1);
+        count.set(1);
+        await settle();
+        expect(seen, [0, 1]);
+        outer.destroy();
+        await subscription!.cancel();
+      },
+    );
   });
 }

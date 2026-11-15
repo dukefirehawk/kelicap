@@ -114,12 +114,89 @@ abstract class View implements ChangeDetectorRef {
   /// Called, instead of [detectChanges], by a view that is not checked, on the
   /// views in its template, so that the marked views are reached without
   /// checking the views on the way to them.
-  void detectChangesInMarkedDescendants();
+  ///
+  /// Defaults to reaching them, unless this view is not to be checked: a
+  /// component view overrides it, as it checks itself if it was marked.
+  void detectChangesInMarkedDescendants() {
+    if (_hasMarkedDescendants && reachesMarkedDescendants) {
+      detectChangesInMarkedViewsKeepingMarks();
+    }
+  }
+
+  /// Whether [detectChangesInMarkedDescendants] reaches the marked views below
+  /// this one: unless this view is not to be checked.
+  @protected
+  bool get reachesMarkedDescendants => !viewData.shouldSkipChangeDetection;
+
+  /// Checks this view, in "slow-mode" after a crash, to catch the exceptions
+  /// thrown, as [ChangeDetectionHost.checkForCrashes] tells.
+  @protected
+  void detectChangesOrCrash() {
+    if (ChangeDetectionHost.checkForCrashes) {
+      detectCrash();
+    } else {
+      detectChangesInternal();
+    }
+  }
+
+  /// The data of this view.
+  @protected
+  ViewData get viewData;
+
+  var _hasMarkedDescendants = false;
+
+  /// Whether a view below this one was marked by
+  /// [ComponentView.markForRefresh] since this view was checked.
+  bool get hasMarkedDescendants => _hasMarkedDescendants;
+
+  /// Records in the view above this one, or in the container of this one,
+  /// that a view below it was marked, if any, as [markDescendantsForRefresh]
+  /// does.
+  @protected
+  void markViewAboveForRefresh();
+
+  /// Whether this view is waiting to be attached, in which case
+  /// [markDescendantsForRefresh] records nothing above it: the container that
+  /// attaches it does.
+  @protected
+  bool get isWaitingToBeAttached =>
+      viewData.changeDetectionMode ==
+      ChangeDetectionCheckedState.waitingToBeAttached;
+
+  /// Clears [hasMarkedDescendants] when this view is checked, which checks the
+  /// views below it, marked or not.
+  @protected
+  void clearMarkedDescendants() {
+    _hasMarkedDescendants = false;
+  }
+
+  /// Change detects the marked views below this one, with
+  /// [detectChangesInMarkedViews], keeping them marked if one of them throws,
+  /// so that the check that looks for the view that threw reaches it.
+  @protected
+  void detectChangesInMarkedViewsKeepingMarks() {
+    _hasMarkedDescendants = false;
+    try {
+      detectChangesInMarkedViews();
+    } catch (_) {
+      _hasMarkedDescendants = true;
+      rethrow;
+    }
+  }
 
   /// Records that a view in this view, or below it, was marked by
   /// [ComponentView.markForRefresh], and needs to be change detected, and
   /// records it in the views above this one.
-  void markDescendantsForRefresh();
+  void markDescendantsForRefresh() {
+    if (_hasMarkedDescendants) {
+      // The views above this one have recorded it already.
+      return;
+    }
+    _hasMarkedDescendants = true;
+    if (!isWaitingToBeAttached) {
+      markViewAboveForRefresh();
+    }
+  }
 
   /// Backing implementation of [detectChanges] for this view.
   ///

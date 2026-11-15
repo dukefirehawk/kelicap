@@ -1,10 +1,21 @@
 # Change Log
 
-## 1.2.0
+## 2.0.0
 
-### New in 1.2.0
+### Breaking changes in 2.0.0
 
-* **Signals:** `package:kelicap/signals.dart` adds signals: values that notify the code that reads them when they change. Create one with `signal(0)`, read it with `count()`, also in a template (`{{count()}}`), and change it with `count.set(1)` or `count.update((value) => value + 1)`. It also has `computed`, for values derived from signals, `effect`, to run code when the signals it read change, `untracked`, `batch`, and `toSignal` and `toStream`, which convert between streams and signals. Setting a signal to a new value runs change detection in every application that is running, even if it was set outside the `NgZone`, such as in code run with `NgZone.runOutsideKelicap`, and checks the components whose templates read it, so that an OnPush component that reads a signal is updated without calling `ChangeDetectorRef.markForCheck`. Only those components are checked: the OnPush components above them, and their siblings, are not, nor are their directives, such as an `*ngFor` that the component is in. Requires `kelicap_compiler` 1.2.0, which generates the code that reaches them. A signal read in a component's lifecycle hooks, or in the setters of its inputs, marks the component whose template uses it, not the component itself, as those run while that one is checked. A signal set while the component that reads it is checked, such as in its `ngAfterViewChecked`, does not mark it. An effect is not destroyed with the component that created it: destroy it in `ngOnDestroy`. The signals are built on `package:alien_signals`
+* **Breaking:** Requires `kelicap_compiler` 2.0.0, whose generated code reaches the components that signals mark, below views that are not checked, such as an OnPush parent
+
+### New in 2.0.0
+
+* **Signals:** `package:kelicap/signals.dart` adds signals, built on `package:alien_signals`:
+  * `signal(0)` creates one. Read it with `count()`, also in a template (`{{count()}}`), and change it with `count.set(1)` or `count.update((value) => value + 1)`
+  * `computed` derives a value from signals, `effect` runs code when the signals it read change, `untracked` reads signals without tracking them, `batch` groups changes, and `toSignal` and `toStream` convert between streams and signals
+* **Change detection:** Setting a signal runs change detection, even outside the `NgZone`, and checks only the components whose templates read it. An OnPush component that reads a signal updates without `ChangeDetectorRef.markForCheck`, and the components above it and beside it are not checked
+  * A signal read in a lifecycle hook or an input setter marks the parent component, whose template is being checked, not the component itself
+  * A component checked because of a signal runs `ngAfterContentChecked` and `ngAfterViewChecked`, but not `ngDoCheck`
+  * A signal set during change detection, such as in `ngAfterViewInit`, checks the components that read it again in the same pass. After 100 such checks in a pass, or 100 passes in a row that each set a signal, the error handler is called, and the components are not checked again until something else runs change detection
+* **Effects:** An effect is not destroyed with the component that created it: destroy it in `ngOnDestroy`. An error that an effect throws goes to the zone that created it, such as the application's `ExceptionHandler`, and is not thrown by the `set` that ran it
 
 ## 1.1.5
 

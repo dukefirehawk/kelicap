@@ -30,7 +30,7 @@ Kelicap needs Dart 3.13 or later. The quickest start is `kelicap create <name>`,
 
 ```yaml
 dependencies:
-  kelicap: ^1.2.0
+  kelicap: ^2.0.0
   web: ^1.1.1
 
 dev_dependencies:
@@ -80,7 +80,7 @@ And `web/index.html` loads it:
 
 ## Build and run
 
-During development, build and serve the app, rebuilding it as files change, at <http://localhost:8080>:
+During development, build and serve the app, rebuilding it as files change, at (<http://localhost:8080>):
 
 ```bash
 dart pub get
@@ -122,33 +122,31 @@ class TodoListComponent {
 ```
 
 - **Writing:** `set` and `update` change a signal. Setting it to a value that is `identical` to its current value notifies nothing, so update a list or a map by setting a new one, as above, rather than changing it in place.
-- **Change detection:** setting a signal runs change detection, even outside of the `NgZone`, and checks only the components whose templates read it. With `ChangeDetectionStrategy.onPush`, the others, including those above them, are not checked, so a change costs only the components that show it. Plain fields of an OnPush component still need `ChangeDetectorRef.markForCheck`.
+- **Change detection:** setting a signal that a view, an effect or a computed value has read runs change detection, even outside of the `NgZone`, and checks only the components whose templates read it. With `ChangeDetectionStrategy.onPush`, the others, including those above them, are not checked, so a change costs only the components that show it. Plain fields of an OnPush component still need `ChangeDetectorRef.markForCheck`.
 - **Derived values:** `computed(() => ...)` derives a value from signals. It is computed when it is read, and cached until a signal it read changes.
-- **Effects:** `effect((onCleanup) { ... })` runs code now, and again whenever a signal it read changes. It is not destroyed with the component that created it: call `destroy()` on the `EffectRef` it returns, such as in `ngOnDestroy`.
+- **Effects:** `effect((onCleanup) { ... })` runs code now, and again whenever a signal it read changes. It is not destroyed with the component that created it: call `destroy()` on the `EffectRef` it returns, such as in `ngOnDestroy`. An error it throws goes to the application's `ExceptionHandler`, not to the code that set the signal.
 - **Streams:** `toSignal(stream, initialValue: ...)` returns a signal of a stream's latest event: call `cancel()` on it when the component is destroyed. `toStream(signal)` returns a stream of a signal's values.
 - **Reading without tracking:** `untracked(() => ...)` reads signals without being notified of their changes, and `batch(() => ...)` runs the effects of the signals it sets once, at its end.
 
-A signal read in a component's lifecycle hooks, or in the setters of its inputs, checks the component whose template uses it, not the component itself, as those run while that one is checked. Do not set a signal that a component reads while that component is checked, such as in its `ngAfterViewChecked`: it is not checked again.
+A signal read in a component's lifecycle hooks, or in the setters of its inputs, checks the component whose template uses it, not the component itself, as those run while that one is checked. A component checked because a signal changed runs its `ngAfterContentChecked` and `ngAfterViewChecked` hooks, as when its parent checks it, but not its `ngDoCheck`, which runs only when its parent is checked.
 
-### Performance
+A signal set while a component that read it is checked, such as in the `ngAfterViewInit` of a child, checks that component again before the pass ends. Set a signal only when its value changes: a signal set to a new value each time it is checked would be checked forever, so after 100 times in a pass, or 100 passes in a row that each set one, Kelicap reports an error and stops.
+
+### Benchmark
 
 With plain fields and the default change detection, every change detection pass checks every component. With signals and OnPush, a pass checks only the components that read a signal that changed. The [Kelicap Signals Benchmark](https://github.com/dukefirehawk/kelicap/tree/main/examples/signals_bench) measures a table of rows rendered both ways. These are the mean times of one change and the pass that renders it, in a release build in Chrome:
 
 | Change | 1,000 rows: fields | 1,000 rows: signals | 10,000 rows: fields | 10,000 rows: signals |
 | --- | --- | --- | --- | --- |
-| One row | 0.13 ms | < 0.01 ms | 1.9 ms | 0.10 ms |
-| Nothing, such as an event that changes no state | 0.12 ms | < 0.01 ms | 1.9 ms | < 0.01 ms |
-| Every row | 0.48 ms | 0.72 ms | 6.1 ms | 7.4 ms |
+| One row | 0.15 ms | < 0.01 ms | 1.7 ms | < 0.01 ms |
+| Nothing, such as an event that changes no state | 0.14 ms | < 0.01 ms | 1.8 ms | < 0.01 ms |
+| Every row | 0.60 ms | 0.92 ms | 6.3 ms | 8.2 ms |
 
-- **One row:** about 20 times faster. Only that row is checked: not the table above it, nor the `*ngFor` that lists the rows, which would compare all of them. Change detection goes through the rows only to find the one that changed, so the time still grows a little with their number.
+- **One row:** about 30 times faster with 1,000 rows, and 250 times with 10,000. Only that row is checked: not the table above it, nor the `*ngFor` that lists the rows, which would compare all of them. The `*ngFor` records which of its rows were marked, so change detection goes straight to the row, and the time does not grow with the number of rows.
 - **Nothing:** a pass that follows an event that changed no signal checks nothing.
-- **Every row:** about 1.2 to 1.5 times slower, as each signal that changes notifies the component that read it. Signals pay off when a change affects a small part of the page, which is the common case.
+- **Every row:** about 1.3 to 1.5 times slower, as each signal that changes notifies the component that read it. Signals pay off when a change affects a small part of the page, which is the common case.
 
 The times vary between runs, by up to half with 10,000 rows, and between machines: compare the columns of a row rather than the numbers themselves.
-
-## Benchmark
-
-[Kelicap vs Angular 22 Benckmark](https://github.com/dukefirehawk/kelicap/blob/main/packages/kelicap/BENCHMARK.md) evaluates Kelicap against Angular 22 across speed, memory consumption, and bundle size.
 
 ## Documentation
 

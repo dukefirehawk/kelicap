@@ -10,7 +10,7 @@ environment:
 publish_to: none
 
 dependencies:
-  kelicap: ^1.2.0
+  kelicap: ^2.0.0
   web: ^1.1.1
 
 dev_dependencies:

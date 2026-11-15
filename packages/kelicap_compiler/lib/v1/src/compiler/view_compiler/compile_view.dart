@@ -1499,22 +1499,53 @@ class CompileView {
   /// reaches the views below it that were marked for refresh.
   ///
   /// Host views have a default implementation, for their only child component
-  /// view, so they need one only to reach their view containers too.
+  /// view, so they need one only to reach their view containers too, or to
+  /// run the lifecycle hooks of their component.
   bool get needsMarkedViewsChangeDetection =>
       viewContainers.isNotEmpty ||
-      (viewType != ViewType.host && viewChildren.isNotEmpty);
+      (viewType != ViewType.host && viewChildren.isNotEmpty) ||
+      viewChildren.any(_hasRefreshHooks);
+
+  static bool _hasRefreshHooks(CompileElement viewChild) =>
+      viewChild.refreshHooksBefore.isNotEmpty ||
+      viewChild.refreshHooksAfter.isNotEmpty;
 
   /// Returns the statements of `detectChangesInMarkedViews()`, that reaches
   /// the views below this one that were marked for refresh, without checking
   /// this one.
+  ///
+  /// A child component view that is marked is checked as when this view is
+  /// checked: with the `ngAfterContentChecked` and `ngAfterViewChecked` hooks
+  /// of the directives on its element. Their `ngDoCheck` hooks do not run, as
+  /// this view is not checked. Its host bindings are not updated, as they are
+  /// expressions of this view, which a signal that they read marks for
+  /// refresh.
   List<o.Statement> writeMarkedViewsChangeDetectionStatements() => [
     for (final viewContainer in viewContainers)
       viewContainer.callMethod('detectChangesInMarkedNestedViews', []).toStmt(),
-    for (final viewChild in viewChildren)
-      viewChild.componentView!
-          .callMethod('detectChangesInMarkedDescendants', [])
-          .toStmt(),
+    for (final viewChild in viewChildren) _markedViewChildStatement(viewChild),
   ];
+
+  static o.Statement _markedViewChildStatement(CompileElement viewChild) {
+    final componentView = viewChild.componentView!;
+    final detect = componentView
+        .callMethod('detectChangesInMarkedDescendants', [])
+        .toStmt();
+    if (!_hasRefreshHooks(viewChild)) {
+      return detect;
+    }
+    return o.IfStmt(
+      componentView.prop('isMarkedForRefresh'),
+      [
+        if (viewChild.refreshHooksBefore.isNotEmpty)
+          o.IfStmt(notThrowOnChanges, viewChild.refreshHooksBefore),
+        detect,
+        if (viewChild.refreshHooksAfter.isNotEmpty)
+          o.IfStmt(notThrowOnChanges, viewChild.refreshHooksAfter),
+      ],
+      [detect],
+    );
+  }
 
   List<o.Statement> writeChangeDetectionStatements() {
     var statements = <o.Statement>[];

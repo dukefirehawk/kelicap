@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:alien_signals/alien_signals.dart'
     as alien
-    show Effect, effect, endBatch, startBatch;
+    show Effect, effect, endBatch, startBatch, trigger;
 import 'package:alien_signals/preset.dart'
     show ComputedNode, SignalNode, getActiveSub, setActiveSub;
 import 'package:alien_signals/system.dart' show ReactiveFlags;
@@ -30,7 +32,11 @@ abstract interface class WritableSignal<T> implements Signal<T> {
   ///
   /// Nothing is notified if [value] is equal to the current value, by the
   /// `equal` function given to [signal], which is [identical] by default. So
-  /// after changing a list or map in place, set the signal to a new one.
+  /// after changing a list or map in place, set the signal to a new one, or
+  /// give [signal] an `equal` function that tells it changed.
+  ///
+  /// Change detection runs if a view, an effect or a computed value has read
+  /// this signal.
   void set(T value);
 
   /// Sets the value of this signal to what [updater] returns for its current
@@ -97,6 +103,12 @@ Signal<T> computed<T>(T Function() computation) => _Computed(computation);
 /// with the component that created it: call [EffectRef.destroy], such as in
 /// `ngOnDestroy`.
 ///
+/// An error that [fn] or a cleanup function throws is reported to the zone
+/// that called [effect], such as to the `ExceptionHandler` of an application
+/// when it is created by a component, rather than thrown at the code that set
+/// the signal, so that the other effects and components that read the signal
+/// are still notified.
+///
 /// ```dart
 /// final ref = effect((onCleanup) {
 ///   final timer = Timer(const Duration(seconds: 1), () => save(form()));
@@ -120,22 +132,42 @@ EffectRef effect(void Function(EffectCleanupRegisterFn onCleanup) fn) {
   }
 }
 
-EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) =>
-    _EffectRef(
-      alien.effect<void Function()?>(() {
-        List<void Function()>? cleanups;
+EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) {
+  // Errors are reported to the zone that created the effect, such as the
+  // NgZone of a component, whose application reports them to its
+  // ExceptionHandler, even when a signal set outside of it runs the effect.
+  // Thrown, they would stop the effects, and the views, that the same change
+  // notifies after this one.
+  final zone = Zone.current;
+  return _EffectRef(
+    alien.effect<void Function()?>(() {
+      List<void Function()>? cleanups;
+      // The signals it reads are not read by a view that is checked while it
+      // runs, such as when a lifecycle hook sets a signal that it reads.
+      final read = signalRead;
+      try {
         fn((cleanup) => (cleanups ??= []).add(cleanup));
-        final registered = cleanups;
-        if (registered == null) {
-          return null;
-        }
-        return () {
-          for (final cleanup in registered) {
+      } catch (e, s) {
+        zone.handleUncaughtError(e, s);
+      } finally {
+        signalRead = read;
+      }
+      final registered = cleanups;
+      if (registered == null) {
+        return null;
+      }
+      return () {
+        for (final cleanup in registered) {
+          try {
             cleanup();
+          } catch (e, s) {
+            zone.handleUncaughtError(e, s);
           }
-        };
-      }),
-    );
+        }
+      };
+    }),
+  );
+}
 
 /// Runs [fn] and returns its result, without tracking the signals it reads.
 ///
@@ -143,10 +175,13 @@ EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) =>
 /// recomputing, or running again, when that signal changes.
 T untracked<T>(T Function() fn) {
   final previous = setActiveSub(null);
+  // Signals read here do not make a view that is checked record signals.
+  final read = signalRead;
   try {
     return fn();
   } finally {
     setActiveSub(previous);
+    signalRead = read;
   }
 }
 
@@ -175,7 +210,12 @@ final class _WritableSignal<T> extends SignalNode<T>
       );
 
   @override
-  T call() => get();
+  T call() {
+    // Tells a view that is checked without recording signals that it reads
+    // one.
+    signalRead = true;
+    return get();
+  }
 
   @override
   void set(T value) {
@@ -186,8 +226,27 @@ final class _WritableSignal<T> extends SignalNode<T>
         : equal(pendingValue, value)) {
       return;
     }
-    super.set(value);
-    ChangeDetectionScheduler.scheduleAll();
+    try {
+      if (identical(pendingValue, value)) {
+        // The same object, which [equal] tells has changed, such as a list
+        // changed in place: notifies the code that read it, which setting it
+        // would not, as it compares the objects.
+        alien.trigger(_read);
+      } else {
+        super.set(value);
+      }
+    } finally {
+      // Renders the change, even if code that the set ran threw, unless no
+      // view, effect or computed value reads this signal, as nothing then
+      // shows it.
+      if (subs != null) {
+        ChangeDetectionScheduler.scheduleAll();
+      }
+    }
+  }
+
+  void _read() {
+    get();
   }
 
   @override
@@ -211,7 +270,12 @@ final class _Computed<T> extends ComputedNode<T> implements Signal<T> {
     : super(flags: ReactiveFlags.none, getter: (_) => computation());
 
   @override
-  T call() => get();
+  T call() {
+    // Tells a view that is checked without recording signals that it reads
+    // one.
+    signalRead = true;
+    return get();
+  }
 }
 
 final class _EffectRef implements EffectRef {

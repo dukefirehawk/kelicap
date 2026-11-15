@@ -1,7 +1,16 @@
 import 'package:alien_signals/preset.dart'
     as alien
-    show EffectCleanup, EffectNode, run, stop;
+    show EffectCleanup, EffectNode, PresetReactiveSystem, run, stop;
 import 'package:alien_signals/system.dart' show Link, ReactiveFlags;
+
+/// **INTERNAL ONLY**: Whether a signal or a computed value was read since a
+/// view reset it.
+///
+/// A view that has not read a signal yet is checked without a
+/// [ViewSignalConsumer], which costs less, and reads it to learn whether it
+/// needs one. Setting a field costs less than asking whether a view is being
+/// checked, on each read.
+var signalRead = false;
 
 /// **INTERNAL ONLY**: Tracks the signals that a view reads while it is
 /// checked, and tells the view when one of them changes.
@@ -21,61 +30,85 @@ import 'package:alien_signals/system.dart' show Link, ReactiveFlags;
 abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   /// Whether [runEffect] runs for a [check], rather than for a change.
   var _checking = false;
-  var _forCrash = false;
+
+  /// The last of the signals that the last [check] recorded, if any.
+  Link? _lastDep;
 
   ViewSignalConsumer() : super(flags: ReactiveFlags.none, fn: _noop);
 
-  /// Checks the view.
-  void detectChanges();
-
-  /// Checks the view after a crash.
-  void detectCrash();
+  /// Checks the view, after a crash too: the view tells which.
+  void runCheck();
 
   /// Called when a signal read in the last [check] changes.
   void onChanged();
 
   /// Checks the view, recording the signals that it reads.
-  void check() => _track(forCrash: false);
-
-  /// Checks the view after a crash, recording the signals that it reads.
-  void checkForCrash() => _track(forCrash: true);
-
-  void _track({required bool forCrash}) {
+  ///
+  /// Returns whether a signal that it read changed while it was checked, after
+  /// it was read, which [onChanged] is not called for: the view must be
+  /// checked again.
+  bool check() {
+    if (_disposed) {
+      // A destroyed view, which is not checked unless something is wrong:
+      // checked without recording the signals it reads, which would keep it
+      // alive, and notify it.
+      runCheck();
+      return false;
+    }
     _checking = true;
-    _forCrash = forCrash;
     // Makes alien.run() run this node, which it does only when it is dirty.
     flags = ReactiveFlags.dirty;
     try {
       alien.run(this);
     } finally {
       _checking = false;
+      // The last of the signals recorded, which alien.run() clears before it
+      // runs this node for a change, and [runEffect] restores.
+      _lastDep = depsTail;
     }
+    // A signal that this node read, and that changes while it runs, marks it
+    // pending, rather than notifying it, as it is running. A computed value
+    // that it read may still have the same value, which checkDirty() tells,
+    // as alien.run() does.
+    if ((flags & ReactiveFlags.pending) == ReactiveFlags.none) {
+      return false;
+    }
+    final deps = this.deps;
+    if (deps == null ||
+        !const alien.PresetReactiveSystem().checkDirty(deps, this)) {
+      // Watching again, as after a check in which nothing changed.
+      flags = ReactiveFlags.watching;
+      return false;
+    }
+    // Dirty and not watching, as after onChanged(): the node is not notified
+    // again until the next check, which records the signals anew.
+    flags = ReactiveFlags.dirty;
+    return true;
   }
 
+  /// Whether the last [check] recorded a signal.
+  bool get hasDependencies => deps != null;
+
+  var _disposed = false;
+
   /// Stops tracking: [onChanged] is not called again.
-  void dispose() => alien.stop(this);
+  void dispose() {
+    _disposed = true;
+    alien.stop(this);
+  }
 
   @override
   alien.EffectCleanup? runEffect() {
     if (_checking) {
-      if (_forCrash) {
-        detectCrash();
-      } else {
-        detectChanges();
-      }
+      runCheck();
       return null;
     }
     // A signal changed.
     onChanged();
     // Keeps the signals recorded, which alien.run() would drop as nothing was
     // read, so that the next check finds them, rather than records them anew.
-    var last = deps;
-    if (last != null) {
-      for (Link? next; (next = last!.nextDep) != null;) {
-        last = next;
-      }
-    }
-    depsTail = last;
+    // They have not changed since the last check, which recorded the last.
+    depsTail = _lastDep;
     // Dirty and not watching, the node is not notified again until the next
     // check, which makes it watch. alien.run() then clears recursedCheck.
     flags = ReactiveFlags.dirty | ReactiveFlags.recursedCheck;
