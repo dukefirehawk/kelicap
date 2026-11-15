@@ -32,6 +32,9 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   var _checking = false;
   var _forCrash = false;
 
+  /// The last of the signals that the last [check] recorded, if any.
+  Link? _lastDep;
+
   ViewSignalConsumer() : super(flags: ReactiveFlags.none, fn: _noop);
 
   /// Checks the view.
@@ -64,6 +67,9 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
       alien.run(this);
     } finally {
       _checking = false;
+      // The last of the signals recorded, which alien.run() clears before it
+      // runs this node for a change, and [runEffect] restores.
+      _lastDep = depsTail;
     }
     // A signal that this node read, and that changes while it runs, marks it
     // pending, rather than notifying it, as it is running.
@@ -96,13 +102,8 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
     onChanged();
     // Keeps the signals recorded, which alien.run() would drop as nothing was
     // read, so that the next check finds them, rather than records them anew.
-    var last = deps;
-    if (last != null) {
-      for (Link? next; (next = last!.nextDep) != null;) {
-        last = next;
-      }
-    }
-    depsTail = last;
+    // They have not changed since the last check, which recorded the last.
+    depsTail = _lastDep;
     // Dirty and not watching, the node is not notified again until the next
     // check, which makes it watch. alien.run() then clears recursedCheck.
     flags = ReactiveFlags.dirty | ReactiveFlags.recursedCheck;

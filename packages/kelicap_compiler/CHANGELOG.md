@@ -8,7 +8,7 @@
 
 ### New in 2.0.0
 
-* **Signals:** Generated views have a `detectChangesInMarkedViews` method, which checks only the views below them that a signal of `kelicap` 2.0.0 marked for check, rather than every one of them, and runs the `ngDoCheck`, `ngAfterContentChecked` and `ngAfterViewChecked` hooks of the directives on the element of each component view it checks
+* **Signals:** Generated views have a `detectChangesInMarkedViews` method, which checks only the views below them that a signal of `kelicap` 2.0.0 marked for check, rather than every one of them, and runs the `ngAfterContentChecked` and `ngAfterViewChecked` hooks of the directives on the element of each component view it checks, but not their `ngDoCheck`, as their parent view is not checked
 
 ## 1.1.5
 

@@ -1515,10 +1515,11 @@ class CompileView {
   /// this one.
   ///
   /// A child component view that is marked is checked as when this view is
-  /// checked: with the `ngDoCheck`, `ngAfterContentChecked` and
-  /// `ngAfterViewChecked` hooks of the directives on its element. Its host
-  /// bindings are not updated, as they are expressions of this view, which a
-  /// signal that they read marks for refresh.
+  /// checked: with the `ngAfterContentChecked` and `ngAfterViewChecked` hooks
+  /// of the directives on its element. Their `ngDoCheck` hooks do not run, as
+  /// this view is not checked. Its host bindings are not updated, as they are
+  /// expressions of this view, which a signal that they read marks for
+  /// refresh.
   List<o.Statement> writeMarkedViewsChangeDetectionStatements() => [
     for (final viewContainer in viewContainers)
       viewContainer.callMethod('detectChangesInMarkedNestedViews', []).toStmt(),

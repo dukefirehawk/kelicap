@@ -16,13 +16,10 @@ void bindDirectiveDetectChangesLifecycleCallbacks(
       compileElement.view!.detectChangesInInputsMethod;
   _bindAfterChanges(directive, detectChangesInInputsMethod);
   _bindOnInit(directive, detectChangesInInputsMethod);
+  // Not run when only the component view of the element is checked, as it was
+  // marked for refresh: `ngDoCheck` tells that the view of the directive, its
+  // parent, is checked, which it is not then.
   _bindDoCheck(directive, detectChangesInInputsMethod);
-  if (compileElement.componentView != null &&
-      directive.hasLifecycle(ir.Lifecycle.doCheck)) {
-    compileElement.refreshHooksBefore.add(
-      _lifecycleMethod(directive.providerSource!, Lifecycles.doCheck),
-    );
-  }
 }
 
 void _bindAfterChanges(ir.MatchedDirective directive, CompileMethod method) {

@@ -18,6 +18,7 @@ var loopChecks = 0;
 /// The checks of each [CheckCounter], by its name.
 final counterChecks = <String, int>{};
 var hookChecks = 0;
+var doChecks = 0;
 
 /// How many times [LoopComponent] sets a signal, at most, so that a test of a
 /// pass that never ends does not freeze the browser.
@@ -49,7 +50,7 @@ void main() {
     state = signal(0);
     a = signal(0);
     b = signal(0);
-    loopChecks = hookChecks = 0;
+    loopChecks = hookChecks = doChecks = 0;
     counterChecks.clear();
     errors = [];
 
@@ -115,6 +116,20 @@ void main() {
       expect(counterChecks['signal'], plainChecks);
     },
   );
+
+  test('a view whose first check throws does not stay subscribed', () async {
+    final host = await bootstrap<ThrowingReaderHost>(
+      ng.createThrowingReaderHostFactory(),
+    );
+    ngZone.run(() => host.instance.show = true);
+    await settle();
+    expect(errors, isNotEmpty);
+    // Destroys the view that threw.
+    ngZone.run(() => host.instance.show = false);
+    await settle();
+    ngZone.runOutsideKelicap(() => a.set(5));
+    expect(appRef.changeDetectionScheduler.isPending, isFalse);
+  });
 
   test('a signal with a custom equal notifies of the same object', () async {
     final items = signal(<int>[], equal: (a, b) => false);
@@ -183,16 +198,16 @@ void main() {
     });
   });
 
-  test(
-    'a signal runs the lifecycle hooks of the component that reads it',
-    () async {
-      await bootstrap(ng.createHookRootComponentFactory());
-      final before = hookChecks;
-      await outside(() => state.set(1));
-      expect(hookChecks, greaterThan(before));
-      expect(errors, isEmpty);
-    },
-  );
+  test('a signal runs the lifecycle hooks of the component that reads it, '
+      'but not ngDoCheck', () async {
+    await bootstrap(ng.createHookRootComponentFactory());
+    final (checksBefore, doChecksBefore) = (hookChecks, doChecks);
+    await outside(() => state.set(1));
+    expect(hookChecks, greaterThan(checksBefore));
+    // Its parent was not checked.
+    expect(doChecks, doChecksBefore);
+    expect(errors, isEmpty);
+  });
 
   test('a marked view is still checked after a sibling throws', () async {
     final root = await bootstrap(ng.createSiblingsRootComponentFactory());
@@ -289,6 +304,24 @@ class CheckCounter implements AfterViewChecked {
       counterChecks[name] = (counterChecks[name] ?? 0) + 1;
 }
 
+/// Shows a [ThrowingReaderComponent] while [show] is set.
+@Component(
+  selector: 'throwing-reader-host',
+  template: '<throwing-reader *ngIf="show"></throwing-reader>',
+  directives: [NgIf, ThrowingReaderComponent],
+)
+class ThrowingReaderHost {
+  var show = false;
+}
+
+/// Reads [a], then throws, on every check.
+@Component(selector: 'throwing-reader', template: '{{value()}}{{boom()}}')
+class ThrowingReaderComponent {
+  int value() => a();
+
+  int boom() => throw StateError('boom');
+}
+
 /// An OnPush component that renders [state].
 @Component(
   selector: 'state-reader',
@@ -351,17 +384,21 @@ class HookRootComponent {}
 )
 class HookParent {}
 
-/// An OnPush component that reads [state], and counts its checks.
+/// An OnPush component that reads [state], and counts its checks, and its
+/// `ngDoCheck` calls.
 @Component(
   selector: 'hook-child',
   template: '{{value()}}',
   changeDetection: ChangeDetectionStrategy.onPush,
 )
-class HookChild implements AfterViewChecked {
+class HookChild implements AfterViewChecked, DoCheck {
   int value() => state();
 
   @override
   void ngAfterViewChecked() => hookChecks++;
+
+  @override
+  void ngDoCheck() => doChecks++;
 }
 
 @Component(

@@ -212,10 +212,13 @@ abstract class ComponentView<T extends Object> extends RenderView {
       return _check(signals);
     }
     if (_data.changeDetectorState == ChangeDetectorState.neverChecked) {
-      final first = _ComponentViewSignals(this);
+      // Stored before the check, so that it is disposed with the view even if
+      // the check throws after it recorded a signal.
+      final first = _data.signals = _ComponentViewSignals(this);
       final checkAgain = _check(first);
-      if (first.hasDependencies) {
-        _data.signals = first;
+      if (!first.hasDependencies) {
+        // Recorded nothing, so nothing notifies it: dropped.
+        _data.signals = null;
       }
       return checkAgain;
     }
@@ -261,14 +264,11 @@ abstract class ComponentView<T extends Object> extends RenderView {
 
   @override
   void detectChangesInMarkedDescendants() {
-    final mode = _data.changeDetectionMode;
-    if (mode == ChangeDetectionCheckedState.waitingToBeAttached ||
-        _data.changeDetectorState == ChangeDetectorState.errored) {
-      return;
-    }
-    if (_data.needsRefresh || mode == ChangeDetectionCheckedState.checkOnce) {
+    if (isMarkedForRefresh) {
       detectChangesDeprecated();
-    } else if (hasMarkedDescendants) {
+    } else if (hasMarkedDescendants &&
+        !isWaitingToBeAttached &&
+        _data.changeDetectorState != ChangeDetectorState.errored) {
       // Neither this view nor its default change detection is checked here:
       // only the marked views below it, as its parent was not checked.
       detectChangesInMarkedViewsKeepingMarks();

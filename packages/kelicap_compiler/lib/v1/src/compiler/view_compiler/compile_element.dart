@@ -60,9 +60,9 @@ class CompileElement extends CompileNode implements ProviderResolverHost {
   /// Expression that contains reference to componentView (root View class).
   final o.Expression? componentView;
 
-  /// Calls to the `ngDoCheck` and `ngAfterContentChecked` hooks of the
-  /// directives on this element, which are run before its [componentView] is
-  /// checked when only that view is, as it was marked for refresh.
+  /// Calls to the `ngAfterContentChecked` hooks of the directives on this
+  /// element, which are run before its [componentView] is checked when only
+  /// that view is, as it was marked for refresh.
   final refreshHooksBefore = <o.Statement>[];
 
   /// Calls to the `ngAfterViewChecked` hooks of the directives on this element,
