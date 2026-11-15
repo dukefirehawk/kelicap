@@ -209,7 +209,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
   bool _checkRecordingSignals() {
     final signals = _data.signals;
     if (signals != null) {
-      return _check(signals);
+      return signals.check();
     }
     if (_data.changeDetectorState != ChangeDetectorState.neverChecked &&
         !_checkWithoutRecording()) {
@@ -225,11 +225,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
     // Not recorded by the view above this one, if it records its own.
     final previous = setActiveSub(null);
     try {
-      if (ChangeDetectionHost.checkForCrashes) {
-        detectCrash();
-      } else {
-        detectChangesInternal();
-      }
+      _runCheck();
     } finally {
       setActiveSub(previous);
     }
@@ -243,7 +239,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
   /// if the check throws after it recorded a signal.
   bool _checkWithNewSignals() {
     final signals = _data.signals = _ComponentViewSignals(this);
-    final checkAgain = _check(signals);
+    final checkAgain = signals.check();
     if (!signals.hasDependencies) {
       // Recorded nothing, so nothing notifies it: dropped.
       _data.signals = null;
@@ -251,10 +247,15 @@ abstract class ComponentView<T extends Object> extends RenderView {
     return checkAgain;
   }
 
-  static bool _check(ViewSignalConsumer signals) =>
-      ChangeDetectionHost.checkForCrashes
-      ? signals.checkForCrash()
-      : signals.check();
+  /// Checks this view, in "slow-mode" after a crash, to catch the exceptions
+  /// thrown, as [ChangeDetectionHost.checkForCrashes] tells.
+  void _runCheck() {
+    if (ChangeDetectionHost.checkForCrashes) {
+      detectCrash();
+    } else {
+      detectChangesInternal();
+    }
+  }
 
   /// Whether this view is marked to be checked, which
   /// [detectChangesInMarkedDescendants] then does.
@@ -267,11 +268,6 @@ abstract class ComponentView<T extends Object> extends RenderView {
         _data.changeDetectorState != ChangeDetectorState.errored &&
         (_data.needsRefresh || mode == ChangeDetectionCheckedState.checkOnce);
   }
-
-  // Called by [_ComponentViewSignals], which may not call the protected
-  // methods itself.
-  void _detectChangesForSignals() => detectChangesInternal();
-  void _detectCrashForSignals() => detectCrash();
 
   @override
   void detectChangesInMarkedDescendants() {
@@ -401,10 +397,7 @@ final class _ComponentViewSignals extends ViewSignalConsumer {
   _ComponentViewSignals(this._view);
 
   @override
-  void detectChanges() => _view._detectChangesForSignals();
-
-  @override
-  void detectCrash() => _view._detectCrashForSignals();
+  void runCheck() => _view._runCheck();
 
   @override
   void onChanged() => _view.markForRefresh();

@@ -216,6 +216,37 @@ void main() {
     });
   });
 
+  group('a host binding of a root component', () {
+    test('renders a signal set outside the zone', () async {
+      final root = await bootstrap<ThemedRootComponent>(
+        ng.createThemedRootComponentFactory(),
+      );
+      expect(root.location.classList.contains('dark'), isFalse);
+      await outside(() => state.set(1));
+      expect(root.location.classList.contains('dark'), isTrue);
+      expect(errors, isEmpty);
+    });
+
+    test('renders a signal set while the component is checked', () async {
+      final root = await bootstrap<ThemedSetterRootComponent>(
+        ng.createThemedSetterRootComponentFactory(),
+      );
+      // Its child set the signal when it was first checked.
+      expect(root.location.classList.contains('dark'), isTrue);
+      expect(errors, isEmpty);
+    });
+  });
+
+  test('a signal set in an NgZone turn schedules no pass', () async {
+    await bootstrap(ng.createStateReaderComponentFactory());
+    ngZone.run(() {
+      state.set(1);
+      expect(appRef.changeDetectionScheduler.isPending, isFalse);
+    });
+    await settle();
+    expect(errors, isEmpty);
+  });
+
   test('a signal with a custom equal notifies of the same object', () async {
     final items = signal(<int>[], equal: (a, b) => false);
     final seen = <int>[];
@@ -505,6 +536,31 @@ class ThrowingReaderComponent {
   int value() => a();
 
   int boom() => throw StateError('boom');
+}
+
+/// A root component whose host binding reads [state].
+@Component(selector: 'themed-root', template: 'themed')
+class ThemedRootComponent {
+  @HostBinding('class.dark')
+  bool get dark => state() == 1;
+}
+
+/// [ThemedRootComponent], with a child that sets [state] once checked.
+@Component(
+  selector: 'themed-setter-root',
+  template: '<state-setter></state-setter>',
+  directives: [StateSetter],
+)
+class ThemedSetterRootComponent {
+  @HostBinding('class.dark')
+  bool get dark => state() == 1;
+}
+
+/// Sets [state] to 1 once it is checked.
+@Component(selector: 'state-setter', template: '')
+class StateSetter implements AfterViewInit {
+  @override
+  void ngAfterViewInit() => state.set(1);
 }
 
 /// An OnPush component that renders [state].

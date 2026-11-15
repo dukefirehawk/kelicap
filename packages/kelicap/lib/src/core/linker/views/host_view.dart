@@ -11,6 +11,7 @@ import '../../../core/linker/view_container.dart';
 import '../../../core/linker/view_fragment.dart';
 import '../../../di/injector.dart';
 import '../../../runtime/dom_helpers.dart';
+import '../../../signals/view_consumer.dart';
 
 import '../../../utilities/unsafe_cast.dart';
 import 'component_view.dart';
@@ -143,16 +144,54 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
       throw StateError('detectChanges');
     }
 
-    if (ChangeDetectionHost.checkForCrashes) {
-      // Run change detection in "slow-mode" to catch thrown exceptions.
-      detectCrash();
-    } else {
-      // Normally run change detection.
-      detectChangesInternal();
+    _data.needsRefresh = false;
+    if (_data.viewContainer == null) {
+      // No view above this one records the signals that the host bindings,
+      // and the lifecycle hooks, of its component read: records them itself.
+      final signals = _data.signals ??= _HostViewSignals(this);
+      final checkAgain = signals.check();
+      _data.changeDetectorState = ChangeDetectorState.checkedBefore;
+      if (checkAgain) {
+        _markForRefresh();
+      }
+      return;
     }
+    // The view above the container records them.
+    final signals = _data.signals;
+    if (signals != null) {
+      signals.dispose();
+      _data.signals = null;
+    }
+    _runCheck();
 
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;
+  }
+
+  /// Checks this view, in "slow-mode" after a crash, to catch the exceptions
+  /// thrown, as [ChangeDetectionHost.checkForCrashes] tells.
+  void _runCheck() {
+    if (ChangeDetectionHost.checkForCrashes) {
+      detectCrash();
+    } else {
+      detectChangesInternal();
+    }
+  }
+
+  /// Marks this view to be checked, as a signal that it read changed, before
+  /// the tick that is running ends, if there is one.
+  void _markForRefresh() {
+    _data.needsRefresh = true;
+    ChangeDetectionHost.recordMarkedForRefresh();
+  }
+
+  @override
+  void detectChangesInMarkedDescendants() {
+    if (_data.needsRefresh && !_data.shouldSkipChangeDetection) {
+      detectChangesDeprecated();
+    } else {
+      super.detectChangesInMarkedDescendants();
+    }
   }
 
   @override
@@ -301,6 +340,13 @@ class _HostViewData implements DynamicViewData {
   bool get destroyed => _destroyed;
   bool _destroyed = false;
 
+  /// Tracks the signals that the view reads itself, outside of its component
+  /// view, while it is in no container.
+  ViewSignalConsumer? signals;
+
+  /// Whether a signal that the view read itself changed since it was checked.
+  var needsRefresh = false;
+
   @override
   bool get shouldSkipChangeDetection => _shouldSkipChangeDetection;
   bool _shouldSkipChangeDetection = false;
@@ -314,6 +360,7 @@ class _HostViewData implements DynamicViewData {
   @override
   void destroy() {
     _destroyed = true;
+    signals?.dispose();
     final onDestroyCallbacks = _onDestroyCallbacks;
     if (onDestroyCallbacks != null) {
       for (var i = 0, length = onDestroyCallbacks.length; i < length; ++i) {
@@ -328,4 +375,19 @@ class _HostViewData implements DynamicViewData {
             ChangeDetectionCheckedState.waitingToBeAttached ||
         _changeDetectorState == ChangeDetectorState.errored;
   }
+}
+
+/// Tracks the signals that a host view reads itself, such as in the host
+/// bindings of its component, and marks it for refresh when one of them
+/// changes.
+final class _HostViewSignals extends ViewSignalConsumer {
+  final HostView<Object> _view;
+
+  _HostViewSignals(this._view);
+
+  @override
+  void runCheck() => _view._runCheck();
+
+  @override
+  void onChanged() => _view._markForRefresh();
 }

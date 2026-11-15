@@ -14,19 +14,14 @@ void main() {
     other = signal(0);
     rendered = [];
     changes = 0;
-    consumer = _Consumer(
-      () => rendered.add(count()),
-      () => rendered.add(-count()),
-      () => changes++,
-    );
+    consumer = _Consumer(() => rendered.add(count()), () => changes++);
   });
 
   tearDown(() => consumer.dispose());
 
   test('check() runs the check', () {
     consumer.check();
-    consumer.checkForCrash();
-    expect(rendered, [0, -0]);
+    expect(rendered, [0]);
   });
 
   test('tells once that a signal read in the check changed', () {
@@ -56,7 +51,6 @@ void main() {
     var readCount = true;
     final consumer = _Consumer(
       () => readCount ? count() : other(),
-      () {},
       () => changes++,
     )..check();
     addTearDown(consumer.dispose);
@@ -80,17 +74,9 @@ void main() {
     expect(rendered, [0, 2]);
   });
 
-  test('records the signals read after a crash', () {
-    consumer.checkForCrash();
-    count.set(1);
-    expect(changes, 1);
-  });
-
   test('does not tell of a computed value that is unchanged', () {
     final isPositive = computed(() => count() > 0);
-    final consumer = _Consumer(isPositive.call, isPositive.call, () {
-      changes++;
-    })..check();
+    final consumer = _Consumer(isPositive.call, () => changes++)..check();
     addTearDown(consumer.dispose);
     count.set(-1);
     expect(changes, 0);
@@ -100,19 +86,13 @@ void main() {
 
   test('records nested checks separately', () {
     var innerChanges = 0;
-    final inner = _Consumer(other.call, other.call, () {
-      innerChanges++;
-    });
+    final inner = _Consumer(other.call, () => innerChanges++);
     addTearDown(inner.dispose);
-    final outer = _Consumer(
-      () {
-        count();
-        inner.check();
-        count();
-      },
-      () {},
-      () => changes++,
-    )..check();
+    final outer = _Consumer(() {
+      count();
+      inner.check();
+      count();
+    }, () => changes++)..check();
     addTearDown(outer.dispose);
     other.set(1);
     expect((changes, innerChanges), (0, 1));
@@ -135,7 +115,6 @@ void main() {
     final consumer = _Consumer(
       () => ref ??= effect((_) => runs.add(source())),
       () {},
-      () {},
     )..check();
     addTearDown(consumer.dispose);
     consumer.check();
@@ -147,17 +126,13 @@ void main() {
 
 /// A consumer that runs functions.
 final class _Consumer extends ViewSignalConsumer {
-  final void Function() _detectChanges;
-  final void Function() _detectCrash;
+  final void Function() _runCheck;
   final void Function() _onChanged;
 
-  _Consumer(this._detectChanges, this._detectCrash, this._onChanged);
+  _Consumer(this._runCheck, this._onChanged);
 
   @override
-  void detectChanges() => _detectChanges();
-
-  @override
-  void detectCrash() => _detectCrash();
+  void runCheck() => _runCheck();
 
   @override
   void onChanged() => _onChanged();

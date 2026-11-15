@@ -30,18 +30,14 @@ var signalRead = false;
 abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   /// Whether [runEffect] runs for a [check], rather than for a change.
   var _checking = false;
-  var _forCrash = false;
 
   /// The last of the signals that the last [check] recorded, if any.
   Link? _lastDep;
 
   ViewSignalConsumer() : super(flags: ReactiveFlags.none, fn: _noop);
 
-  /// Checks the view.
-  void detectChanges();
-
-  /// Checks the view after a crash.
-  void detectCrash();
+  /// Checks the view, after a crash too: the view tells which.
+  void runCheck();
 
   /// Called when a signal read in the last [check] changes.
   void onChanged();
@@ -51,23 +47,15 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   /// Returns whether a signal that it read changed while it was checked, after
   /// it was read, which [onChanged] is not called for: the view must be
   /// checked again.
-  bool check() => _track(forCrash: false);
-
-  /// Checks the view after a crash, recording the signals that it reads.
-  ///
-  /// Returns what [check] does.
-  bool checkForCrash() => _track(forCrash: true);
-
-  bool _track({required bool forCrash}) {
+  bool check() {
     if (_disposed) {
       // A destroyed view, which is not checked unless something is wrong:
       // checked without recording the signals it reads, which would keep it
       // alive, and notify it.
-      forCrash ? detectCrash() : detectChanges();
+      runCheck();
       return false;
     }
     _checking = true;
-    _forCrash = forCrash;
     // Makes alien.run() run this node, which it does only when it is dirty.
     flags = ReactiveFlags.dirty;
     try {
@@ -112,11 +100,7 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   @override
   alien.EffectCleanup? runEffect() {
     if (_checking) {
-      if (_forCrash) {
-        detectCrash();
-      } else {
-        detectChanges();
-      }
+      runCheck();
       return null;
     }
     // A signal changed.
