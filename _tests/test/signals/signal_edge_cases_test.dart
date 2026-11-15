@@ -99,6 +99,25 @@ void main() {
     expect(errors, everyElement(isStateError));
   });
 
+  test('an effect that throws does not stop the views it precedes', () async {
+    // Created before the view reads the signal, so that it is notified first.
+    final ref = ngZone.run(
+      () => effect((_) {
+        if (state() == 3) throw StateError('effect');
+      }),
+    );
+    final reader = await bootstrap(ng.createStateReaderComponentFactory());
+    expect(reader.location.textContent, '0');
+
+    ngZone.runOutsideKelicap(() {
+      expect(() => state.set(3), returnsNormally);
+    });
+    await settle();
+    expect(reader.location.textContent, '3');
+    expect(errors, [isStateError]);
+    ref.destroy();
+  });
+
   group('a view that reads its first signal after its first check', () {
     late ComponentRef<LateReaderComponent> reader;
     String text() => reader.location.textContent!;
@@ -201,6 +220,16 @@ class SelfSettingComponent {
     }
     return count;
   }
+}
+
+/// An OnPush component that renders [state].
+@Component(
+  selector: 'state-reader',
+  template: '{{value()}}',
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class StateReaderComponent {
+  int value() => state();
 }
 
 /// Reads [state] only once [show] is set, after its first check.

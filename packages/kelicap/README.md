@@ -124,7 +124,7 @@ class TodoListComponent {
 - **Writing:** `set` and `update` change a signal. Setting it to a value that is `identical` to its current value notifies nothing, so update a list or a map by setting a new one, as above, rather than changing it in place.
 - **Change detection:** setting a signal runs change detection, even outside of the `NgZone`, and checks only the components whose templates read it. With `ChangeDetectionStrategy.onPush`, the others, including those above them, are not checked, so a change costs only the components that show it. Plain fields of an OnPush component still need `ChangeDetectorRef.markForCheck`.
 - **Derived values:** `computed(() => ...)` derives a value from signals. It is computed when it is read, and cached until a signal it read changes.
-- **Effects:** `effect((onCleanup) { ... })` runs code now, and again whenever a signal it read changes. It is not destroyed with the component that created it: call `destroy()` on the `EffectRef` it returns, such as in `ngOnDestroy`.
+- **Effects:** `effect((onCleanup) { ... })` runs code now, and again whenever a signal it read changes. It is not destroyed with the component that created it: call `destroy()` on the `EffectRef` it returns, such as in `ngOnDestroy`. An error it throws goes to the application's `ExceptionHandler`, not to the code that set the signal.
 - **Streams:** `toSignal(stream, initialValue: ...)` returns a signal of a stream's latest event: call `cancel()` on it when the component is destroyed. `toStream(signal)` returns a stream of a signal's values.
 - **Reading without tracking:** `untracked(() => ...)` reads signals without being notified of their changes, and `batch(() => ...)` runs the effects of the signals it sets once, at its end.
 
