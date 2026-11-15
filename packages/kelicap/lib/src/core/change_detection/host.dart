@@ -129,9 +129,10 @@ abstract class ChangeDetectionHost {
         handleUncaughtException(
           StateError(
             'Signals set while views were checked marked views to be checked '
-            'again, $maxRefreshesInATick times in a row: they are checked in '
-            'the next change detection pass. Set a signal that a view reads '
-            'only when its value changes, rather than each time it is checked.',
+            'again, $maxRefreshesInATick times in a row: they are not checked '
+            'again until something else runs change detection, such as an '
+            'event. Set a signal that a view reads only when its value '
+            'changes, rather than each time it is checked.',
           ),
           StackTrace.current,
           'DigestTick',

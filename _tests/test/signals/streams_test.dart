@@ -182,5 +182,27 @@ void main() {
       expect(copy(), 5);
       await subscription.cancel();
     });
+
+    test(
+      'listened to in an effect, keeps sending once it runs again',
+      () async {
+        final count = signal(0);
+        final trigger = signal(0);
+        final seen = <int>[];
+        StreamSubscription<int>? subscription;
+        final outer = effect((_) {
+          trigger();
+          subscription ??= toStream(count).listen(seen.add);
+        });
+        await settle();
+        // Runs the outer effect again, which stops the effects it owns.
+        trigger.set(1);
+        count.set(1);
+        await settle();
+        expect(seen, [0, 1]);
+        outer.destroy();
+        await subscription!.cancel();
+      },
+    );
   });
 }

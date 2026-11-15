@@ -73,20 +73,24 @@ Stream<T> toStream<T>(Signal<T> source) => Stream.multi((controller) {
     tracking?.destroy();
     tracking = null;
   };
-  tracking = effect((_) {
-    try {
-      latest = source();
-      error = null;
-    } catch (e, s) {
-      // Sent to the stream, rather than thrown at the code that set the
-      // signal, which would stop the other effects that the set runs.
-      error = (e, s);
-    }
-    if (!scheduled) {
-      scheduled = true;
-      scheduleMicrotask(send);
-    }
-  });
+  // Owned by nothing, as the stream tracks [source] until it is cancelled: an
+  // effect created in another effect is stopped when that one runs again.
+  tracking = untracked(
+    () => effect((_) {
+      try {
+        latest = source();
+        error = null;
+      } catch (e, s) {
+        // Sent to the stream, rather than thrown at the code that set the
+        // signal, which would stop the other effects that the set runs.
+        error = (e, s);
+      }
+      if (!scheduled) {
+        scheduled = true;
+        scheduleMicrotask(send);
+      }
+    }),
+  );
 });
 
 /// The value of a [_StreamSignal]: an event of the stream, or an error.
