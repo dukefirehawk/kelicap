@@ -19,6 +19,7 @@ var loopChecks = 0;
 final counterChecks = <String, int>{};
 var hookChecks = 0;
 var doChecks = 0;
+var bumps = 0;
 
 /// How many times [LoopComponent] sets a signal, at most, so that a test of a
 /// pass that never ends does not freeze the browser.
@@ -50,7 +51,7 @@ void main() {
     state = signal(0);
     a = signal(0);
     b = signal(0);
-    loopChecks = hookChecks = doChecks = 0;
+    loopChecks = hookChecks = doChecks = bumps = 0;
     counterChecks.clear();
     errors = [];
 
@@ -129,6 +130,40 @@ void main() {
     await settle();
     ngZone.runOutsideKelicap(() => a.set(5));
     expect(appRef.changeDetectionScheduler.isPending, isFalse);
+  });
+
+  test('an effect that runs while a view is checked is not its read', () async {
+    final ref = ngZone.run(() => effect((_) => a()));
+    final read = await bootstrap<EffectToggleParent>(
+      ng.createEffectToggleParentFactory(),
+    );
+    final plain = await bootstrap<PlainToggleParent>(
+      ng.createPlainToggleParentFactory(),
+    );
+    final (readBefore, plainBefore) = (
+      counterChecks['effect']!,
+      counterChecks['plain']!,
+    );
+    // Each shows a child that sets a signal while it is checked: only the
+    // effect reads the first one.
+    ngZone.run(() {
+      read.instance.show = true;
+      plain.instance.show = true;
+    });
+    await settle();
+    expect(
+      counterChecks['effect']! - readBefore,
+      counterChecks['plain']! - plainBefore,
+    );
+    expect(errors, isEmpty);
+    ref.destroy();
+  });
+
+  test('a computed value that keeps its value does not check again', () async {
+    await bootstrap(ng.createEvenComponentFactory());
+    await settle();
+    expect(bumps, lessThan(10));
+    expect(errors, isEmpty);
   });
 
   test('a signal with a custom equal notifies of the same object', () async {
@@ -281,6 +316,70 @@ class SelfSettingComponent {
 )
 class SignalParentComponent {
   int value() => state();
+}
+
+/// Shows a child that sets [a], which an effect reads, while it is checked.
+@Component(
+  selector: 'effect-toggle-parent',
+  template:
+      '<check-counter name="effect"></check-counter>'
+      '<signal-setter *ngIf="show" [target]="target"></signal-setter>',
+  directives: [CheckCounter, NgIf, SignalSetter],
+)
+class EffectToggleParent {
+  var show = false;
+  WritableSignal<int> get target => a;
+}
+
+/// [EffectToggleParent], with a signal that nothing reads.
+@Component(
+  selector: 'plain-toggle-parent',
+  template:
+      '<check-counter name="plain"></check-counter>'
+      '<signal-setter *ngIf="show" [target]="target"></signal-setter>',
+  directives: [CheckCounter, NgIf, SignalSetter],
+)
+class PlainToggleParent {
+  var show = false;
+  WritableSignal<int> get target => b;
+}
+
+/// Sets [target] when it is created.
+@Component(selector: 'signal-setter', template: '')
+class SignalSetter implements OnInit {
+  @Input()
+  late WritableSignal<int> target;
+
+  @override
+  // Without reading it, which would be a read of the view that checks it.
+  void ngOnInit() => target.update((value) => value + 1);
+}
+
+/// An OnPush component that reads a computed value, whose child changes the
+/// signal it is computed from, without changing it, while it is checked.
+@Component(
+  selector: 'even',
+  template: '{{isEven()}}<even-bumper [count]="count"></even-bumper>',
+  directives: [EvenBumper],
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class EvenComponent {
+  final count = signal(0);
+  late final isEven = computed(() => count() % 2 == 0);
+}
+
+/// Adds 2 to [count] each time its parent checks it.
+@Component(selector: 'even-bumper', template: '')
+class EvenBumper implements AfterViewChecked {
+  @Input()
+  late WritableSignal<int> count;
+
+  @override
+  void ngAfterViewChecked() {
+    if (++bumps < loopCap) {
+      count.update((value) => value + 2);
+    }
+  }
 }
 
 /// [SignalParentComponent] without the signal.

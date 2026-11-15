@@ -142,10 +142,15 @@ EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) {
   return _EffectRef(
     alien.effect<void Function()?>(() {
       List<void Function()>? cleanups;
+      // The signals it reads are not read by a view that is checked while it
+      // runs, such as when a lifecycle hook sets a signal that it reads.
+      final read = signalRead;
       try {
         fn((cleanup) => (cleanups ??= []).add(cleanup));
       } catch (e, s) {
         zone.handleUncaughtError(e, s);
+      } finally {
+        signalRead = read;
       }
       final registered = cleanups;
       if (registered == null) {

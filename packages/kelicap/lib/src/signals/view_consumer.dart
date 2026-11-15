@@ -1,6 +1,6 @@
 import 'package:alien_signals/preset.dart'
     as alien
-    show EffectCleanup, EffectNode, run, stop;
+    show EffectCleanup, EffectNode, PresetReactiveSystem, run, stop;
 import 'package:alien_signals/system.dart' show Link, ReactiveFlags;
 
 /// **INTERNAL ONLY**: Whether a signal or a computed value was read since a
@@ -72,8 +72,17 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
       _lastDep = depsTail;
     }
     // A signal that this node read, and that changes while it runs, marks it
-    // pending, rather than notifying it, as it is running.
+    // pending, rather than notifying it, as it is running. A computed value
+    // that it read may still have the same value, which checkDirty() tells,
+    // as alien.run() does.
     if ((flags & ReactiveFlags.pending) == ReactiveFlags.none) {
+      return false;
+    }
+    final deps = this.deps;
+    if (deps == null ||
+        !const alien.PresetReactiveSystem().checkDirty(deps, this)) {
+      // Watching again, as after a check in which nothing changed.
+      flags = ReactiveFlags.watching;
       return false;
     }
     // Dirty and not watching, as after onChanged(): the node is not notified

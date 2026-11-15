@@ -237,7 +237,13 @@ abstract class ComponentView<T extends Object> extends RenderView {
     if (!signalRead) {
       return false;
     }
-    return _check(_data.signals = _ComponentViewSignals(this));
+    final late = _data.signals = _ComponentViewSignals(this);
+    final checkAgain = _check(late);
+    if (!late.hasDependencies) {
+      // Recorded nothing, so nothing notifies it: dropped.
+      _data.signals = null;
+    }
+    return checkAgain;
   }
 
   static bool _check(ViewSignalConsumer signals) =>

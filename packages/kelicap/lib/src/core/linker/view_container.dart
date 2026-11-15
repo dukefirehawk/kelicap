@@ -3,6 +3,7 @@ import 'package:web/web.dart';
 import 'package:meta/meta.dart';
 
 import '../../di/injector.dart' show Injector;
+import '../change_detection/host.dart' show ChangeDetectionHost;
 
 import '../../utilities/unsafe_cast.dart';
 import 'component_factory.dart' show ComponentFactory, ComponentRef;
@@ -257,6 +258,8 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     // it only up to the container it was in, if any.
     if (view.hasMarkedDescendants) {
       parentView?.markDescendantsForRefresh();
+      // Checked before the tick that is running ends, if there is one.
+      ChangeDetectionHost.recordMarkedForRefresh();
     }
   }
 
