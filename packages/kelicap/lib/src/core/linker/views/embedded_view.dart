@@ -17,6 +17,7 @@ import '../../../runtime/dom_helpers.dart';
 import '../../../utilities/unsafe_cast.dart';
 import 'dynamic_view.dart';
 import 'render_view.dart';
+import 'view.dart';
 
 /// The base type of a view that implements a `<template>` element.
 ///
@@ -137,7 +138,7 @@ abstract class EmbeddedView<T> extends RenderView
   void detectChangesDeprecated() {
     if (_data.shouldSkipChangeDetection) return;
     // Checking this view checks the views below it, marked or not.
-    _data.hasMarkedDescendants = false;
+    clearMarkedDescendants();
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
@@ -158,34 +159,18 @@ abstract class EmbeddedView<T> extends RenderView
 
   @override
   void detectChangesInMarkedDescendants() {
-    if (_data.hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
-      _data.hasMarkedDescendants = false;
-      try {
-        detectChangesInMarkedViews();
-      } catch (_) {
-        // Keeps the views below marked, so that the check that looks for the
-        // view that threw reaches it.
-        _data.hasMarkedDescendants = true;
-        rethrow;
-      }
+    if (hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
+      detectChangesInMarkedViewsKeepingMarks();
     }
   }
 
   @override
-  bool get hasMarkedDescendants => _data.hasMarkedDescendants;
+  View? get viewAboveForRefresh => _data.viewContainer?.parentView;
 
   @override
-  void markDescendantsForRefresh() {
-    if (_data.hasMarkedDescendants) {
-      // The views above this one have recorded it already.
-      return;
-    }
-    _data.hasMarkedDescendants = true;
-    if (_data.changeDetectionMode !=
-        ChangeDetectionCheckedState.waitingToBeAttached) {
-      _data.viewContainer?.parentView?.markDescendantsForRefresh();
-    }
-  }
+  bool get isWaitingToBeAttached =>
+      _data.changeDetectionMode ==
+      ChangeDetectionCheckedState.waitingToBeAttached;
 
   @override
   void disableChangeDetection() {
@@ -295,10 +280,6 @@ class _EmbeddedViewData<T> implements DynamicViewData, RenderViewData {
 
   @override
   List<StreamSubscription<void>>? subscriptions;
-
-  /// Whether a view below this one was marked for refresh since this view was
-  /// checked.
-  var hasMarkedDescendants = false;
 
   /// Storage for any callbacks registered with [addOnDestroyCallback].
   List<void Function()>? _onDestroyCallbacks;

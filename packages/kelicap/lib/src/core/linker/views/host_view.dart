@@ -136,7 +136,7 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   void detectChangesDeprecated() {
     if (_data.shouldSkipChangeDetection) return;
     // Checking this view checks the views below it, marked or not.
-    _data.hasMarkedDescendants = false;
+    clearMarkedDescendants();
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
@@ -195,34 +195,18 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
 
   @override
   void detectChangesInMarkedDescendants() {
-    if (_data.hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
-      _data.hasMarkedDescendants = false;
-      try {
-        detectChangesInMarkedViews();
-      } catch (_) {
-        // Keeps the views below marked, so that the check that looks for the
-        // view that threw reaches it.
-        _data.hasMarkedDescendants = true;
-        rethrow;
-      }
+    if (hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
+      detectChangesInMarkedViewsKeepingMarks();
     }
   }
 
   @override
-  bool get hasMarkedDescendants => _data.hasMarkedDescendants;
+  View? get viewAboveForRefresh => _data.viewContainer?.parentView;
 
   @override
-  void markDescendantsForRefresh() {
-    if (_data.hasMarkedDescendants) {
-      // The views above this one have recorded it already.
-      return;
-    }
-    _data.hasMarkedDescendants = true;
-    if (_data.changeDetectionMode !=
-        ChangeDetectionCheckedState.waitingToBeAttached) {
-      _data.viewContainer?.parentView?.markDescendantsForRefresh();
-    }
-  }
+  bool get isWaitingToBeAttached =>
+      _data.changeDetectionMode ==
+      ChangeDetectionCheckedState.waitingToBeAttached;
 
   @override
   void disableChangeDetection() {
@@ -292,10 +276,6 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
 class _HostViewData implements DynamicViewData {
   @override
   ViewContainer? viewContainer;
-
-  /// Whether a view below this one was marked for refresh since this view was
-  /// checked.
-  var hasMarkedDescendants = false;
 
   @override
   ViewFragment? viewFragment;

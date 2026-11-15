@@ -99,6 +99,44 @@ void main() {
     expect(errors, everyElement(isStateError));
   });
 
+  group('a view that reads its first signal after its first check', () {
+    late ComponentRef<LateReaderComponent> reader;
+    String text() => reader.location.textContent!;
+
+    setUp(() async {
+      reader = await bootstrap(ng.createLateReaderComponentFactory());
+      expect(text(), '');
+    });
+
+    test('renders its changes, once checked in a pass', () async {
+      ngZone.run(() {
+        reader.instance
+          ..show = true
+          ..changeDetector.markForCheck();
+      });
+      await settle();
+      expect(text(), '0');
+      await outside(() => state.set(5));
+      expect(text(), '5');
+      expect(errors, isEmpty);
+    });
+
+    test('renders its changes, once checked on its own', () async {
+      await outside(() {
+        reader.instance
+          ..show = true
+          ..changeDetector.markForCheck()
+          // Checks it outside of a pass, which nothing follows.
+          // ignore: deprecated_member_use
+          ..changeDetector.detectChanges();
+      });
+      expect(text(), '0');
+      await outside(() => state.set(7));
+      expect(text(), '7');
+      expect(errors, isEmpty);
+    });
+  });
+
   test(
     'a signal runs the lifecycle hooks of the component that reads it',
     () async {
@@ -163,6 +201,22 @@ class SelfSettingComponent {
     }
     return count;
   }
+}
+
+/// Reads [state] only once [show] is set, after its first check.
+@Component(
+  selector: 'late-reader',
+  template: '<span *ngIf="show">{{value()}}</span>',
+  directives: [NgIf],
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class LateReaderComponent {
+  final ChangeDetectorRef changeDetector;
+  var show = false;
+
+  LateReaderComponent(this.changeDetector);
+
+  int value() => state();
 }
 
 /// Reads [state] before the child that sets it is checked.

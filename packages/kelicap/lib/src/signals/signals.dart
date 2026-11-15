@@ -175,7 +175,12 @@ final class _WritableSignal<T> extends SignalNode<T>
       );
 
   @override
-  T call() => get();
+  T call() {
+    // Tells a view that is checked without recording signals that it reads
+    // one.
+    signalRead = true;
+    return get();
+  }
 
   @override
   void set(T value) {
@@ -215,7 +220,12 @@ final class _Computed<T> extends ComputedNode<T> implements Signal<T> {
     : super(flags: ReactiveFlags.none, getter: (_) => computation());
 
   @override
-  T call() => get();
+  T call() {
+    // Tells a view that is checked without recording signals that it reads
+    // one.
+    signalRead = true;
+    return get();
+  }
 }
 
 final class _EffectRef implements EffectRef {

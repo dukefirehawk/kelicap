@@ -3,6 +3,15 @@ import 'package:alien_signals/preset.dart'
     show EffectCleanup, EffectNode, run, stop;
 import 'package:alien_signals/system.dart' show Link, ReactiveFlags;
 
+/// **INTERNAL ONLY**: Whether a signal or a computed value was read since a
+/// view reset it.
+///
+/// A view that has not read a signal yet is checked without a
+/// [ViewSignalConsumer], which costs less, and reads it to learn whether it
+/// needs one. Setting a field costs less than asking whether a view is being
+/// checked, on each read.
+var signalRead = false;
+
 /// **INTERNAL ONLY**: Tracks the signals that a view reads while it is
 /// checked, and tells the view when one of them changes.
 ///
