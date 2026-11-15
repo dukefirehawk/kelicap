@@ -80,7 +80,7 @@ And `web/index.html` loads it:
 
 ## Build and run
 
-During development, build and serve the app, rebuilding it as files change, at <http://localhost:8080>:
+During development, build and serve the app, rebuilding it as files change, at (<http://localhost:8080>):
 
 ```bash
 dart pub get
@@ -128,7 +128,9 @@ class TodoListComponent {
 - **Streams:** `toSignal(stream, initialValue: ...)` returns a signal of a stream's latest event: call `cancel()` on it when the component is destroyed. `toStream(signal)` returns a stream of a signal's values.
 - **Reading without tracking:** `untracked(() => ...)` reads signals without being notified of their changes, and `batch(() => ...)` runs the effects of the signals it sets once, at its end.
 
-A signal read in a component's lifecycle hooks, or in the setters of its inputs, checks the component whose template uses it, not the component itself, as those run while that one is checked. Do not set a signal that a component reads while that component is checked, such as in its `ngAfterViewChecked`: it is not checked again.
+A signal read in a component's lifecycle hooks, or in the setters of its inputs, checks the component whose template uses it, not the component itself, as those run while that one is checked. A component checked because a signal changed runs its `ngDoCheck`, `ngAfterContentChecked` and `ngAfterViewChecked` hooks, as when its parent checks it.
+
+A signal set while a component that read it is checked, such as in the `ngAfterViewInit` of a child, checks that component again before the pass ends. Set a signal only when its value changes: a signal set to a new value each time it is checked would be checked forever, so after 100 times in a pass, or 100 passes in a row that each set one, Kelicap reports an error and stops.
 
 ### Benchmark
 

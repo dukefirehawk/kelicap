@@ -17,6 +17,12 @@ void bindDirectiveDetectChangesLifecycleCallbacks(
   _bindAfterChanges(directive, detectChangesInInputsMethod);
   _bindOnInit(directive, detectChangesInInputsMethod);
   _bindDoCheck(directive, detectChangesInInputsMethod);
+  if (compileElement.componentView != null &&
+      directive.hasLifecycle(ir.Lifecycle.doCheck)) {
+    compileElement.refreshHooksBefore.add(
+      _lifecycleMethod(directive.providerSource!, Lifecycles.doCheck),
+    );
+  }
 }
 
 void _bindAfterChanges(ir.MatchedDirective directive, CompileMethod method) {
@@ -78,6 +84,14 @@ void _bindAfterContentCallbacks(
         Lifecycles.afterContentChecked,
       ),
     );
+    if (compileElement.componentView != null) {
+      compileElement.refreshHooksBefore.add(
+        _lifecycleMethod(
+          directive.providerSource!,
+          Lifecycles.afterContentChecked,
+        ),
+      );
+    }
   }
 }
 
@@ -96,6 +110,14 @@ void _bindAfterViewCallbacks(
     lifecycleCallbacks.addStmt(
       _lifecycleMethod(directive.providerSource!, Lifecycles.afterViewChecked),
     );
+    if (compileElement.componentView != null) {
+      compileElement.refreshHooksAfter.add(
+        _lifecycleMethod(
+          directive.providerSource!,
+          Lifecycles.afterViewChecked,
+        ),
+      );
+    }
   }
 }
 

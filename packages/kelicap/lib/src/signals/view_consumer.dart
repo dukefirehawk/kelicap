@@ -35,12 +35,18 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
   void onChanged();
 
   /// Checks the view, recording the signals that it reads.
-  void check() => _track(forCrash: false);
+  ///
+  /// Returns whether a signal that it read changed while it was checked, after
+  /// it was read, which [onChanged] is not called for: the view must be
+  /// checked again.
+  bool check() => _track(forCrash: false);
 
   /// Checks the view after a crash, recording the signals that it reads.
-  void checkForCrash() => _track(forCrash: true);
+  ///
+  /// Returns what [check] does.
+  bool checkForCrash() => _track(forCrash: true);
 
-  void _track({required bool forCrash}) {
+  bool _track({required bool forCrash}) {
     _checking = true;
     _forCrash = forCrash;
     // Makes alien.run() run this node, which it does only when it is dirty.
@@ -50,6 +56,15 @@ abstract base class ViewSignalConsumer extends alien.EffectNode<void> {
     } finally {
       _checking = false;
     }
+    // A signal that this node read, and that changes while it runs, marks it
+    // pending, rather than notifying it, as it is running.
+    if ((flags & ReactiveFlags.pending) == ReactiveFlags.none) {
+      return false;
+    }
+    // Dirty and not watching, as after onChanged(): the node is not notified
+    // again until the next check, which records the signals anew.
+    flags = ReactiveFlags.dirty;
+    return true;
   }
 
   /// Stops tracking: [onChanged] is not called again.

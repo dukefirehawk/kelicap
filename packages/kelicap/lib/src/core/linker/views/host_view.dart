@@ -197,7 +197,14 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   void detectChangesInMarkedDescendants() {
     if (_data.hasMarkedDescendants && !_data.shouldSkipChangeDetection) {
       _data.hasMarkedDescendants = false;
-      detectChangesInMarkedViews();
+      try {
+        detectChangesInMarkedViews();
+      } catch (_) {
+        // Keeps the views below marked, so that the check that looks for the
+        // view that threw reaches it.
+        _data.hasMarkedDescendants = true;
+        rethrow;
+      }
     }
   }
 

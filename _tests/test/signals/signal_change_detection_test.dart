@@ -62,6 +62,20 @@ void main() {
     expect(scheduler.isPending, isFalse);
   });
 
+  test('setting a signal schedules a pass when an effect throws', () async {
+    final ref = effect((_) {
+      if (counter.instance.count() == 3) throw StateError('effect');
+    });
+    expect(
+      () => ngZone.runOutsideKelicap(() => counter.instance.count.set(3)),
+      throwsStateError,
+    );
+    expect(scheduler.isPending, isTrue);
+    await settle();
+    expect(text('#count'), '3');
+    ref.destroy();
+  });
+
   test('setting a signal schedules nothing once the app is disposed', () {
     appRef.dispose();
     ngZone.runOutsideKelicap(() => counter.instance.count.set(1));

@@ -143,8 +143,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
         // Reaches the views below that were marked for refresh, without
         // checking the views on the way.
         if (_data.hasMarkedDescendants) {
-          _data.hasMarkedDescendants = false;
-          detectChangesInMarkedViews();
+          _detectChangesInMarkedViews();
         }
       }
       return;
@@ -163,12 +162,21 @@ abstract class ComponentView<T extends Object> extends RenderView {
     // in its embedded views, so that it is marked for check when one of them
     // changes. Child component views record their own.
     final signals = _data.signals ??= _ComponentViewSignals(this);
+    final bool changedWhileChecked;
     if (ChangeDetectionHost.checkForCrashes) {
       // Run change detection in "slow-mode" to catch thrown exceptions.
-      signals.checkForCrash();
+      changedWhileChecked = signals.checkForCrash();
     } else {
       // Normally run change detection.
-      signals.check();
+      try {
+        changedWhileChecked = signals.check();
+      } catch (_) {
+        // Keeps this view marked, so that the check that looks for the view
+        // that threw, which goes only through marked views below views that
+        // are not checked, reaches it.
+        _data.needsRefresh = true;
+        rethrow;
+      }
     }
 
     // If we are a 'CheckOnce' component, we are done being checked.
@@ -179,6 +187,38 @@ abstract class ComponentView<T extends Object> extends RenderView {
 
     // Set the state to already checked at least once.
     _data.changeDetectorState = ChangeDetectorState.checkedBefore;
+
+    // A signal that this view read changed while it was checked, after it was
+    // read, such as in a lifecycle hook of a child: checks it again, in the
+    // next pass, which setting the signal requested.
+    if (changedWhileChecked) {
+      markForRefresh();
+    }
+  }
+
+  /// Change detects the marked views below this one, keeping them marked if
+  /// one of them throws, so that the check that looks for the view that threw
+  /// reaches it.
+  void _detectChangesInMarkedViews() {
+    _data.hasMarkedDescendants = false;
+    try {
+      detectChangesInMarkedViews();
+    } catch (_) {
+      _data.hasMarkedDescendants = true;
+      rethrow;
+    }
+  }
+
+  /// Whether this view is marked to be checked, which
+  /// [detectChangesInMarkedDescendants] then does.
+  ///
+  /// Generated views read it to run the lifecycle hooks of the component of
+  /// this view, as they do when they check it, when only it is checked.
+  bool get isMarkedForRefresh {
+    final mode = _data.changeDetectionMode;
+    return mode != ChangeDetectionCheckedState.waitingToBeAttached &&
+        _data.changeDetectorState != ChangeDetectorState.errored &&
+        (_data.needsRefresh || mode == ChangeDetectionCheckedState.checkOnce);
   }
 
   // Called by [_ComponentViewSignals], which may not call the protected
@@ -198,8 +238,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
     } else if (_data.hasMarkedDescendants) {
       // Neither this view nor its default change detection is checked here:
       // only the marked views below it, as its parent was not checked.
-      _data.hasMarkedDescendants = false;
-      detectChangesInMarkedViews();
+      _detectChangesInMarkedViews();
     }
   }
 
@@ -222,6 +261,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
       markAsCheckOnce();
     }
     parentView!.markDescendantsForRefresh();
+    ChangeDetectionHost.recordMarkedForRefresh();
   }
 
   @override
@@ -314,8 +354,6 @@ abstract class ComponentView<T extends Object> extends RenderView {
   }
 }
 
-/// Data for [ComponentView] bundled together as an optimization.
-@sealed
 /// Tracks the signals that a component view reads, and marks the view for
 /// refresh when one of them changes.
 final class _ComponentViewSignals extends ViewSignalConsumer {
@@ -333,6 +371,8 @@ final class _ComponentViewSignals extends ViewSignalConsumer {
   void onChanged() => _view.markForRefresh();
 }
 
+/// Data for [ComponentView] bundled together as an optimization.
+@sealed
 class _ComponentViewData implements RenderViewData {
   @dart2js.noInline
   factory _ComponentViewData(

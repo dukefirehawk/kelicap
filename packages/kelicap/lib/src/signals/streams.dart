@@ -47,38 +47,47 @@ StreamSignal<T> toSignal<T>(Stream<T> stream, {required T initialValue}) =>
 /// final query = signal('');
 /// toStream(query).listen(search);
 /// ```
-Stream<T> toStream<T>(Signal<T> source) {
-  late StreamController<T> controller;
+Stream<T> toStream<T>(Signal<T> source) => Stream.multi((controller) {
   EffectRef? tracking;
   // The latest value, sent once the effect has stopped running, so that a
   // listener that sets a signal does not do so while the effect runs.
   var scheduled = false;
   late T latest;
+  // The error that reading the source threw, if it threw, sent rather than
+  // [latest].
+  (Object, StackTrace)? error;
 
   void send() {
     scheduled = false;
-    if (tracking != null) {
+    if (tracking == null) {
+      return;
+    }
+    if (error case (final error, final stackTrace)) {
+      controller.addError(error, stackTrace);
+    } else {
       controller.add(latest);
     }
   }
 
-  controller = StreamController<T>(
-    onListen: () {
-      tracking = effect((_) {
-        latest = source();
-        if (!scheduled) {
-          scheduled = true;
-          scheduleMicrotask(send);
-        }
-      });
-    },
-    onCancel: () {
-      tracking?.destroy();
-      tracking = null;
-    },
-  );
-  return controller.stream;
-}
+  controller.onCancel = () {
+    tracking?.destroy();
+    tracking = null;
+  };
+  tracking = effect((_) {
+    try {
+      latest = source();
+      error = null;
+    } catch (e, s) {
+      // Sent to the stream, rather than thrown at the code that set the
+      // signal, which would stop the other effects that the set runs.
+      error = (e, s);
+    }
+    if (!scheduled) {
+      scheduled = true;
+      scheduleMicrotask(send);
+    }
+  });
+});
 
 /// The value of a [_StreamSignal]: an event of the stream, or an error.
 sealed class _Value<T> {}

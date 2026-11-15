@@ -186,8 +186,12 @@ final class _WritableSignal<T> extends SignalNode<T>
         : equal(pendingValue, value)) {
       return;
     }
-    super.set(value);
-    ChangeDetectionScheduler.scheduleAll();
+    try {
+      super.set(value);
+    } finally {
+      // Even if an effect that the set runs throws, render the change.
+      ChangeDetectionScheduler.scheduleAll();
+    }
   }
 
   @override
