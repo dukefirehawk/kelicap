@@ -218,6 +218,9 @@ abstract class EmbeddedView<T> extends RenderView
   }
 
   @override
+  ViewContainer? get currentContainer => _data.viewContainer;
+
+  @override
   void wasRemoved() {
     dirtyParentQueriesInternal();
     _data.viewContainer = null;

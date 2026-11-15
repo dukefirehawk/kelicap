@@ -77,10 +77,8 @@ final class ChangeDetectionScheduler {
   /// Requests a change detection pass.
   ///
   /// The pass runs in a microtask, or earlier, at the end of the current
-  /// [NgZone] turn, if there is one. In an [NgZone] turn, outside of a pass,
-  /// nothing is requested, as the turn ends with a pass. Calling this again
-  /// before the pass starts has no effect, and calling it during a pass
-  /// requests another.
+  /// [NgZone] turn, if there is one. Calling this again before the pass starts
+  /// has no effect, and calling it during a pass requests another.
   void schedule() {
     if (_inPass) {
       _requestedInPass = true;
@@ -88,10 +86,9 @@ final class ChangeDetectionScheduler {
     if (_pending || _disposed) {
       return;
     }
-    if (!_inPass && _ngZone.inInnerZone) {
-      // The NgZone turn that is running ends with a pass.
-      return;
-    }
+    // Requested in an NgZone turn too: the turn may have run its pass already,
+    // such as when this is called from a listener of onMicrotaskEmpty. If it
+    // has not, the pass clears the request, and the microtask does nothing.
     _pending = true;
     // Scheduled outside the zone, so that the microtask does not delay the end
     // of the current turn, if there is one, and the pass that follows it.

@@ -237,15 +237,64 @@ void main() {
     });
   });
 
-  test('a signal set in an NgZone turn schedules no pass', () async {
-    await bootstrap(ng.createStateReaderComponentFactory());
-    ngZone.run(() {
-      state.set(1);
-      expect(appRef.changeDetectionScheduler.isPending, isFalse);
-    });
+  test('a signal set in an NgZone turn is rendered by its pass', () async {
+    final reader = await bootstrap(ng.createStateReaderComponentFactory());
+    var passes = 0;
+    final sub = ngZone.onMicrotaskEmpty.listen((_) => passes++);
+    addTearDown(sub.cancel);
+    ngZone.run(() => state.set(1));
+    expect(reader.location.textContent, '1', reason: 'at the end of the turn');
+    expect(appRef.changeDetectionScheduler.isPending, isFalse);
     await settle();
+    expect(passes, 1, reason: 'the request adds no pass');
     expect(errors, isEmpty);
   });
+
+  test(
+    'a signal set in the zone after its pass, in a listener, is rendered',
+    () async {
+      final reader = await bootstrap(ng.createStateReaderComponentFactory());
+      // Listens after the app, so it runs after the app's pass, and in the
+      // zone, as a component or a service that listens does. It first runs
+      // at the end of this turn, which no other turn follows.
+      final sub = ngZone.run(
+        () => ngZone.onMicrotaskEmpty.listen((_) {
+          if (state() == 0) {
+            state.set(1);
+          }
+        }),
+      );
+      addTearDown(sub.cancel);
+      await settle();
+      expect(reader.location.textContent, '1');
+      expect(errors, isEmpty);
+    },
+  );
+
+  test(
+    'a host view marked before it is inserted is refreshed once inserted',
+    () async {
+      await bootstrap(ng.createManualRowsRootFactory());
+      final container = manualRows!.container;
+      final themed = ngZone.run(() {
+        final ref = ng.createThemedRootComponentFactory().create(
+          container.parentInjector,
+        );
+        // Checked on its own, so it records the signal its host binding reads.
+        ref.changeDetectorRef.detectChanges();
+        return ref;
+      });
+      expect(themed.location.classList.contains('dark'), isFalse);
+      // Marks it, while it is in no container.
+      await outside(() => state.set(1));
+      // Inserted below an OnPush view that is not checked: only the mark
+      // brings change detection to it.
+      ngZone.run(() => container.insert(themed.hostView));
+      await settle();
+      expect(themed.location.classList.contains('dark'), isTrue);
+      expect(errors, isEmpty);
+    },
+  );
 
   test(
     'a marked view removed while marked views are checked is not checked',

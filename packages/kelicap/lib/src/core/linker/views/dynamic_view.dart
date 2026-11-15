@@ -36,6 +36,9 @@ abstract class DynamicView implements View, ViewRef {
   ///
   /// This is invoked by the [ViewContainer] from which this view was removed.
   void wasRemoved();
+
+  /// The container in which this view is inserted, or null if it is not.
+  ViewContainer? get currentContainer;
 }
 
 /// The interface for [DynamicView] data bundled together as an optimization.

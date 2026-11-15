@@ -29,12 +29,10 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
   /// The views in this container that a view below was marked in, by
   /// `ComponentView.markForRefresh`, since they were checked, so that change
   /// detection reaches them without going through every view.
-  List<DynamicView?>? _markedNestedViews;
-
-  /// The marked views that [detectChangesInMarkedNestedViews] goes through,
-  /// while it does: a view removed from this container is cleared from it, so
-  /// that it is not checked.
-  List<DynamicView?>? _markedNestedViewsChecked;
+  ///
+  /// A view removed from this container is left in it, and skipped, which
+  /// costs less than looking for it on each removal.
+  List<DynamicView>? _markedNestedViews;
 
   ViewContainer(
     this.index,
@@ -91,12 +89,15 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
     }
     // Views marked while they are checked are recorded anew.
     _markedNestedViews = null;
-    final outer = _markedNestedViewsChecked;
-    _markedNestedViewsChecked = marked;
     var i = 0;
     try {
       for (final length = marked.length; i < length; i++) {
-        marked[i]?.detectChangesInMarkedDescendants();
+        final view = marked[i];
+        // Skips a view removed since it was marked, unless it was inserted
+        // again, which a view removed while this goes through them may be.
+        if (identical(view.currentContainer, this)) {
+          view.detectChangesInMarkedDescendants();
+        }
       }
     } catch (_) {
       // Keeps the view that threw, and those not checked yet, so that the
@@ -107,20 +108,6 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
           ? rest
           : (rest..addAll(markedSince));
       rethrow;
-    } finally {
-      _markedNestedViewsChecked = outer;
-    }
-  }
-
-  /// Clears [view] from [views], if it is there.
-  static void _clear(List<DynamicView?>? views, DynamicView view) {
-    if (views == null) {
-      return;
-    }
-    for (var i = 0, length = views.length; i < length; i++) {
-      if (identical(views[i], view)) {
-        views[i] = null;
-      }
     }
   }
 
@@ -318,8 +305,6 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
 
   DynamicView detachView(int viewIndex) {
     final view = nestedViews.removeAt(viewIndex);
-    _clear(_markedNestedViews, view);
-    _clear(_markedNestedViewsChecked, view);
     view
       ..removeRootNodes()
       ..wasRemoved();

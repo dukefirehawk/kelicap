@@ -172,6 +172,10 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   /// the tick that is running ends, if there is one.
   void _markForRefresh() {
     _data.needsRefresh = true;
+    // Not in a container, as it records the signals itself: records nothing
+    // above it, but a container that it is inserted into later finds the mark,
+    // and records it, as it does for the views below it.
+    markDescendantsForRefresh();
     ChangeDetectionHost.recordMarkedForRefresh();
   }
 
@@ -290,6 +294,9 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   void wasMoved() {
     // Nothing to update.
   }
+
+  @override
+  ViewContainer? get currentContainer => _data.viewContainer;
 
   @override
   void wasRemoved() {
