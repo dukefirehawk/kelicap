@@ -1,12 +1,12 @@
 # Changelog
 
-## 1.1.0
+## 2.0.0
 
-### New in 1.1.0
+### New in 2.0.0
 
 * **New project:** `kelicap create` makes a project that requires `kelicap` 2.0.1 or later and `kelicap_components` 2.0.0 or later, where it required `kelicap` 1.x and `kelicap_components` 1.x. Its `kelicap_test` dev dependency is ^2.0.1
 
-### Fixes in 1.1.0
+### Fixes in 2.0.0
 
 * **New project:** The comment of the todo list template links to `kelicap_components` on pub.dev. 1.0.5 still made it link to the old AngularDart site, as the template that the command copies was not updated
 * **New project:** The description in the project's `pubspec.yaml` reads "A web app that uses Kelicap Components", where it read "AngularDart Components"
