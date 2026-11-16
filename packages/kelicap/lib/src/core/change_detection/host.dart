@@ -64,6 +64,14 @@ abstract class ChangeDetectionHost {
 
   final List<ChangeDetectorRef> _changeDetectors = [];
 
+  /// The index in [_changeDetectors] of the root being checked, by a loop of
+  /// a [tick], or -1.
+  ///
+  /// [unregisterChangeDetector] moves it back when it removes a root at or
+  /// before it, such as one that a lifecycle hook destroys, so that the root
+  /// that moves into its place is not skipped.
+  var _rootIndex = -1;
+
   /// Registers a change [detector] with this host for automatic detection.
   void registerChangeDetector(ChangeDetectorRef detector) {
     _changeDetectors.add(detector);
@@ -71,7 +79,14 @@ abstract class ChangeDetectionHost {
 
   /// Removes a change [detector] from this host (no longer checked).
   void unregisterChangeDetector(ChangeDetectorRef detector) {
-    _changeDetectors.remove(detector);
+    final index = _changeDetectors.indexOf(detector);
+    if (index == -1) {
+      return;
+    }
+    _changeDetectors.removeAt(index);
+    if (index <= _rootIndex) {
+      _rootIndex--;
+    }
   }
 
   /// Runs a change detection pass on all registered root components.
@@ -108,18 +123,20 @@ abstract class ChangeDetectionHost {
     } finally {
       _current = null;
       _runningTick = false;
+      _rootIndex = -1;
       _resetViewErrors();
     }
   }
 
   /// Runs [AppView.detectChanges] on all top-level components/views.
   void _runTick() {
-    // The length is read on each iteration, as a root component destroyed
-    // during the tick, such as by a lifecycle hook, is removed from the list.
+    // The length is read on each iteration, and the index is a field, as a
+    // root component destroyed during the tick, such as by a lifecycle hook,
+    // is removed from the list, which moves the roots after it.
     final detectors = _changeDetectors;
     _markedForRefresh = false;
-    for (var i = 0; i < detectors.length; i++) {
-      detectors[i].detectChanges();
+    for (_rootIndex = 0; _rootIndex < detectors.length; _rootIndex++) {
+      detectors[_rootIndex].detectChanges();
     }
     // A signal that changed during the pass, such as in a lifecycle hook,
     // marked the views that read it, including views checked before it
@@ -143,8 +160,8 @@ abstract class ChangeDetectionHost {
         return;
       }
       _markedForRefresh = false;
-      for (var i = 0; i < detectors.length; i++) {
-        final detector = detectors[i];
+      for (_rootIndex = 0; _rootIndex < detectors.length; _rootIndex++) {
+        final detector = detectors[_rootIndex];
         if (detector is View) {
           detector.detectChangesInMarkedDescendants();
         }
@@ -152,8 +169,8 @@ abstract class ChangeDetectionHost {
     }
     if (isDevMode) {
       debugEnterThrowOnChanged();
-      for (var i = 0; i < detectors.length; i++) {
-        detectors[i].detectChanges();
+      for (_rootIndex = 0; _rootIndex < detectors.length; _rootIndex++) {
+        detectors[_rootIndex].detectChanges();
       }
       debugThrowIfUnstableExpressionsFound();
       debugExitThrowOnChanged();
@@ -172,8 +189,8 @@ abstract class ChangeDetectionHost {
     if (isDevMode) {
       debugThrowOnChangedImmediately();
     }
-    for (var i = 0; i < detectors.length; i++) {
-      final detector = detectors[i];
+    for (_rootIndex = 0; _rootIndex < detectors.length; _rootIndex++) {
+      final detector = detectors[_rootIndex];
       if (detector is View) {
         final view = detector;
         _lastGuardedView = view as View?;

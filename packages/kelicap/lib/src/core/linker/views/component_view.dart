@@ -224,18 +224,21 @@ abstract class ComponentView<T extends Object> extends RenderView {
   ///
   /// The signals that it reads do not count as those of the view above it:
   /// [signalReads] is set back to [reads], its count before this view was
-  /// checked.
+  /// checked, also if the check throws, as code above it may catch the error,
+  /// such as around [detectChanges] in a lifecycle hook.
   @dart2js.noInline
   bool _checkRecordingSignals(int reads) {
-    final signals = _data.signals;
-    final checkAgain = signals != null
-        ? signals.check()
-        : _checkWithNewSignals(
-            firstCheck:
-                _data.changeDetectorState == ChangeDetectorState.neverChecked,
-          );
-    signalReads = reads;
-    return checkAgain;
+    try {
+      final signals = _data.signals;
+      return signals != null
+          ? signals.check()
+          : _checkWithNewSignals(
+              firstCheck:
+                  _data.changeDetectorState == ChangeDetectorState.neverChecked,
+            );
+    } finally {
+      signalReads = reads;
+    }
   }
 
   /// Checks this view with a new [ViewSignalConsumer].

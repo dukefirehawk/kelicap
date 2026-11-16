@@ -281,6 +281,20 @@ void main() {
     expect(errors, isEmpty);
   });
 
+  test('a root component destroyed during a tick does not keep the root after '
+      'it from being checked', () async {
+    final first = await bootstrap(ng.createStateReaderComponentFactory());
+    await bootstrap(ng.createRootDestroyerFactory());
+    await bootstrap(ng.createCountingRootFactory());
+    final before = counterChecks['root']!;
+    // The second root destroys the first, so the third moves into its place.
+    RootDestroyer.onChecked = first.destroy;
+    ngZone.run(() {});
+    await settle();
+    expect(counterChecks['root'], greaterThan(before));
+    expect(errors, isEmpty);
+  });
+
   test(
     'a host view marked before it is inserted is refreshed once inserted',
     () async {
@@ -437,6 +451,29 @@ void main() {
       expect(text(), '0');
       await outside(() => state.set(7));
       expect(text(), '7');
+      expect(errors, isEmpty);
+    });
+
+    test('is not recorded by an effect that checks it', () async {
+      var runs = 0;
+      late EffectRef ref;
+      await outside(() {
+        ref = effect((_) {
+          runs++;
+          reader.instance
+            ..show = true
+            ..changeDetector.markForCheck()
+            // ignore: deprecated_member_use
+            ..changeDetector.detectChanges();
+        });
+      });
+      expect(text(), '0');
+      expect(runs, 1);
+      // The effect read no signal, so it does not run again.
+      await outside(() => state.set(1));
+      expect(text(), '1');
+      expect(runs, 1);
+      ref.destroy();
       expect(errors, isEmpty);
     });
   });
@@ -930,3 +967,11 @@ class TrackedParentComponent {
 
   int value() => a();
 }
+
+/// A root component whose view [CheckCounter] counts, as "root".
+@Component(
+  selector: 'counting-root',
+  template: '<check-counter name="root"></check-counter>',
+  directives: [CheckCounter],
+)
+class CountingRoot {}

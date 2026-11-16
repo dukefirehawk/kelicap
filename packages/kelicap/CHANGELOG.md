@@ -17,6 +17,10 @@
   * A signal set during change detection, such as in `ngAfterViewInit`, checks the components that read it again in the same pass. After 100 such checks in a pass, or 100 passes in a row that each set a signal, the error handler is called, and the components are not checked again until something else runs change detection
 * **Effects:** An effect is not destroyed with the component that created it: destroy it in `ngOnDestroy`. An error that an effect throws goes to the zone that created it, such as the application's `ExceptionHandler`, and is not thrown by the `set` that ran it
 
+### Fixes in 2.0.0
+
+* **Change detection:** A root component destroyed during change detection, such as by a lifecycle hook of another root, no longer throws a `RangeError`, and the roots after it are still checked
+
 ## 1.1.5
 
 ### Fixes in 1.1.5
