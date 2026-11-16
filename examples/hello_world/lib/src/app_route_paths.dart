@@ -5,5 +5,7 @@ class AppRoutePaths {
   static final dashboard = RoutePath(path: 'dashboard');
   static final home = RoutePath(path: 'home');
   static final user = RoutePath(path: 'user');
-  static final others = RoutePath(path: '/**');
+  // A path is a regular expression: '.+' matches every path that the routes
+  // before it do not, but not the empty one, which redirects to login.
+  static final others = RoutePath(path: '.+');
 }
