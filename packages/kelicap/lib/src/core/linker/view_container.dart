@@ -113,7 +113,9 @@ class ViewContainer extends ComponentLoader implements ViewContainerRef {
 
   void detectChangesInNestedViews() {
     // Checks them all, marked or not.
-    _markedNestedViews = null;
+    if (_markedNestedViews != null) {
+      _markedNestedViews = null;
+    }
     for (var i = 0, len = nestedViews.length; i < len; i++) {
       nestedViews[i].detectChangesDeprecated();
     }

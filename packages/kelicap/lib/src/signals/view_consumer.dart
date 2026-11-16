@@ -3,14 +3,16 @@ import 'package:alien_signals/preset.dart'
     show EffectCleanup, EffectNode, PresetReactiveSystem, run, stop;
 import 'package:alien_signals/system.dart' show Link, ReactiveFlags;
 
-/// **INTERNAL ONLY**: Whether a signal or a computed value was read since a
-/// view reset it.
+/// **INTERNAL ONLY**: How many times a signal or a computed value was read.
 ///
 /// A view that has not read a signal yet is checked without a
-/// [ViewSignalConsumer], which costs less, and reads it to learn whether it
-/// needs one. Setting a field costs less than asking whether a view is being
-/// checked, on each read.
-var signalRead = false;
+/// [ViewSignalConsumer], which costs less, and compares it before and after
+/// its check to learn whether it needs one. A count, rather than a flag that
+/// the view resets and restores, costs the views that read no signal, most of
+/// them, only a read and a comparison. Code whose reads are not those of the
+/// view that is checked, such as a view that records its own, or an effect,
+/// sets it back once it has run.
+var signalReads = 0;
 
 /// **INTERNAL ONLY**: Tracks the signals that a view reads while it is
 /// checked, and tells the view when one of them changes.

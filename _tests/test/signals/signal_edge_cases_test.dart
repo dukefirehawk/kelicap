@@ -395,6 +395,36 @@ void main() {
       expect(errors, isEmpty);
     });
 
+    test(
+      'costs the view above it that records signals one check, at most',
+      () async {
+        final parent = await bootstrap<TrackedParentComponent>(
+          ng.createTrackedParentComponentFactory(),
+        );
+        final late = parent.instance.reader!;
+        int parentChecks() => counterChecks['tracked'] ?? 0;
+        // Its first read is in a check without a consumer, which the parent's
+        // consumer, running, also records.
+        ngZone.run(() {
+          late
+            ..show = true
+            ..changeDetector.markForCheck();
+        });
+        await settle();
+        expect(parent.location.querySelector('late-reader')!.textContent, '0');
+        var before = parentChecks();
+        await outside(() => state.set(1));
+        expect(parent.location.querySelector('late-reader')!.textContent, '1');
+        expect(parentChecks() - before, lessThanOrEqualTo(1));
+        // The parent's check no longer read it, so it is no longer notified.
+        before = parentChecks();
+        await outside(() => state.set(2));
+        expect(parent.location.querySelector('late-reader')!.textContent, '2');
+        expect(parentChecks() - before, 0);
+        expect(errors, isEmpty);
+      },
+    );
+
     test('renders its changes, once checked on its own', () async {
       await outside(() {
         reader.instance
@@ -882,4 +912,21 @@ class RootDestroyer implements AfterViewChecked {
     onChecked = null;
     callback?.call();
   }
+}
+
+/// An OnPush component that records the signals it reads, as it reads [a],
+/// with a [LateReaderComponent] that reads [state] once it is shown.
+@Component(
+  selector: 'tracked-parent',
+  template:
+      '{{value()}}<check-counter name="tracked"></check-counter>'
+      '<late-reader></late-reader>',
+  directives: [CheckCounter, LateReaderComponent],
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class TrackedParentComponent {
+  @ViewChild(LateReaderComponent)
+  LateReaderComponent? reader;
+
+  int value() => a();
 }

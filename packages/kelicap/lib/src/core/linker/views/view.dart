@@ -167,7 +167,10 @@ abstract class View implements ChangeDetectorRef {
   /// views below it, marked or not.
   @protected
   void clearMarkedDescendants() {
-    _hasMarkedDescendants = false;
+    // Read first, as it is rarely set, and this runs on each check.
+    if (_hasMarkedDescendants) {
+      _hasMarkedDescendants = false;
+    }
   }
 
   /// Change detects the marked views below this one, with
