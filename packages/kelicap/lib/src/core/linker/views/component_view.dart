@@ -143,7 +143,7 @@ abstract class ComponentView<T extends Object> extends RenderView {
         detectChangesInCheckAlwaysViews();
         // Reaches the views below that were marked for refresh, without
         // checking the views on the way.
-        if (hasMarkedDescendants) {
+        if (_data.hasMarkedDescendants) {
           detectChangesInMarkedViewsKeepingMarks();
         }
       }
@@ -151,8 +151,11 @@ abstract class ComponentView<T extends Object> extends RenderView {
     }
 
     // Checking this view checks the views below it, marked or not. Cleared
-    // before the check, as a view below may be marked while it runs.
-    clearMarkedDescendants();
+    // before the check, as a view below may be marked while it runs. Read
+    // first, as it is rarely set.
+    if (_data.hasMarkedDescendants) {
+      _data.hasMarkedDescendants = false;
+    }
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
@@ -440,6 +443,9 @@ class _ComponentViewData implements RenderViewData {
 
   /// Tracks the signals that the view reads, once it has read one.
   ViewSignalConsumer? signals;
+
+  @override
+  var hasMarkedDescendants = false;
 
   /// Whether the view was marked by [ComponentView.markForRefresh] since it
   /// was checked.

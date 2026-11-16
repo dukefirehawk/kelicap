@@ -62,29 +62,30 @@ the times of one build vary between runs by up to a fifth.
 ## Results
 
 On Linux, in headless Chrome, the mean time of an operation, the median of
-five runs at 1,000 rows and three at 10,000, of `kelicap` 1.1.5, and of 2.0.0
-(unreleased):
+ten runs at 1,000 rows and sixteen at 10,000, of `kelicap` 1.1.5, and of
+2.0.0 (unreleased):
 
 | Scenario | 1,000 rows: 1.1.5 | 1,000 rows: 2.0.0 | 10,000 rows: 1.1.5 | 10,000 rows: 2.0.0 |
 | --- | --- | --- | --- | --- |
-| default: Update one row | 0.11 ms | 0.13 ms | 1.4 ms | 1.6 ms |
-| default: Update all rows | 0.61 ms | 0.66 ms | 5.3 ms | 5.6 ms |
-| default: No change | 0.11 ms | 0.13 ms | 1.2 ms | 1.6 ms |
-| default: Create table | 8.7 ms | 8.6 ms | 76 ms | 73 ms |
-| onpush: Update one row | 0.06 ms | 0.08 ms | 0.98 ms | 1.3 ms |
-| onpush: Update all rows | 0.71 ms | 0.69 ms | 6.1 ms | 6.5 ms |
-| onpush: Create table | 8.4 ms | 7.7 ms | 81 ms | 82 ms |
+| default: Update one row | 0.11 ms | 0.12 ms | 1.3 ms | 1.4 ms |
+| default: Update all rows | 0.56 ms | 0.53 ms | 5.0 ms | 5.2 ms |
+| default: No change | 0.11 ms | 0.11 ms | 1.3 ms | 1.4 ms |
+| default: Create table | 8.6 ms | 8.7 ms | 71 ms | 70 ms |
+| onpush: Update one row | 0.07 ms | 0.07 ms | 1.0 ms | 1.0 ms |
+| onpush: Update all rows | 0.66 ms | 0.68 ms | 5.7 ms | 5.8 ms |
+| onpush: Create table | 8.0 ms | 7.7 ms | 78 ms | 80 ms |
 
 The medians of a release vary by up to a fifth from one session to another,
 so compare the releases within a row of the table, measured alternately.
 
-- **Default change detection**: a pass is up to a third slower in 2.0.0 in
-  some sessions, as in this table, and as fast as in 1.1.5 in others. Each component view that
-  reads no signal checks whether it read one, by comparing a count of the
-  reads before and after its check.
-- **OnPush, update one row**: about a quarter slower in 2.0.0 with 10,000
-  rows, where the table that `markForCheck` marks goes through every row, to
-  skip it. The cause is not known yet.
+- **Default change detection**: a pass is up to a tenth slower in 2.0.0.
+  Each component view that reads no signal checks whether it read one, by
+  comparing a count of the reads before and after its check.
+- **OnPush**: as fast in both. A skipped view reads, in 2.0.0, whether a view
+  below it needs a check, from the data of the view rather than from the view
+  itself: as each generated view is a class of its own, the JavaScript engine
+  reads a field of the view more slowly, which made updating one row a sixth
+  slower at 10,000 rows.
 - **Creating and removing a table** cost the same in both, although the first
   check of each view in 2.0.0 records the signals that it reads, and drops
   what it recorded if it read none.

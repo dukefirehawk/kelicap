@@ -118,7 +118,7 @@ abstract class View implements ChangeDetectorRef {
   /// Defaults to reaching them, unless this view is not to be checked: a
   /// component view overrides it, as it checks itself if it was marked.
   void detectChangesInMarkedDescendants() {
-    if (_hasMarkedDescendants && reachesMarkedDescendants) {
+    if (viewData.hasMarkedDescendants && reachesMarkedDescendants) {
       detectChangesInMarkedViewsKeepingMarks();
     }
   }
@@ -143,11 +143,9 @@ abstract class View implements ChangeDetectorRef {
   @protected
   ViewData get viewData;
 
-  var _hasMarkedDescendants = false;
-
   /// Whether a view below this one was marked by
   /// [ComponentView.markForRefresh] since this view was checked.
-  bool get hasMarkedDescendants => _hasMarkedDescendants;
+  bool get hasMarkedDescendants => viewData.hasMarkedDescendants;
 
   /// Records in the view above this one, or in the container of this one,
   /// that a view below it was marked, if any, as [markDescendantsForRefresh]
@@ -163,26 +161,16 @@ abstract class View implements ChangeDetectorRef {
       viewData.changeDetectionMode ==
       ChangeDetectionCheckedState.waitingToBeAttached;
 
-  /// Clears [hasMarkedDescendants] when this view is checked, which checks the
-  /// views below it, marked or not.
-  @protected
-  void clearMarkedDescendants() {
-    // Read first, as it is rarely set, and this runs on each check.
-    if (_hasMarkedDescendants) {
-      _hasMarkedDescendants = false;
-    }
-  }
-
   /// Change detects the marked views below this one, with
   /// [detectChangesInMarkedViews], keeping them marked if one of them throws,
   /// so that the check that looks for the view that threw reaches it.
   @protected
   void detectChangesInMarkedViewsKeepingMarks() {
-    _hasMarkedDescendants = false;
+    final data = viewData..hasMarkedDescendants = false;
     try {
       detectChangesInMarkedViews();
     } catch (_) {
-      _hasMarkedDescendants = true;
+      data.hasMarkedDescendants = true;
       rethrow;
     }
   }
@@ -191,11 +179,12 @@ abstract class View implements ChangeDetectorRef {
   /// [ComponentView.markForRefresh], and needs to be change detected, and
   /// records it in the views above this one.
   void markDescendantsForRefresh() {
-    if (_hasMarkedDescendants) {
+    final data = viewData;
+    if (data.hasMarkedDescendants) {
       // The views above this one have recorded it already.
       return;
     }
-    _hasMarkedDescendants = true;
+    data.hasMarkedDescendants = true;
     if (!isWaitingToBeAttached) {
       markViewAboveForRefresh();
     }
@@ -377,6 +366,14 @@ abstract class ViewData {
   /// This flag is automatically updated when either [changeDetectionMode] or
   /// [changeDetectorState] change.
   bool get shouldSkipChangeDetection;
+
+  /// Storage for [View.hasMarkedDescendants].
+  ///
+  /// Kept here, rather than in [View], as each generated view is a class of
+  /// its own: the change detection of a view reads it, and a read of a field
+  /// of the view itself, where it sees many classes, is slower in JavaScript
+  /// than a read of a field of this data, which is one of a few classes.
+  abstract bool hasMarkedDescendants;
 
   /// Destroys this views data and marks this as [destroyed].
   void destroy();
