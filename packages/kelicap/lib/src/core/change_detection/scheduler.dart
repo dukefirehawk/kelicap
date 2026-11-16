@@ -144,6 +144,9 @@ final class ChangeDetectionScheduler {
   /// mark are checked again too many times in a pass.
   void cancel() {
     _pending = false;
+    // A request made in the pass that is running, if any, is dropped too, so
+    // that the pass does not count toward [maxPassesInARow].
+    _requestedInPass = false;
     _passesInARow = 0;
   }
 

@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import '../../signals/signals.dart';
+
 /// Provides influence over how change detection should execute for a component.
 ///
 /// In practice, this is often used just for [markForCheck], which sets a
@@ -170,8 +172,12 @@ extension DeprecatedDetectChanges on ChangeDetectorRef {
   /// If all else fails, it is strongly preferable to use our explicit API for
   /// forcing more change detection, `NgZone.runAfterChangesObserved`. It is
   /// also worth filing a bug if this is needed.
+  ///
+  /// The signals that the views read are recorded by the views, and not by
+  /// the code that calls this, such as an [effect], which would otherwise run
+  /// again when one of them changes.
   @Deprecated('Breaks assumptions around change detection and will be removed')
   void detectChanges() {
-    detectChangesDeprecated();
+    untracked(detectChangesDeprecated);
   }
 }

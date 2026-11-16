@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.1
+
+### Fixes in 2.0.1
+
+* **Change detection:** Generated views check their child components with `detectChangesDeprecated`, rather than with the public `ChangeDetectorRef.detectChanges`, which `kelicap` 2.0.1 runs without tracking signals, so that each check of a child does not pay for it. The code still works with `kelicap` 2.0.0
+
 ## 2.0.0
 
 ### Breaking changes in 2.0.0

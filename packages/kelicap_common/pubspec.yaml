@@ -2,7 +2,7 @@ name: kelicap_common
 description: >
   The Kelicap common library.
   Common functions, types, and classes used by Kelicap and Kelicap Compiler.
-version: 2.0.0
+version: 2.0.1
 repository: https://github.com/dukefirehawk/kelicap
 issue_tracker: https://github.com/dukefirehawk/kelicap/issues
 documentation: https://dukefirehawk.gitbook.io/kelicap-docs

@@ -1,0 +1,11 @@
+dependency_overrides:
+  kelicap:
+    path: ../../packages/kelicap
+  kelicap_ast:
+    path: ../../packages/kelicap_ast
+  kelicap_common:
+    path: ../../packages/kelicap_common
+  kelicap_observable:
+    path: ../../packages/kelicap_observable
+  kelicap_compiler:
+    path: ../../packages/kelicap_compiler

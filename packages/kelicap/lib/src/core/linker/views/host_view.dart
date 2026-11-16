@@ -136,8 +136,11 @@ abstract class HostView<T extends Object> extends View implements DynamicView {
   @override
   void detectChangesDeprecated() {
     if (_data.shouldSkipChangeDetection) return;
-    // Checking this view checks the views below it, marked or not.
-    clearMarkedDescendants();
+    // Checking this view checks the views below it, marked or not. Read
+    // first, as it is rarely set.
+    if (_data.hasMarkedDescendants) {
+      _data.hasMarkedDescendants = false;
+    }
 
     // Sanity check in dev-mode that a destroyed view is not checked again.
     if (isDevMode && _data.destroyed) {
@@ -312,6 +315,9 @@ class _HostViewData implements DynamicViewData {
 
   @override
   ViewFragment? viewFragment;
+
+  @override
+  var hasMarkedDescendants = false;
 
   /// Storage for any callbacks registered with [addOnDestroyCallback].
   List<void Function()>? _onDestroyCallbacks;

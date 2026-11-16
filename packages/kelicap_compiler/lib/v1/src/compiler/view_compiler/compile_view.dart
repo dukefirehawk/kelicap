@@ -1588,10 +1588,14 @@ class CompileView {
     // Add render properties change detectors.
     statements.addAll(detectChangesRenderPropertiesMethod.finish());
 
-    // Add view child change detection calls.
+    // Add view child change detection calls. Calls the method, rather than
+    // the public `detectChanges`, which also stops the code that calls it
+    // from recording the signals that the views read.
     for (var viewChild in viewChildren) {
       statements.add(
-        viewChild.componentView!.callMethod('detectChanges', []).toStmt(),
+        viewChild.componentView!
+            .callMethod('detectChangesDeprecated', [])
+            .toStmt(),
       );
     }
 

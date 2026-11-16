@@ -55,6 +55,7 @@ void main() {
     a = signal(0);
     b = signal(0);
     loopChecks = hookChecks = doChecks = bumps = 0;
+    RootDestroyer.onChecked = null;
     rowSignals = [signal(0), signal(0), signal(0)];
     counterChecks.clear();
     errors = [];
@@ -271,6 +272,29 @@ void main() {
     },
   );
 
+  test('a root component destroyed during a tick is not checked', () async {
+    await bootstrap(ng.createRootDestroyerFactory());
+    final second = await bootstrap(ng.createStateReaderComponentFactory());
+    RootDestroyer.onChecked = second.destroy;
+    ngZone.run(() {});
+    await settle();
+    expect(errors, isEmpty);
+  });
+
+  test('a root component destroyed during a tick does not keep the root after '
+      'it from being checked', () async {
+    final first = await bootstrap(ng.createStateReaderComponentFactory());
+    await bootstrap(ng.createRootDestroyerFactory());
+    await bootstrap(ng.createCountingRootFactory());
+    final before = counterChecks['root']!;
+    // The second root destroys the first, so the third moves into its place.
+    RootDestroyer.onChecked = first.destroy;
+    ngZone.run(() {});
+    await settle();
+    expect(counterChecks['root'], greaterThan(before));
+    expect(errors, isEmpty);
+  });
+
   test(
     'a host view marked before it is inserted is refreshed once inserted',
     () async {
@@ -385,6 +409,36 @@ void main() {
       expect(errors, isEmpty);
     });
 
+    test(
+      'costs the view above it that records signals one check, at most',
+      () async {
+        final parent = await bootstrap<TrackedParentComponent>(
+          ng.createTrackedParentComponentFactory(),
+        );
+        final late = parent.instance.reader!;
+        int parentChecks() => counterChecks['tracked'] ?? 0;
+        // Its first read is in a check without a consumer, which the parent's
+        // consumer, running, also records.
+        ngZone.run(() {
+          late
+            ..show = true
+            ..changeDetector.markForCheck();
+        });
+        await settle();
+        expect(parent.location.querySelector('late-reader')!.textContent, '0');
+        var before = parentChecks();
+        await outside(() => state.set(1));
+        expect(parent.location.querySelector('late-reader')!.textContent, '1');
+        expect(parentChecks() - before, lessThanOrEqualTo(1));
+        // The parent's check no longer read it, so it is no longer notified.
+        before = parentChecks();
+        await outside(() => state.set(2));
+        expect(parent.location.querySelector('late-reader')!.textContent, '2');
+        expect(parentChecks() - before, 0);
+        expect(errors, isEmpty);
+      },
+    );
+
     test('renders its changes, once checked on its own', () async {
       await outside(() {
         reader.instance
@@ -397,6 +451,29 @@ void main() {
       expect(text(), '0');
       await outside(() => state.set(7));
       expect(text(), '7');
+      expect(errors, isEmpty);
+    });
+
+    test('is not recorded by an effect that checks it', () async {
+      var runs = 0;
+      late EffectRef ref;
+      await outside(() {
+        ref = effect((_) {
+          runs++;
+          reader.instance
+            ..show = true
+            ..changeDetector.markForCheck()
+            // ignore: deprecated_member_use
+            ..changeDetector.detectChanges();
+        });
+      });
+      expect(text(), '0');
+      expect(runs, 1);
+      // The effect read no signal, so it does not run again.
+      await outside(() => state.set(1));
+      expect(text(), '1');
+      expect(runs, 1);
+      ref.destroy();
       expect(errors, isEmpty);
     });
   });
@@ -860,3 +937,41 @@ class _CollectingExceptionHandler implements ExceptionHandler {
   @override
   void call(exception, [stackTrace, String? reason]) => errors.add(exception);
 }
+
+/// Calls [onChecked], once, when it is checked.
+@Component(selector: 'root-destroyer', template: '')
+class RootDestroyer implements AfterViewChecked {
+  static void Function()? onChecked;
+
+  @override
+  void ngAfterViewChecked() {
+    final callback = onChecked;
+    onChecked = null;
+    callback?.call();
+  }
+}
+
+/// An OnPush component that records the signals it reads, as it reads [a],
+/// with a [LateReaderComponent] that reads [state] once it is shown.
+@Component(
+  selector: 'tracked-parent',
+  template:
+      '{{value()}}<check-counter name="tracked"></check-counter>'
+      '<late-reader></late-reader>',
+  directives: [CheckCounter, LateReaderComponent],
+  changeDetection: ChangeDetectionStrategy.onPush,
+)
+class TrackedParentComponent {
+  @ViewChild(LateReaderComponent)
+  LateReaderComponent? reader;
+
+  int value() => a();
+}
+
+/// A root component whose view [CheckCounter] counts, as "root".
+@Component(
+  selector: 'counting-root',
+  template: '<check-counter name="root"></check-counter>',
+  directives: [CheckCounter],
+)
+class CountingRoot {}

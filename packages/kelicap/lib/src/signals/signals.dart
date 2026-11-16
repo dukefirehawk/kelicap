@@ -144,13 +144,13 @@ EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) {
       List<void Function()>? cleanups;
       // The signals it reads are not read by a view that is checked while it
       // runs, such as when a lifecycle hook sets a signal that it reads.
-      final read = signalRead;
+      final reads = signalReads;
       try {
         fn((cleanup) => (cleanups ??= []).add(cleanup));
       } catch (e, s) {
         zone.handleUncaughtError(e, s);
       } finally {
-        signalRead = read;
+        signalReads = reads;
       }
       final registered = cleanups;
       if (registered == null) {
@@ -176,12 +176,12 @@ EffectRef _createEffect(void Function(EffectCleanupRegisterFn onCleanup) fn) {
 T untracked<T>(T Function() fn) {
   final previous = setActiveSub(null);
   // Signals read here do not make a view that is checked record signals.
-  final read = signalRead;
+  final reads = signalReads;
   try {
     return fn();
   } finally {
     setActiveSub(previous);
-    signalRead = read;
+    signalReads = reads;
   }
 }
 
@@ -213,7 +213,7 @@ final class _WritableSignal<T> extends SignalNode<T>
   T call() {
     // Tells a view that is checked without recording signals that it reads
     // one.
-    signalRead = true;
+    signalReads++;
     return get();
   }
 
@@ -273,7 +273,7 @@ final class _Computed<T> extends ComputedNode<T> implements Signal<T> {
   T call() {
     // Tells a view that is checked without recording signals that it reads
     // one.
-    signalRead = true;
+    signalReads++;
     return get();
   }
 }
