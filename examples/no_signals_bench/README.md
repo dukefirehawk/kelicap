@@ -1,8 +1,6 @@
 # No Signals Benchmark
 
-Measures the change detection of a table that reads no signal, to compare
-Kelicap releases: signals, new in 2.0.0, must not slow down the apps that do
-not use them. It uses only the API of `kelicap` 1.x, so that it builds against
+Measures the change detection of a table that reads no signal, to compare Kelicap releases: signals, new in 2.0.0, must not slow down the apps that do not use them. It uses only the API of `kelicap` 1.x, so that it builds against
 both.
 
 It renders the same table of rows two ways:
