@@ -1,5 +1,5 @@
 name: __projectName__
-description: A web app that uses AngularDart Components
+description: A web app that uses Kelicap Components
 version: 0.0.1
 # homepage: https://www.example.com
 
@@ -7,11 +7,11 @@ environment:
   sdk: '>=3.13.0 <4.0.0'
 
 dependencies:
-  kelicap: ^1.0.0
-  kelicap_components: ^1.0.0
+  kelicap: ^2.0.1
+  kelicap_components: ^2.0.0
 
 dev_dependencies:
-  kelicap_test: ^1.0.0
+  kelicap_test: ^2.0.1
   build_runner: ^2.16.0
   build_version: ^2.1.0
   build_test: ^3.5.0
