@@ -61,9 +61,9 @@ the times of one build vary between runs by up to a fifth.
 
 On Linux, in headless Chrome, the mean time of an operation, the median of
 ten runs at 1,000 rows and sixteen at 10,000, of `kelicap` 1.1.5, and of
-2.0.0 (unreleased):
+2.0.1:
 
-| Scenario | 1,000 rows: 1.1.5 | 1,000 rows: 2.0.0 | 10,000 rows: 1.1.5 | 10,000 rows: 2.0.0 |
+| Scenario | 1,000 rows: 1.1.5 | 1,000 rows: 2.0.1 | 10,000 rows: 1.1.5 | 10,000 rows: 2.0.1 |
 | --- | --- | --- | --- | --- |
 | default: Update one row | 0.11 ms | 0.12 ms | 1.3 ms | 1.4 ms |
 | default: Update all rows | 0.56 ms | 0.53 ms | 5.0 ms | 5.2 ms |
@@ -76,14 +76,15 @@ ten runs at 1,000 rows and sixteen at 10,000, of `kelicap` 1.1.5, and of
 The medians of a release vary by up to a fifth from one session to another,
 so compare the releases within a row of the table, measured alternately.
 
-- **Default change detection**: a pass is up to a tenth slower in 2.0.0.
+- **Default change detection**: a pass is up to a tenth slower in 2.0.1, where
+  it was 30% to 60% slower in 2.0.0.
   Each component view that reads no signal checks whether it read one, by
   comparing a count of the reads before and after its check.
-- **OnPush**: as fast in both. A skipped view reads, in 2.0.0, whether a view
+- **OnPush**: as fast in both. A skipped view reads, since 2.0.1, whether a view
   below it needs a check, from the data of the view rather than from the view
   itself: as each generated view is a class of its own, the JavaScript engine
   reads a field of the view more slowly, which made updating one row a sixth
-  slower at 10,000 rows.
+  slower at 10,000 rows in 2.0.0.
 - **Creating and removing a table** cost the same in both, although the first
-  check of each view in 2.0.0 records the signals that it reads, and drops
+  check of each view in 2.0.x records the signals that it reads, and drops
   what it recorded if it read none.

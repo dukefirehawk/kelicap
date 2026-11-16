@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.1
+
+No changes. Released with the other Kelicap packages, as 2.0.1, and requires `kelicap` 2.0.1.
+
 ## 2.0.0
 
 ### Breaking changes in 2.0.0

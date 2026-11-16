@@ -1,5 +1,16 @@
 # Change Log
 
+## 2.0.1
+
+### Fixes in 2.0.1
+
+* **Performance:** Change detection of components that read no signal is about as fast as in 1.1.5. In 2.0.0, a pass over a table of 1,000 to 10,000 rows that read no signal was 30% to 60% slower than in 1.1.5 with the default change detection, and up to a sixth slower with OnPush. It is now up to a tenth slower with the default change detection, and as fast with OnPush. `examples/no_signals_bench` measures it
+  * Requires `kelicap_compiler` 2.0.1, whose generated code checks each child component without the cost that the public `ChangeDetectorRef.detectChanges` now has
+  * A component that reads its first signal after its first check also makes the nearest component above it that reads signals depend on that signal, until that component's next check: that costs it one check, at most, when the signal changes
+* **Signals:** `ChangeDetectorRef.detectChanges` called in an `effect`, such as to render a component at once, no longer makes the effect depend on the signals that the component reads, which ran it again when one of them changed
+* **Change detection:** A root component destroyed during change detection, such as by a lifecycle hook of another root, no longer throws a `RangeError`, and the roots after it are still checked
+* **Change detection:** A pass that ends with the error about components checked again 100 times no longer counts toward the 100 passes in a row that each set a signal, which reported that error after fewer passes
+
 ## 2.0.0
 
 ### Breaking changes in 2.0.0
@@ -16,10 +27,6 @@
   * A component checked because of a signal runs `ngAfterContentChecked` and `ngAfterViewChecked`, but not `ngDoCheck`
   * A signal set during change detection, such as in `ngAfterViewInit`, checks the components that read it again in the same pass. After 100 such checks in a pass, or 100 passes in a row that each set a signal, the error handler is called, and the components are not checked again until something else runs change detection
 * **Effects:** An effect is not destroyed with the component that created it: destroy it in `ngOnDestroy`. An error that an effect throws goes to the zone that created it, such as the application's `ExceptionHandler`, and is not thrown by the `set` that ran it
-
-### Fixes in 2.0.0
-
-* **Change detection:** A root component destroyed during change detection, such as by a lifecycle hook of another root, no longer throws a `RangeError`, and the roots after it are still checked
 
 ## 1.1.5
 

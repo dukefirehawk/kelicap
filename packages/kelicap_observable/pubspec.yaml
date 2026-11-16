@@ -1,5 +1,5 @@
 name: kelicap_observable
-version: 2.0.0
+version: 2.0.1
 description: >
   Observable components for Kelicap framework.
   Provides support for marking objects as observable

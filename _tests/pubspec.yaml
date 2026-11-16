@@ -13,10 +13,10 @@ dependencies:
   collection: ^1.17.0
   source_gen: ^4.0.0
   logging: ^1.3.0
-  kelicap_common: ^2.0.0
-  kelicap_compiler: ^2.0.0
-  kelicap_test: ^2.0.0
-  kelicap: ^2.0.0
+  kelicap_common: ^2.0.1
+  kelicap_compiler: ^2.0.1
+  kelicap_test: ^2.0.1
+  kelicap: ^2.0.1
   test: ^1.22.2
   web: ^1.1.1
   glob: ^2.1.3
